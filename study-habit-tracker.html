@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Study Habit Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2eb;
+    --surface: #fffdf7;
+    --border: #e0d9cc;
+    --text: #1a1714;
+    --muted: #7a7368;
+    --accent: #c2622f;
+    --accent-light: #f2e8e0;
+    --accent2: #3a6b5a;
+    --accent2-light: #e2eeea;
+    --shadow: 0 2px 12px rgba(26,23,20,0.08);
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.4rem;
+    font-weight: 300;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-bottom: 0.8rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.8rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-title .icon {
+    font-size: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(194,98,47,0.12);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn:hover { background: #a8522a; }
+  .btn:active { transform: scale(0.99); }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.5rem;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.5s ease both;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--accent);
+  }
+
+  /* Insights */
+  .insight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.7rem;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .insight.positive {
+    background: var(--accent2-light);
+    color: var(--accent2);
+    border: 1px solid #b8d9d1;
+  }
+
+  .insight.warning {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #e5c4b0;
+  }
+
+  .insight .emoji { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .no-insight {
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-align: center;
+    padding: 0.6rem;
+  }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 0 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
+
+  tbody td {
+    padding: 0.7rem 0.6rem;
+    color: var(--text);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .badge-mood    { background: #fef3e2; color: #b07c1a; }
+  .badge-prod    { background: var(--accent2-light); color: var(--accent2); }
+  .badge-subject { background: #eae6f8; color: #5b4ba8; }
+
+  /* Subject Insights */
+  .subject-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .subject-bars { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .sub-row { display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; }
+
+  .sub-label { width: 90px; color: var(--muted); flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .sub-bar-wrap { flex: 1; background: var(--border); border-radius: 999px; height: 7px; overflow: hidden; }
+
+  .sub-bar { height: 100%; border-radius: 999px; background: #8b7dc4; transition: width 0.5s ease; }
+
+  .sub-bar.strong { background: var(--accent2); }
+  .sub-bar.weak   { background: var(--accent); }
+
+  .sub-val { width: 28px; text-align: right; color: var(--muted); font-size: 0.8rem; flex-shrink: 0; }
+
+  @media (max-width: 520px) {
+    .subject-grid { grid-template-columns: 1fr; }
+  }
+
+  .no-data {
+    text-align: center;
+    color: var(--muted);
+    padding: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: color 0.2s;
+  }
+  .delete-btn:hover { color: var(--accent); }
+
+  /* Best Study Pattern */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+  }
+
+  .pattern-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+
+  .pattern-item .p-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .pattern-item .p-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .pattern-item.highlight {
+    border-color: #b8d9d1;
+    background: var(--accent2-light);
+  }
+
+  .pattern-item.highlight .p-value { color: var(--accent2); }
+
+  .pattern-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1rem 0;
+  }
+
+  .duration-bars { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .dur-row { display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; }
+
+  .dur-label { width: 72px; color: var(--muted); flex-shrink: 0; }
+
+  .dur-bar-wrap { flex: 1; background: var(--border); border-radius: 999px; height: 7px; overflow: hidden; }
+
+  .dur-bar { height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.5s ease; }
+
+  .dur-bar.best { background: var(--accent2); }
+
+  .dur-val { width: 28px; text-align: right; color: var(--muted); font-size: 0.8rem; flex-shrink: 0; }
+
+  @media (max-width: 520px) {
+    .pattern-grid { grid-template-columns: 1fr; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 520px) {
+    .form-row { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.9rem; }
+  }
+
+  /* Session Advisor */
+  .advisor-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .advisor-result {
+    display: none;
+    margin-top: 1.2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .advisor-result.visible { display: block; }
+
+  .advisor-banner {
+    padding: 1.1rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+  }
+
+  .advisor-banner.mood-high {
+    background: var(--accent2-light);
+    border-color: #b8d9d1;
+    color: var(--accent2);
+  }
+
+  .advisor-banner.mood-low {
+    background: var(--accent-light);
+    border-color: #e5c4b0;
+    color: var(--accent);
+  }
+
+  .advisor-banner.mood-mid {
+    background: #fef9ec;
+    border-color: #f0e0a8;
+    color: #8a6b10;
+  }
+
+  .advisor-banner .adv-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+
+  .advisor-banner .adv-body {}
+
+  .advisor-banner .adv-main {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.45;
+    margin-bottom: 0.3rem;
+  }
+
+  .advisor-banner .adv-sub {
+    font-size: 0.82rem;
+    opacity: 0.8;
+    line-height: 1.4;
+  }
+
+  .advisor-no-data {
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-align: center;
+    padding: 0.6rem;
+  }
+
+  .advisor-plan {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .plan-step {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.72rem 0.95rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: 0.9rem;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .plan-step .step-time {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    color: var(--accent);
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+
+  .plan-step .step-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .plan-step .step-info { flex: 1; }
+
+  .plan-step .step-subject {
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .plan-step .step-tag {
+    font-size: 0.74rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+
+  .plan-step.step-weak   { border-color: #e5c4b0; background: var(--accent-light); }
+  .plan-step.step-weak   .step-time { color: var(--accent); }
+
+  .plan-step.step-strong { border-color: #b8d9d1; background: var(--accent2-light); }
+  .plan-step.step-strong .step-time { color: var(--accent2); }
+
+  .plan-step.step-other  { border-color: #d4cef5; background: #f2f0fd; }
+  .plan-step.step-other  .step-time { color: #5b4ba8; }
+
+  .plan-step.step-break  { border-color: var(--border); background: var(--bg); border-style: dashed; opacity: 0.75; }
+  .plan-step.step-break  .step-time { color: var(--muted); font-size: 0.9rem; }
+
+  .advisor-explanation {
+    margin-top: 0.9rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .advisor-explanation.mood-high  { background: var(--accent2-light); color: var(--accent2); border: 1px solid #b8d9d1; }
+  .advisor-explanation.mood-mid   { background: #fef9ec; color: #8a6b10; border: 1px solid #f0e0a8; }
+  .advisor-explanation.mood-low   { background: var(--accent-light); color: var(--accent); border: 1px solid #e5c4b0; }
+
+  @media (max-width: 520px) {
+    .advisor-inputs { grid-template-columns: 1fr; }
+  }
+
+  /* ── Progress Tracking ── */
+  .progress-subject-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .progress-subject-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .progress-subject-row .ps-name {
+    width: 100px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .progress-subject-row .ps-bar-wrap {
+    flex: 1;
+    background: var(--border);
+    border-radius: 999px;
+    height: 7px;
+    overflow: hidden;
+  }
+
+  .progress-subject-row .ps-bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease;
+  }
+
+  .ps-bar.trend-improving { background: var(--accent2); }
+  .ps-bar.trend-stable    { background: #8b7dc4; }
+  .ps-bar.trend-declining { background: var(--accent); }
+
+  .progress-subject-row .ps-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    flex-shrink: 0;
+    min-width: 105px;
+    justify-content: center;
+  }
+
+  .ps-trend.trend-improving { background: var(--accent2-light); color: var(--accent2); border: 1px solid #b8d9d1; }
+  .ps-trend.trend-stable    { background: #eae6f8; color: #5b4ba8; border: 1px solid #d4cef5; }
+  .ps-trend.trend-declining { background: var(--accent-light); color: var(--accent); border: 1px solid #e5c4b0; }
+
+  .ps-delta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    width: 44px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .ps-delta.pos { color: var(--accent2); }
+  .ps-delta.neg { color: var(--accent); }
+  .ps-delta.neu { color: #7a73a8; }
+
+  .progress-feedback-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .weekly-trend-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.95rem 1.1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .weekly-trend-box .wt-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+  .weekly-trend-box .wt-body { flex: 1; }
+
+  .weekly-trend-box .wt-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  .weekly-trend-box .wt-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+
+  .weekly-trend-box.wt-improving { border-color: #b8d9d1; background: var(--accent2-light); }
+  .weekly-trend-box.wt-improving .wt-value { color: var(--accent2); }
+
+  .weekly-trend-box.wt-declining { border-color: #e5c4b0; background: var(--accent-light); }
+  .weekly-trend-box.wt-declining .wt-value { color: var(--accent); }
+
+  .weekly-trend-box.wt-stable { border-color: #d4cef5; background: #f2f0fd; }
+  .weekly-trend-box.wt-stable .wt-value { color: #5b4ba8; }
+
+  .progress-section-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .progress-section-label:first-child { margin-top: 0; }
+
+  /* ── AI Behavior Analysis ── */
+  .aba-style-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 10px;
+    background: #f2f0fd;
+    border: 1px solid #d4cef5;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .aba-style-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .aba-style-body { flex: 1; }
+
+  .aba-style-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7a73a8;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .aba-style-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: #3d3480;
+    margin-bottom: 0.35rem;
+    line-height: 1.2;
+  }
+
+  .aba-style-desc {
+    font-size: 0.88rem;
+    color: #5b4ba8;
+    line-height: 1.55;
+  }
+
+  .aba-signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.65rem;
+  }
+
+  .aba-signal-tag {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #eae6f8;
+    color: #5b4ba8;
+    border: 1px solid #d4cef5;
+  }
+
+  .aba-burnout-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1rem 1.1rem;
+    border-radius: 10px;
+    background: #fff4f0;
+    border: 1.5px solid #e5a090;
+    animation: fadeUp 0.4s ease both;
+    margin-bottom: 0.8rem;
+  }
+
+  .aba-burnout-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 1px; }
+
+  .aba-burnout-body { flex: 1; }
+
+  .aba-burnout-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: #b84040;
+    margin-bottom: 0.3rem;
+  }
+
+  .aba-burnout-desc {
+    font-size: 0.85rem;
+    color: #c05050;
+    line-height: 1.5;
+  }
+
+  .aba-burnout-signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+  }
+
+  .aba-burnout-tag {
+    display: inline-block;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    background: #fde8e3;
+    color: #b84040;
+    border: 1px solid #f0b8aa;
+  }
+
+  .aba-ok-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    background: var(--accent2-light);
+    border: 1px solid #b8d9d1;
+    font-size: 0.88rem;
+    color: var(--accent2);
+    animation: fadeUp 0.4s ease both;
+    margin-bottom: 0.8rem;
+  }
+
+  .aba-section-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    margin-top: 1rem;
+  }
+  .aba-section-label:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="dot"></div>
+    <h1>Study Habit Tracker</h1>
+    <p>Log your sessions. Spot your patterns.</p>
+  </header>
+
+  <!-- Input Form -->
+  <div class="card" style="animation-delay:0.05s">
+    <div class="card-title"><span class="icon">✏️</span> Log a Session</div>
+    <div class="form-row">
+      <div class="field">
+        <label>Study Hours</label>
+        <input type="number" id="hours" min="0" max="24" step="0.5" placeholder="e.g. 2.5" />
+      </div>
+      <div class="field">
+        <label>Mood (1–5)</label>
+        <select id="mood">
+          <option value="" disabled selected>Select</option>
+          <option value="1">1 – Poor</option>
+          <option value="2">2 – Low</option>
+          <option value="3">3 – Okay</option>
+          <option value="4">4 – Good</option>
+          <option value="5">5 – Great</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Productivity (1–5)</label>
+        <select id="productivity">
+          <option value="" disabled selected>Select</option>
+          <option value="1">1 – Very Low</option>
+          <option value="2">2 – Low</option>
+          <option value="3">3 – Medium</option>
+          <option value="4">4 – High</option>
+          <option value="5">5 – Very High</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" style="grid-template-columns:1fr;margin-bottom:1.2rem">
+      <div class="field">
+        <label>Subject</label>
+        <input type="text" id="subject" placeholder="e.g. Math, Physics, OS…" />
+      </div>
+    </div>
+    <button class="btn" onclick="addEntry()">Add Entry</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box" style="animation-delay:0.1s">
+      <div class="stat-label">Avg Study Hours</div>
+      <div class="stat-value" id="avgHours">—</div>
+    </div>
+    <div class="stat-box" style="animation-delay:0.15s">
+      <div class="stat-label">Avg Productivity</div>
+      <div class="stat-value" id="avgProd">—</div>
+    </div>
+  </div>
+
+  <!-- AI Insights -->
+  <div class="card" style="animation-delay:0.2s">
+    <div class="card-title"><span class="icon">💡</span> Insights</div>
+    <div id="insights"><p class="no-insight">Add a few entries to see insights.</p></div>
+  </div>
+
+  <!-- Best Study Pattern -->
+  <div class="card" style="animation-delay:0.23s">
+    <div class="card-title"><span class="icon">🎯</span> Best Study Pattern</div>
+    <div id="bestPattern"><p class="no-insight">Add at least 3 entries to see your best pattern.</p></div>
+  </div>
+
+  <!-- Smart Recommendations -->
+  <div class="card" style="animation-delay:0.24s">
+    <div class="card-title"><span class="icon">🚀</span> Smart Recommendations</div>
+    <div id="smartRecs"><p class="no-insight">Add at least 3 entries to get recommendations.</p></div>
+  </div>
+
+  <!-- Subject Insights -->
+  <div class="card" style="animation-delay:0.245s">
+    <div class="card-title"><span class="icon">📚</span> Subject Insights</div>
+    <div id="subjectInsights"><p class="no-insight">Add entries with subjects to see insights.</p></div>
+  </div>
+
+  <!-- Session Advisor -->
+  <div class="card" style="animation-delay:0.248s">
+    <div class="card-title"><span class="icon">🧭</span> Session Advisor</div>
+    <div class="advisor-inputs">
+      <div class="field">
+        <label>Current Mood (1–5)</label>
+        <select id="advMood">
+          <option value="" disabled selected>Select</option>
+          <option value="1">1 – Poor</option>
+          <option value="2">2 – Low</option>
+          <option value="3">3 – Okay</option>
+          <option value="4">4 – Good</option>
+          <option value="5">5 – Great</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Available Time (hours)</label>
+        <input type="number" id="advHours" min="0.5" max="24" step="0.5" placeholder="e.g. 2" />
+      </div>
+    </div>
+    <!-- ML prediction result -->
+    <div id="mlPrediction" style="display:none;margin-bottom:1rem;padding:0.85rem 1rem;border-radius:8px;border:1px solid #d4cef5;background:#f2f0fd">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#5b4ba8;font-weight:600;margin-bottom:0.4rem">&#x1F916; ML Prediction</div>
+      <div id="mlPredText" style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:#5b4ba8;line-height:1.1;margin-bottom:0.3rem">&#x2014;</div>
+      <div id="mlPredMsg" style="font-size:0.85rem;color:#7a7368;line-height:1.45"></div>
+    </div>
+    <button class="btn" onclick="getAdvisorSuggestion()">Get Suggestion</button>
+    <div class="advisor-result" id="advisorResult"></div>
+  </div>
+
+  <!-- Progress Tracking -->
+  <div class="card" style="animation-delay:0.252s">
+    <div class="card-title"><span class="icon">📊</span> Progress Tracking</div>
+    <div id="progressTracking"><p class="no-insight">Add at least 4 entries with subjects to see progress tracking.</p></div>
+  </div>
+
+  <!-- Cognitive Performance Analysis -->
+  <div class="card" style="animation-delay:0.255s">
+    <div class="card-title"><span class="icon">🧠</span> Cognitive Performance Analysis</div>
+    <div id="aiBehaviorAnalysis"><p class="no-insight">Add at least 5 entries to unlock performance analysis.</p></div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card" style="animation-delay:0.25s">
+    <div class="card-title"><span class="icon">📈</span> Productivity Over Time</div>
+    <canvas id="chart" height="160"></canvas>
+  </div>
+
+  <!-- Table -->
+  <div class="card" style="animation-delay:0.3s">
+    <div class="card-title"><span class="icon">🗂️</span> All Entries</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Hours</th>
+            <th>Mood</th>
+            <th>Productivity</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="noData" class="no-data">No entries yet. Log your first session above!</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'study_tracker_entries';
+let chart = null;
+
+function getEntries() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function saveEntries(entries) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function addEntry() {
+  const hours = parseFloat(document.getElementById('hours').value);
+  const mood = parseInt(document.getElementById('mood').value);
+  const productivity = parseInt(document.getElementById('productivity').value);
+  const subject = document.getElementById('subject').value.trim();
+
+  if (isNaN(hours) || hours < 0 || isNaN(mood) || isNaN(productivity)) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  const entries = getEntries();
+  entries.push({
+    id: Date.now(),
+    date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' }),
+    hours,
+    mood,
+    productivity,
+    subject: subject || '—'
+  });
+  saveEntries(entries);
+
+  document.getElementById('hours').value = '';
+  document.getElementById('mood').value = '';
+  document.getElementById('productivity').value = '';
+  document.getElementById('subject').value = '';
+
+  render();
+}
+
+function deleteEntry(id) {
+  const entries = getEntries().filter(e => e.id !== id);
+  saveEntries(entries);
+  render();
+}
+
+function avg(arr) {
+  return arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+}
+
+function renderBestPattern(entries) {
+  const el = document.getElementById('bestPattern');
+  if (entries.length < 3) {
+    el.innerHTML = '<p class="no-insight">Add at least 3 entries to see your best pattern.</p>';
+    return;
+  }
+
+  // Duration buckets
+  const short  = entries.filter(e => e.hours <= 2);
+  const mid    = entries.filter(e => e.hours > 2 && e.hours <= 4);
+  const long   = entries.filter(e => e.hours > 4);
+
+  const avgShort = avg(short.map(e => e.productivity));
+  const avgMid   = avg(mid.map(e => e.productivity));
+  const avgLong  = avg(long.map(e => e.productivity));
+
+  const buckets = [
+    { label: '≤ 2 hrs', value: avgShort, key: 'short' },
+    { label: '2–4 hrs', value: avgMid,   key: 'mid'   },
+    { label: '> 4 hrs', value: avgLong,  key: 'long'  }
+  ].filter(b => b.value !== null);
+
+  let bestDuration = null;
+  if (buckets.length > 0) {
+    bestDuration = buckets.reduce((a, b) => b.value > a.value ? b : a);
+  }
+
+  // Mood buckets
+  const highMood = entries.filter(e => e.mood >= 4);
+  const lowMood  = entries.filter(e => e.mood < 4);
+  const avgHighMood = avg(highMood.map(e => e.productivity));
+  const avgLowMood  = avg(lowMood.map(e => e.productivity));
+
+  let moodLine = null;
+  if (avgHighMood !== null && avgLowMood !== null) {
+    moodLine = avgHighMood >= avgLowMood
+      ? { text: 'You perform better when mood is high', type: 'positive', val: avgHighMood }
+      : { text: 'Mood has less impact on your performance', type: 'neutral', val: avgLowMood };
+  } else if (avgHighMood !== null) {
+    moodLine = { text: 'All entries have high mood — keep it up!', type: 'positive', val: avgHighMood };
+  } else if (avgLowMood !== null) {
+    moodLine = { text: 'Try studying when you feel better for higher productivity', type: 'neutral', val: avgLowMood };
+  }
+
+  const maxBar = 5;
+  const durationHTML = buckets.length ? `
+    <div class="duration-bars">
+      ${buckets.map(b => `
+        <div class="dur-row">
+          <span class="dur-label">${b.label}</span>
+          <div class="dur-bar-wrap">
+            <div class="dur-bar ${b.key === bestDuration?.key ? 'best' : ''}"
+                 style="width:${(b.value / maxBar * 100).toFixed(1)}%"></div>
+          </div>
+          <span class="dur-val">${b.value.toFixed(1)}</span>
+        </div>
+      `).join('')}
+    </div>
+  ` : '<p class="no-insight">Not enough variety in study hours yet.</p>';
+
+  el.innerHTML = `
+    <div class="pattern-grid">
+      <div class="pattern-item ${bestDuration ? 'highlight' : ''}">
+        <div class="p-label">Best Study Duration</div>
+        <div class="p-value">${bestDuration ? bestDuration.label : '—'}</div>
+      </div>
+      <div class="pattern-item ${moodLine?.type === 'positive' ? 'highlight' : ''}">
+        <div class="p-label">Mood Impact</div>
+        <div class="p-value">${moodLine ? moodLine.text : '—'}</div>
+      </div>
+    </div>
+    <hr class="pattern-divider"/>
+    <div class="p-label" style="margin-bottom:0.6rem">Avg Productivity by Duration</div>
+    ${durationHTML}
+  `;
+}
+
+// Helper: group entries by subject and compute avg productivity per subject
+function getSubjectStats(entries) {
+  const map = {};
+  entries.forEach(e => {
+    const s = (e.subject && e.subject !== '—') ? e.subject : null;
+    if (!s) return;
+    if (!map[s]) map[s] = [];
+    map[s].push(e.productivity);
+  });
+  return Object.entries(map)
+    .map(([name, prods]) => ({ name, avgProd: avg(prods), count: prods.length }))
+    .sort((a, b) => b.avgProd - a.avgProd);
+}
+
+function renderSubjectInsights(entries) {
+  const el = document.getElementById('subjectInsights');
+  const withSubject = entries.filter(e => e.subject && e.subject !== '—');
+
+  if (withSubject.length < 2) {
+    el.innerHTML = '<p class="no-insight">Add at least 2 entries with subjects to see insights.</p>';
+    return;
+  }
+
+  const stats = getSubjectStats(entries);
+  if (stats.length < 2) {
+    el.innerHTML = '<p class="no-insight">Log at least 2 different subjects to compare.</p>';
+    return;
+  }
+
+  const strong = stats[0];
+  const weak   = stats[stats.length - 1];
+
+  const barsHTML = `
+    <div class="subject-bars">
+      ${stats.map((s, i) => {
+        const cls = i === 0 ? 'strong' : i === stats.length - 1 ? 'weak' : '';
+        return `
+          <div class="sub-row">
+            <span class="sub-label" title="${s.name}">${s.name}</span>
+            <div class="sub-bar-wrap">
+              <div class="sub-bar ${cls}" style="width:${(s.avgProd / 5 * 100).toFixed(1)}%"></div>
+            </div>
+            <span class="sub-val">${s.avgProd.toFixed(1)}</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  el.innerHTML = `
+    <div class="subject-grid">
+      <div class="pattern-item highlight">
+        <div class="p-label">💪 Strong Subject</div>
+        <div class="p-value">${strong.name}</div>
+      </div>
+      <div class="pattern-item" style="border-color:#e5c4b0;background:var(--accent-light)">
+        <div class="p-label" style="color:var(--muted)">📌 Weak Subject</div>
+        <div class="p-value" style="color:var(--accent)">${weak.name}</div>
+      </div>
+    </div>
+    <hr class="pattern-divider"/>
+    <div class="p-label" style="margin-bottom:0.6rem">Avg Productivity by Subject</div>
+    ${barsHTML}
+  `;
+}
+
+function renderSmartRecs(entries) {
+  const el = document.getElementById('smartRecs');
+  if (entries.length < 3) {
+    el.innerHTML = '<p class="no-insight">Add at least 3 entries to get recommendations.</p>';
+    return;
+  }
+
+  const suggestions = [];
+
+  // --- Duration analysis ---
+  const short = entries.filter(e => e.hours <= 2);
+  const mid   = entries.filter(e => e.hours > 2 && e.hours <= 4);
+  const long  = entries.filter(e => e.hours > 4);
+
+  const avgShort = avg(short.map(e => e.productivity));
+  const avgMid   = avg(mid.map(e => e.productivity));
+  const avgLong  = avg(long.map(e => e.productivity));
+
+  const buckets = [
+    { label: '≤ 2 hours', short: '≤ 2 hrs', value: avgShort },
+    { label: '2–4 hours', short: '2–4 hrs', value: avgMid   },
+    { label: '> 4 hours', short: '> 4 hrs', value: avgLong  }
+  ].filter(b => b.value !== null);
+
+  let bestDuration = null;
+  if (buckets.length > 0) {
+    bestDuration = buckets.reduce((a, b) => b.value > a.value ? b : a);
+    suggestions.push({
+      emoji: '⏱️',
+      text: `Try studying for <strong>${bestDuration.label}</strong> — that's when your productivity peaks.`
+    });
+  }
+
+  // --- Mood analysis ---
+  const highMood = entries.filter(e => e.mood >= 4);
+  const lowMood  = entries.filter(e => e.mood < 4);
+  const avgHighMood = avg(highMood.map(e => e.productivity));
+  const avgLowMood  = avg(lowMood.map(e => e.productivity));
+
+  let moodBoost = false;
+  if (avgHighMood !== null && avgLowMood !== null && avgHighMood > avgLowMood + 0.3) {
+    moodBoost = true;
+    suggestions.push({
+      emoji: '😊',
+      text: 'Study when your mood is high (4–5) for the best results.'
+    });
+  }
+
+  // --- Long-hours productivity drop ---
+  let longHoursDrop = false;
+  if (avgLong !== null && buckets.length >= 2) {
+    const othersAvg = avg(buckets.filter(b => b.label !== '> 4 hours').map(b => b.value));
+    if (othersAvg !== null && avgLong < othersAvg - 0.3) {
+      longHoursDrop = true;
+      suggestions.push({
+        emoji: '☕',
+        text: 'Avoid studying continuously for more than 4 hours. Take regular breaks to stay sharp.'
+      });
+    }
+  }
+
+  // --- Subject analysis ---
+  const subjectStats = getSubjectStats(entries);
+  let weakSubject = null, strongSubject = null;
+  if (subjectStats.length >= 2) {
+    strongSubject = subjectStats[0];
+    weakSubject   = subjectStats[subjectStats.length - 1];
+    suggestions.push({
+      emoji: '📌',
+      text: `Focus on <strong>${weakSubject.name}</strong> during your best study time — it needs the most attention.`
+    });
+    suggestions.push({
+      emoji: '⚡',
+      text: `Use <strong>${strongSubject.name}</strong> for quick revision or a confidence boost.`
+    });
+  }
+
+  // --- Next Step (combined plan) ---
+  const durationPart = bestDuration ? bestDuration.label : 'a focused session';
+  const moodPart     = moodBoost ? ' when your mood is high' : '';
+  const breakPart    = longHoursDrop ? '. Avoid long sessions' : '';
+  const weakPart     = weakSubject ? `Study <strong>${weakSubject.name}</strong> (weak subject) for ${durationPart}${moodPart}${breakPart}.` : `Study for ${durationPart}${moodPart}${breakPart}.`;
+  const strongPart   = strongSubject ? ` Revise <strong>${strongSubject.name}</strong> (strong subject) after that.` : '';
+  const nextStep     = `Today's Plan: ${weakPart}${strongPart}`;
+
+  el.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1rem">
+      ${suggestions.map(s => `
+        <div class="insight positive" style="margin-bottom:0">
+          <span class="emoji">${s.emoji}</span>
+          <span>${s.text}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="background:var(--accent);border-radius:8px;padding:0.9rem 1rem;display:flex;align-items:flex-start;gap:0.75rem">
+      <span style="font-size:1rem;flex-shrink:0;margin-top:1px">🗓️</span>
+      <div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:0.25rem">Today's Plan</div>
+        <div style="font-size:0.92rem;color:#fff;line-height:1.5">${nextStep}</div>
+      </div>
+    </div>
+  `;
+}
+
+function fmtHrs(h) {
+  // Format hours cleanly: 1 → "1 hr", 1.5 → "1.5 hrs", 0.5 → "0.5 hr"
+  const rounded = Math.round(h * 10) / 10;
+  return rounded + (rounded === 1 ? ' hr' : ' hrs');
+}
+
+function showMLPrediction(pred, meta) {
+  const box  = document.getElementById('mlPrediction');
+  const text = document.getElementById('mlPredText');
+  const msg  = document.getElementById('mlPredMsg');
+
+  text.textContent = pred.toFixed(1) + ' / 5';
+
+  let message, color;
+  if (pred >= 4) {
+    message = '✅ This is a highly productive study setup.';
+    color   = 'var(--accent2)';
+  } else if (pred >= 3) {
+    message = '🟡 This setup should work reasonably well.';
+    color   = '#8a6b10';
+  } else {
+    message = '⚠️ Try adjusting your study duration or subject focus.';
+    color   = 'var(--accent)';
+  }
+
+  msg.textContent = message;
+  msg.style.color = color;
+
+  // ── Confidence + top factor display ──────────────────────────────────────
+  let metaEl = document.getElementById('mlPredMeta');
+  if (!metaEl) {
+    metaEl = document.createElement('div');
+    metaEl.id = 'mlPredMeta';
+    metaEl.style.cssText = 'margin-top:0.75rem;display:flex;flex-direction:column;gap:0.45rem';
+    box.appendChild(metaEl);
+  }
+
+  if (meta) {
+    const { confidence, importance } = meta;
+
+    // Top factor
+    const factorMap = { mood: 'Mood', hours: 'Study Hours', subject: 'Subject' };
+    const topKey    = Object.entries(importance).sort((a, b) => b[1] - a[1])[0][0];
+    const topLabel  = factorMap[topKey];
+
+    // Confidence colour
+    const confColor = confidence >= 75 ? 'var(--accent2)' : confidence >= 50 ? '#8a6b10' : 'var(--accent)';
+
+    metaEl.innerHTML = `
+      <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+        <span style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;color:#7a7368">Confidence</span>
+        <span style="font-family:'DM Serif Display',serif;font-size:1rem;color:${confColor}">${confidence}%</span>
+        <span style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;color:#7a7368;margin-left:0.6rem">Top Factor</span>
+        <span style="font-size:0.82rem;font-weight:600;color:#5b4ba8">${topLabel} (${importance[topKey]}%)</span>
+      </div>
+      <div style="display:flex;gap:0.4rem;align-items:center">
+        ${['mood','hours','subject'].map(k => {
+          const pct = importance[k];
+          const label = factorMap[k];
+          const isTop = k === topKey;
+          return `
+            <div style="flex:1;text-align:center">
+              <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a7368;margin-bottom:0.2rem;font-weight:600">${label}</div>
+              <div style="background:var(--border);border-radius:999px;height:5px;overflow:hidden;margin-bottom:0.2rem">
+                <div style="width:${pct}%;height:100%;border-radius:999px;background:${isTop ? '#5b4ba8' : '#b8aee8'};transition:width 0.5s ease"></div>
+              </div>
+              <div style="font-size:0.78rem;font-weight:600;color:${isTop ? '#5b4ba8' : '#7a7368'}">${pct}%</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else {
+    metaEl.innerHTML = '';
+  }
+
+  box.style.display = 'block';
+}
+
+async function getAdvisorSuggestion() {
+  const moodVal  = parseInt(document.getElementById('advMood').value);
+  const hoursVal = parseFloat(document.getElementById('advHours').value);
+  const result   = document.getElementById('advisorResult');
+
+  if (isNaN(moodVal) || isNaN(hoursVal) || hoursVal <= 0) {
+    result.className = 'advisor-result visible';
+    result.innerHTML = '<p class="advisor-no-data">⚠️ Please enter your mood and available time.</p>';
+    return;
+  }
+
+  const entries = getEntries();
+  if (entries.length < 3) {
+    result.className = 'advisor-result visible';
+    result.innerHTML = '<p class="advisor-no-data">Add at least 3 entries so the advisor can learn your patterns.</p>';
+    return;
+  }
+
+  // --- ML Optimizer: pick best of 3 time distributions via /predict --------
+  //
+  // Three candidate weight sets applied to [weak, others..., strong]:
+  //   1. weak-heavy   → weak gets most time
+  //   2. balanced     → equal time across all
+  //   3. strong-heavy → strong gets most time
+  //
+  // For each distribution we call /predict for every subject, using
+  // hours proportional to that subject's share of total time.
+  // We pick the distribution whose average predicted productivity is highest,
+  // then wire its weights into subjectQueue below so all existing
+  // rendering/break logic runs unchanged.
+  //
+  // Falls back silently to mood-based weights if Flask is unreachable.
+
+  const subjectStatsForML = getSubjectStats(entries);
+  const strongForML = subjectStatsForML.length >= 1
+    ? subjectStatsForML[0].name : '';
+  const weakForML   = subjectStatsForML.length >= 2
+    ? subjectStatsForML[subjectStatsForML.length - 1].name
+    : strongForML;
+  const othersForML = subjectStatsForML.length >= 3
+    ? subjectStatsForML.slice(1, -1).map(s => s.name)
+    : [];
+
+  // All subjects in display order [weak, ...others, strong]
+  const mlSubjects = [
+    ...(weakForML   ? [weakForML]   : []),
+    ...othersForML,
+    ...(strongForML && strongForML !== weakForML ? [strongForML] : [])
+  ];
+
+  // Weight presets: index matches mlSubjects order [weak, ...others, strong]
+  // Each preset defines relative weights; last slot = strong subject
+  function makeWeights(n, preset) {
+    // preset: 'weak-heavy' | 'balanced' | 'strong-heavy'
+    if (n === 0) return [];
+    if (n === 1) return [1];
+    const w = Array(n).fill(1); // balanced baseline
+    if (preset === 'weak-heavy')   { w[0] = 3; w[n - 1] = 1; }
+    if (preset === 'strong-heavy') { w[0] = 1; w[n - 1] = 3; }
+    // 'balanced' stays all 1s
+    return w;
+  }
+
+  const PRESETS = ['weak-heavy', 'balanced', 'strong-heavy'];
+
+  // Helper: call /predict for one subject with its share of total hours
+  async function predictOne(subject, hours) {
+    const res = await fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hours, mood: moodVal, subject })
+    });
+    if (!res.ok) throw new Error('bad response');
+    const d = await res.json();
+    return d; // full object: { predicted_productivity, confidence, importance }
+  }
+
+  let mlWinnerWeights = null; // will be set if Flask is reachable
+  let _mlMeta = null;        // { confidence, importance } from winning prediction
+
+  try {
+    let bestPreset = null, bestScore = -Infinity;
+
+    for (const preset of PRESETS) {
+      const weights   = makeWeights(mlSubjects.length, preset);
+      const totalW    = weights.reduce((a, b) => a + b, 0) || 1;
+
+      // Predict productivity for each subject under this distribution
+      const scores = await Promise.all(
+        mlSubjects.map((subj, i) => {
+          const subjectHours = hoursVal * (weights[i] / totalW);
+          return predictOne(subj, subjectHours);
+        })
+      );
+
+      const avgScore = scores.reduce((a, b) => a + b.predicted_productivity, 0) / (scores.length || 1);
+
+      if (avgScore > bestScore) {
+        bestScore  = avgScore;
+        bestPreset = preset;
+        mlWinnerWeights = weights;
+        // Aggregate confidence and importance from the winning set of predictions
+        _mlMeta = {
+          confidence: Math.round(scores.reduce((a, b) => a + b.confidence, 0) / scores.length),
+          importance: scores[0].importance // importance is model-level, same across calls
+        };
+      }
+    }
+
+    // Show the winning predicted score in the existing ML box
+    showMLPrediction(bestScore, _mlMeta);
+
+  } catch (err) {
+    // Flask not running — hide ML box and proceed with mood-based weights
+    document.getElementById('mlPrediction').style.display = 'none';
+    mlWinnerWeights = null;
+  }
+  // -------------------------------------------------------------------------
+
+  // --- Subject analysis (preserving existing logic) ---
+  const subjectStats = getSubjectStats(entries);
+  const strongSubject = subjectStats.length >= 1 ? subjectStats[0] : null;
+  const weakSubject   = subjectStats.length >= 2 ? subjectStats[subjectStats.length - 1] : null;
+  // "Other" subjects: everything that's not the first (strong) or last (weak)
+  const otherSubjects = subjectStats.length >= 3
+    ? subjectStats.slice(1, subjectStats.length - 1)
+    : [];
+  const otherSubject = otherSubjects.length > 0 ? otherSubjects[0] : null;
+
+  // --- Mood impact check (preserving existing logic) ---
+  const highMoodEntries = entries.filter(e => e.mood >= 4);
+  const lowMoodEntries  = entries.filter(e => e.mood < 4);
+  const avgHighMoodProd = avg(highMoodEntries.map(e => e.productivity));
+  const avgLowMoodProd  = avg(lowMoodEntries.map(e => e.productivity));
+  const moodBoostsPerf  = avgHighMoodProd !== null && avgLowMoodProd !== null && avgHighMoodProd > avgLowMoodProd + 0.3;
+
+  // --- Build priority-ordered subject list based on mood ---
+  // Each entry: { subject, tag, cssClass, weight }
+  // Weights sum to total; used to proportion time across ALL subjects.
+
+  let moodClass, icon, explanation;
+  let subjectQueue = []; // ordered list of subjects with weights
+
+  if (moodVal >= 4) {
+    icon = '🔥';
+    moodClass = 'mood-high';
+    explanation = moodBoostsPerf
+      ? 'High mood detected — your data confirms this boosts productivity. Perfect time to tackle weaker areas.'
+      : 'High mood detected — good time to focus on weaker areas and challenging content.';
+    // Priority: weak first, then others, then strong (lower weight)
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'weak subject',   cssClass: 'step-weak',   weight: 3 });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'other subject',  cssClass: 'step-other',  weight: 2 }));
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'strong subject', cssClass: 'step-strong', weight: 1 });
+  } else if (moodVal === 3) {
+    icon = '📖';
+    moodClass = 'mood-mid';
+    explanation = 'Neutral mood detected — steady, balanced work is best. Mix weak areas with familiar subjects.';
+    // Priority: weak, then others (equal), then strong
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'weak subject',   cssClass: 'step-weak',   weight: 2 });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'other subject',  cssClass: 'step-other',  weight: 2 }));
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'strong subject', cssClass: 'step-strong', weight: 1 });
+  } else {
+    icon = '🌿';
+    moodClass = 'mood-low';
+    explanation = moodBoostsPerf
+      ? 'Low mood detected — your data shows this reduces focus. Stick to familiar, confidence-building material.'
+      : 'Low mood detected — easy wins with strong subjects help rebuild motivation. Keep it comfortable.';
+    // Priority: strong first, then others, then weak (lighter load)
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'strong subject', cssClass: 'step-strong', weight: 3 });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'other subject',  cssClass: 'step-other',  weight: 2 }));
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'weak subject',   cssClass: 'step-weak',   weight: 1 });
+  }
+
+  // --- ML weight override ---
+  // If the ML optimizer found a winning distribution, replace the mood-based
+  // weights on each slot. Order stays the same; only the numbers change.
+  // mlWinnerWeights is indexed as [weak, ...others, strong] which matches
+  // the order subjects were pushed into subjectQueue above.
+  if (mlWinnerWeights && mlWinnerWeights.length === subjectQueue.length) {
+    subjectQueue.forEach((slot, i) => { slot.weight = mlWinnerWeights[i]; });
+  }
+
+  // --- Render ---
+  result.className = 'advisor-result visible';
+
+  if (subjectQueue.length === 0) {
+    result.innerHTML = '<p class="advisor-no-data">Log entries with subjects to get a session plan.</p>';
+    return;
+  }
+
+  // --- Convert available time to total minutes ---
+  const totalMinutes = Math.round(hoursVal * 60);
+
+  // --- Helper: snap a raw minute value to a clean number ---
+  // Allowed clean values: 25, 30, 40; otherwise round to nearest 10 (min 10)
+  function snapToClean(raw) {
+    if (raw <= 0) return 10;
+    const candidates = [25, 30, 40];
+    // Find closest preferred value within ±8 min
+    for (const c of candidates) {
+      if (Math.abs(raw - c) <= 8) return c;
+    }
+    // Otherwise round to nearest 10, minimum 10
+    return Math.max(10, Math.round(raw / 10) * 10);
+  }
+
+  // --- Distribute total minutes proportionally by weight ---
+  const totalWeight = subjectQueue.reduce((s, x) => s + x.weight, 0);
+
+  // Step 1: calculate raw minutes per subject
+  const rawMins = subjectQueue.map(s => (totalMinutes * s.weight) / totalWeight);
+
+  // Step 2: snap each to a clean value (all but last)
+  const snappedMins = rawMins.map((m, i) =>
+    i < rawMins.length - 1 ? snapToClean(m) : null // last slot handled below
+  );
+
+  // Step 3: last subject absorbs the remainder so total is exact
+  const allocatedSoFar = snappedMins.slice(0, -1).reduce((a, b) => a + b, 0);
+  snappedMins[snappedMins.length - 1] = Math.max(10, totalMinutes - allocatedSoFar);
+
+  // Build subject slots with final minutes
+  const subjectSlots = subjectQueue.map((s, i) => ({ ...s, mins: snappedMins[i] }));
+
+  // --- Adaptive break logic ---
+  // Break interval and duration are computed from mood, ML prediction,
+  // subject strength, and total session length. No fixed constants.
+
+  // 1. Read the ML predicted score if available (1–10 scale from Flask)
+  const mlScoreEl = document.getElementById('mlPredText');
+  const mlScoreRaw = mlScoreEl ? parseFloat(mlScoreEl.textContent) : NaN;
+  const mlScore = isNaN(mlScoreRaw) ? null : mlScoreRaw; // null = no ML data
+
+  // 2. Derive a "focus capacity" score (0–4) from mood + ML prediction.
+  //    High capacity → longer focus blocks. Low capacity → earlier breaks.
+  let focusCapacity = 0;
+
+  // Mood contribution (0–2)
+  if (moodVal >= 5)      focusCapacity += 2;
+  else if (moodVal >= 4) focusCapacity += 1.5;
+  else if (moodVal === 3) focusCapacity += 1;
+  else if (moodVal === 2) focusCapacity += 0.5;
+  // moodVal === 1 → +0
+
+  // ML prediction contribution (0–2), only if available
+  if (mlScore !== null) {
+    if (mlScore >= 8)      focusCapacity += 2;
+    else if (mlScore >= 6) focusCapacity += 1.5;
+    else if (mlScore >= 4) focusCapacity += 0.75;
+    // mlScore < 4 → +0
+  } else {
+    // No ML data: fall back to a neutral +1 so mood alone still drives things
+    focusCapacity += 1;
+  }
+  // focusCapacity is now in [0, 4]
+
+  // 3. Base break interval from focus capacity.
+  //    Range: 35 min (very low capacity) → 80 min (very high capacity)
+  let breakInterval;
+  if      (focusCapacity >= 3.5) breakInterval = 80;
+  else if (focusCapacity >= 2.5) breakInterval = 65;
+  else if (focusCapacity >= 1.5) breakInterval = 50;
+  else if (focusCapacity >= 0.5) breakInterval = 40;
+  else                           breakInterval = 35;
+
+  // 4. Shorten the interval further when the next subject is weak.
+  //    Difficult material drains focus faster — take a breather beforehand.
+  //    (Applied slot-by-slot inside the loop below.)
+
+  // 5. Long-session penalty: for sessions > 3 h, compress interval by 15%;
+  //    for sessions > 4.5 h, compress by 25%. More time = fatigue accumulates faster.
+  if      (hoursVal > 4.5) breakInterval = Math.round(breakInterval * 0.75);
+  else if (hoursVal > 3)   breakInterval = Math.round(breakInterval * 0.85);
+
+  // 6. Break duration: 5 min for short focused sessions, 10 min otherwise.
+  //    High-mood / high-prediction sessions can get away with a shorter pause.
+  const breakDuration = (focusCapacity >= 3 && hoursVal <= 2.5) ? 5 : 10;
+
+  // 7. Build the plan — insert a break whenever accumulated study time
+  //    hits the interval OR the *next* slot is a weak subject and we've
+  //    already done a meaningful block (≥ 30 min).
+  const planSteps = [];
+  let accumulated = 0;
+
+  subjectSlots.forEach((slot, i) => {
+    if (i > 0) {
+      const nextIsWeak = slot.tag === 'weak subject';
+
+      // Tighten threshold before a weak subject: break 10 min earlier
+      const effectiveInterval = nextIsWeak
+        ? Math.max(25, breakInterval - 10)
+        : breakInterval;
+
+      if (accumulated >= effectiveInterval) {
+        planSteps.push({ type: 'break', duration: breakDuration });
+        accumulated = 0;
+      }
+    }
+    planSteps.push({ type: 'study', ...slot });
+    accumulated += slot.mins;
+  });
+
+  // --- Helper: format minutes for display ---
+  function fmtMins(m) {
+    return m + ' min';
+  }
+
+  // --- Build HTML for each step ---
+  let stepIndex = 0;
+  const stepsHTML = planSteps.map(step => {
+    if (step.type === 'break') {
+      return `
+        <div class="plan-step step-break" style="animation-delay:${0.05 * stepIndex++}s">
+          <span class="step-time" style="color:var(--muted)">${step.duration} min</span>
+          <div class="step-divider"></div>
+          <div class="step-info">
+            <div class="step-subject" style="color:var(--muted)">☕ Break</div>
+            <div class="step-tag">rest &amp; recharge</div>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="plan-step ${step.cssClass}" style="animation-delay:${0.05 * stepIndex++}s">
+        <span class="step-time">${fmtMins(step.mins)}</span>
+        <div class="step-divider"></div>
+        <div class="step-info">
+          <div class="step-subject">${step.name}</div>
+          <div class="step-tag">${step.tag}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // --- Build AI explanation points from existing computed signals ---
+  const whyPoints = [];
+
+  // 1. Weak subject prioritisation
+  if (weakSubject) {
+    const firstSlot = subjectSlots[0];
+    if (firstSlot && firstSlot.name === weakSubject.name) {
+      whyPoints.push(`<strong>${weakSubject.name}</strong> was prioritised because it is currently your weakest subject (avg productivity ${weakSubject.avgProd.toFixed(1)}).`);
+    }
+  }
+
+  // 2. Strong subject placed last / for revision
+  if (strongSubject) {
+    const lastStudySlot = [...subjectSlots].reverse().find(s => s.name === strongSubject.name);
+    if (lastStudySlot) {
+      whyPoints.push(`<strong>${strongSubject.name}</strong> is scheduled last as a confidence boost — it is your strongest subject (avg productivity ${strongSubject.avgProd.toFixed(1)}).`);
+    }
+  }
+
+  // 3. Mood-based rationale (data-backed)
+  if (moodBoostsPerf && moodVal >= 4) {
+    whyPoints.push(`Your data shows mood ≥ 4 lifts your productivity by ${(avgHighMoodProd - avgLowMoodProd).toFixed(1)} points on average — high-focus tasks are scheduled first.`);
+  } else if (moodBoostsPerf && moodVal < 3) {
+    whyPoints.push(`Your data confirms low mood reduces focus, so easier, familiar subjects lead the plan to rebuild momentum.`);
+  } else if (moodVal >= 4) {
+    whyPoints.push(`High mood conditions tend to improve concentration — this plan takes advantage of that with challenging content early.`);
+  } else if (moodVal < 3) {
+    whyPoints.push(`Low mood was detected — lighter, confidence-building material is placed first to ease into the session.`);
+  }
+
+  // 4. Breaks (only if any were inserted)
+  const hasBreaks = planSteps.some(s => s.type === 'break');
+  if (hasBreaks) {
+    let breakRationale;
+    if (focusCapacity >= 3.5) {
+      breakRationale = `Short ${breakDuration}-min breaks are spaced every ~${breakInterval} min — your high mood and predicted score support long focus blocks.`;
+    } else if (focusCapacity >= 2.5) {
+      breakRationale = `Breaks every ~${breakInterval} min keep concentration steady across this session.`;
+    } else if (moodVal <= 2) {
+      breakRationale = `Frequent ${breakDuration}-min breaks every ~${breakInterval} min help compensate for the low mood today — short bursts work better.`;
+    } else if (mlScore !== null && mlScore < 4) {
+      breakRationale = `The ML model predicts lower focus for this session — breaks are tightened to every ~${breakInterval} min to prevent fatigue.`;
+    } else if (hoursVal > 4.5) {
+      breakRationale = `Long session detected — breaks are scheduled more frequently (~${breakInterval} min) to sustain concentration over ${hoursVal} hours.`;
+    } else {
+      breakRationale = `Breaks every ~${breakInterval} min balance study depth with recovery for this session.`;
+    }
+    // Add note if a break was pulled earlier due to a weak subject
+    const weakBreakExists = subjectSlots.some(s => s.tag === 'weak subject') && hasBreaks;
+    if (weakBreakExists) {
+      breakRationale += ` A break is placed before your weak subject to help you approach it with a fresh mind.`;
+    }
+    whyPoints.push(breakRationale);
+  }
+
+  // 5. ML score context (only if ML box is visible)
+  const mlBox = document.getElementById('mlPrediction');
+  const mlText = document.getElementById('mlPredText');
+  if (mlBox && mlBox.style.display !== 'none' && mlText && mlText.textContent !== '—') {
+    const score = parseFloat(mlText.textContent);
+    if (!isNaN(score)) {
+      const label = score >= 7 ? 'high' : score >= 5 ? 'moderate' : 'low';
+      whyPoints.push(`The ML model predicts a <strong>${label}</strong> productivity score of <strong>${score.toFixed(1)}</strong> for this setup.`);
+    }
+  }
+
+  const whyHTML = whyPoints.length ? `
+    <div style="margin-top:1rem">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:600;margin-bottom:0.55rem">Why this plan?</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:0.45rem;padding:0;margin:0">
+        ${whyPoints.map(p => `
+          <li style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem;line-height:1.5;color:var(--text)">
+            <span style="color:var(--accent);flex-shrink:0;margin-top:1px">›</span>
+            <span>${p}</span>
+          </li>`).join('')}
+      </ul>
+    </div>` : '';
+
+  result.innerHTML = `
+    <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:600;margin-bottom:0.55rem;margin-top:1.1rem">Session Plan</div>
+    <div class="advisor-plan">${stepsHTML}</div>
+    <div class="advisor-explanation ${moodClass}">
+      <span style="font-size:1rem;flex-shrink:0">${icon}</span>
+      <span>${explanation}</span>
+    </div>
+    ${whyHTML}
+  `;
+}
+
+function renderProgressTracking(entries) {
+  const el = document.getElementById('progressTracking');
+
+  // Need entries with real subjects
+  const withSubject = entries.filter(e => e.subject && e.subject !== '—');
+
+  if (withSubject.length < 4) {
+    el.innerHTML = '<p class="no-insight">Add at least 4 entries with subjects to see progress tracking.</p>';
+    return;
+  }
+
+  // ── 1. Per-subject improvement analysis ──────────────────────────────────
+  // Group entries per subject (preserve chronological order)
+  const subjectMap = {};
+  withSubject.forEach(e => {
+    if (!subjectMap[e.subject]) subjectMap[e.subject] = [];
+    subjectMap[e.subject].push(e.productivity);
+  });
+
+  // Only include subjects with ≥ 2 entries so we can split into halves
+  const subjectAnalysis = Object.entries(subjectMap)
+    .filter(([, prods]) => prods.length >= 2)
+    .map(([name, prods]) => {
+      const mid = Math.ceil(prods.length / 2);
+      const firstHalf  = prods.slice(0, mid);
+      const secondHalf = prods.slice(mid);
+      const avgFirst  = avg(firstHalf);
+      const avgRecent = avg(secondHalf);
+      const delta = parseFloat((avgRecent - avgFirst).toFixed(2));
+      let trend;
+      if      (delta >=  0.3) trend = 'improving';
+      else if (delta <= -0.3) trend = 'declining';
+      else                    trend = 'stable';
+      return { name, avgFirst, avgRecent, delta, trend, count: prods.length };
+    })
+    .sort((a, b) => b.delta - a.delta); // best improvers first
+
+  // ── 2. Weekly overall trend ───────────────────────────────────────────────
+  // Split all entries (chronological) into first-half vs second-half by productivity
+  const allProds = entries.map(e => e.productivity);
+  const wMid = Math.ceil(allProds.length / 2);
+  const weeklyAvgOld    = avg(allProds.slice(0, wMid));
+  const weeklyAvgRecent = avg(allProds.slice(wMid));
+  const weeklyDelta = weeklyAvgRecent !== null && weeklyAvgOld !== null
+    ? parseFloat((weeklyAvgRecent - weeklyAvgOld).toFixed(2))
+    : 0;
+  let weeklyTrend;
+  if      (weeklyDelta >=  0.2) weeklyTrend = 'improving';
+  else if (weeklyDelta <= -0.2) weeklyTrend = 'declining';
+  else                          weeklyTrend = 'stable';
+
+  // ── 3. Adaptive feedback ─────────────────────────────────────────────────
+  const feedbackItems = subjectAnalysis.map(s => {
+    if (s.trend === 'improving') {
+      return { type: 'positive', emoji: '📈', text: `<strong>${s.name}</strong> is improving steadily (+${s.delta.toFixed(1)}). Maintain your consistency.` };
+    } else if (s.trend === 'declining') {
+      return { type: 'warning', emoji: '📉', text: `<strong>${s.name}</strong> performance is declining (${s.delta.toFixed(1)}). Spend more focused time on it.` };
+    } else {
+      return { type: 'positive', emoji: '➡️', text: `<strong>${s.name}</strong> is holding steady. Push for a slight improvement this week.` };
+    }
+  });
+
+  // ── 4. Render ─────────────────────────────────────────────────────────────
+  const weeklyMeta = {
+    improving: { cls: 'wt-improving', icon: '🚀', label: 'Overall Weekly Trend', value: 'Improving — great momentum!' },
+    stable:    { cls: 'wt-stable',    icon: '📊', label: 'Overall Weekly Trend', value: 'Stable — consistent performance.' },
+    declining: { cls: 'wt-declining', icon: '⚠️', label: 'Overall Weekly Trend', value: 'Declining — time to refocus.' }
+  }[weeklyTrend];
+
+  const subjectRowsHTML = subjectAnalysis.length ? `
+    <div class="progress-section-label">Subject Improvement Analysis</div>
+    <div class="progress-subject-list">
+      ${subjectAnalysis.map((s, i) => {
+        const barWidth = ((s.avgRecent / 5) * 100).toFixed(1);
+        const deltaStr = s.delta > 0 ? '+' + s.delta.toFixed(1) : s.delta.toFixed(1);
+        const deltaClass = s.delta > 0 ? 'pos' : s.delta < 0 ? 'neg' : 'neu';
+        const trendLabel = { improving: '▲ Improving', stable: '● Stable', declining: '▼ Declining' }[s.trend];
+        return `
+          <div class="progress-subject-row" style="animation-delay:${0.05 * i}s">
+            <span class="ps-name" title="${s.name}">${s.name}</span>
+            <div class="ps-bar-wrap">
+              <div class="ps-bar trend-${s.trend}" style="width:${barWidth}%"></div>
+            </div>
+            <span class="ps-delta ${deltaClass}">${deltaStr}</span>
+            <span class="ps-trend trend-${s.trend}">${trendLabel}</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  ` : '';
+
+  const feedbackHTML = feedbackItems.length ? `
+    <div class="progress-section-label">Adaptive Feedback</div>
+    <div class="progress-feedback-list">
+      ${feedbackItems.map(f => `
+        <div class="insight ${f.type}" style="margin-bottom:0">
+          <span class="emoji">${f.emoji}</span>
+          <span>${f.text}</span>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  const weeklyHTML = `
+    <div class="progress-section-label">Overall Weekly Trend</div>
+    <div class="weekly-trend-box ${weeklyMeta.cls}">
+      <span class="wt-icon">${weeklyMeta.icon}</span>
+      <div class="wt-body">
+        <div class="wt-label">${weeklyMeta.label}</div>
+        <div class="wt-value">${weeklyMeta.value}</div>
+      </div>
+    </div>
+  `;
+
+  el.innerHTML = subjectRowsHTML + feedbackHTML + weeklyHTML;
+}
+
+function renderAIBehaviorAnalysis(entries) {
+  const el = document.getElementById('aiBehaviorAnalysis');
+  if (entries.length < 5) {
+    el.innerHTML = '<p class="no-insight">Add at least 5 entries to unlock behavior analysis.</p>';
+    return;
+  }
+
+  // ── Helper ───────────────────────────────────────────────────────────────
+  function average(arr) {
+    if (!arr.length) return 0;
+    return arr.reduce((s, v) => s + v, 0) / arr.length;
+  }
+
+  // Use last N entries, chronologically ordered (oldest first)
+  const recent = entries.slice(-Math.min(entries.length, 10));
+
+  // ── 1. BURNOUT / FATIGUE DETECTION ───────────────────────────────────────
+  const half = Math.floor(recent.length / 2);
+  const early = recent.slice(0, half);
+  const late  = recent.slice(half);
+
+  const earlyHours = average(early.map(e => e.hours));
+  const lateHours  = average(late.map(e => e.hours));
+  const earlyProd  = average(early.map(e => e.productivity));
+  const lateProd   = average(late.map(e => e.productivity));
+  const earlyMood  = average(early.map(e => e.mood));
+  const lateMood   = average(late.map(e => e.mood));
+
+  const burnoutSignals = [];
+  if (lateHours > earlyHours + 0.3)
+    burnoutSignals.push({ label: 'Session duration increasing', detail: `${earlyHours.toFixed(1)}h → ${lateHours.toFixed(1)}h` });
+  if (lateProd < earlyProd - 0.3)
+    burnoutSignals.push({ label: 'Output efficiency declining', detail: `${earlyProd.toFixed(1)} → ${lateProd.toFixed(1)}` });
+  if (lateMood < earlyMood - 0.3)
+    burnoutSignals.push({ label: 'Cognitive state deteriorating', detail: `${earlyMood.toFixed(1)} → ${lateMood.toFixed(1)}` });
+
+  const burnoutDetected = burnoutSignals.length >= 2;
+
+  // Build professional burnout insight messages
+  const burnoutInsightMessages = [];
+  if (lateHours > earlyHours + 0.3 && lateProd < earlyProd - 0.3)
+    burnoutInsightMessages.push('Extended sessions are reducing productivity efficiency.');
+  if (lateMood < earlyMood - 0.3 && lateProd < earlyProd - 0.3)
+    burnoutInsightMessages.push('Recent sessions show unstable performance patterns.');
+  if (lateHours > earlyHours + 0.5)
+    burnoutInsightMessages.push('Long study durations may be affecting focus quality.');
+  if (!burnoutInsightMessages.length && burnoutDetected)
+    burnoutInsightMessages.push('Multiple performance indicators have declined in recent sessions.');
+
+  // ── 2. PERFORMANCE PATTERN DETECTION ─────────────────────────────────────
+  const avgHours = average(entries.map(e => e.hours));
+  const avgProd  = average(entries.map(e => e.productivity));
+
+  // Mood–productivity correlation
+  const moods = entries.map(e => e.mood);
+  const prods = entries.map(e => e.productivity);
+  const moodMean = average(moods);
+  const prodMean = average(prods);
+  let num = 0, denA = 0, denB = 0;
+  for (let i = 0; i < entries.length; i++) {
+    const dm = moods[i] - moodMean;
+    const dp = prods[i] - prodMean;
+    num  += dm * dp;
+    denA += dm * dm;
+    denB += dp * dp;
+  }
+  const moodProdCorr = (denA && denB) ? num / Math.sqrt(denA * denB) : 0;
+
+  const isShortSession = avgHours <= 2;
+  const isHighProd     = avgProd >= 3.5;
+  const isMoodDriven   = moodProdCorr >= 0.55;
+  const isLongSession  = avgHours >= 3;
+
+  // Productivity std deviation for variability
+  const prodVariance = average(prods.map(p => (p - prodMean) ** 2));
+  const prodStdDev   = Math.sqrt(prodVariance);
+
+  let patternName, patternIcon, patternDesc, patternRec, patternSignals;
+
+  if (isMoodDriven) {
+    patternName    = 'Mood-Sensitive Productivity Pattern';
+    patternIcon    = '📊';
+    patternDesc    = 'Productivity output shows a strong positive correlation with reported cognitive state. Performance is significantly influenced by pre-session mental readiness.';
+    patternRec     = 'Prioritise mood stabilisation strategies before study sessions. Consider journaling, light exercise, or a brief mindfulness routine to establish a baseline cognitive state.';
+    patternSignals = [`Mood–productivity correlation: ${(moodProdCorr * 100).toFixed(0)}%`, `Avg cognitive state: ${moodMean.toFixed(1)}/5`];
+  } else if (isShortSession && isHighProd) {
+    patternName    = 'High-Intensity Focus Pattern';
+    patternIcon    = '📊';
+    patternDesc    = 'Productivity output is consistently high during shorter sessions. Performance data indicates peak cognitive efficiency within concentrated time blocks.';
+    patternRec     = 'Maintain structured short sessions with defined goals. Use timed intervals (e.g. 50-minute blocks) to sustain this performance model without fatigue accumulation.';
+    patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`];
+  } else if (isLongSession && avgProd >= 3) {
+    patternName    = 'Consistent Performance Pattern';
+    patternIcon    = '📊';
+    patternDesc    = 'Data indicates sustained output across extended study durations. Performance remains within acceptable range throughout longer sessions.';
+    patternRec     = 'Schedule structured recovery periods between extended sessions to prevent gradual efficiency loss. Weekly load distribution should remain balanced.';
+    patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`];
+  } else {
+    patternName    = 'Variable Attention Pattern';
+    patternIcon    = '📊';
+    patternDesc    = 'Session length and productivity output vary without a consistent trend. No dominant performance model has emerged from the current data set.';
+    patternRec     = 'Introduce a consistent session structure to establish a baseline. Standardising start times, duration, and subject rotation may help identify a more stable performance pattern.';
+    patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`, `${entries.length} sessions logged`];
+  }
+
+  // ── 3. PRODUCTIVITY STABILITY ANALYSIS ───────────────────────────────────
+  let stabilityLabel, stabilityClass, stabilityDesc;
+  if (prodStdDev < 0.6) {
+    stabilityLabel = 'Stable';
+    stabilityClass = 'positive';
+    stabilityDesc  = 'Productivity output remains consistent across sessions.';
+  } else if (prodStdDev < 1.2) {
+    stabilityLabel = 'Moderately Variable';
+    stabilityClass = 'warning';
+    stabilityDesc  = 'Productivity shows moderate fluctuations between sessions.';
+  } else {
+    stabilityLabel = 'Highly Variable';
+    stabilityClass = 'warning';
+    stabilityDesc  = 'Productivity varies significantly between sessions, suggesting inconsistent study conditions.';
+  }
+
+  // ── 4. FOCUS EFFICIENCY ANALYSIS ─────────────────────────────────────────
+  const shortSessions = entries.filter(e => e.hours <= 2);
+  const longSessions  = entries.filter(e => e.hours > 2);
+  let focusInsight = null;
+  if (shortSessions.length >= 2 && longSessions.length >= 2) {
+    const shortAvgProd = average(shortSessions.map(e => e.productivity));
+    const longAvgProd  = average(longSessions.map(e => e.productivity));
+    const diff = shortAvgProd - longAvgProd;
+    if (diff > 0.4) {
+      focusInsight = { type: 'positive', text: `Short focused sessions currently perform better (avg ${shortAvgProd.toFixed(1)} vs ${longAvgProd.toFixed(1)} for longer sessions).` };
+    } else if (diff < -0.4) {
+      focusInsight = { type: 'positive', text: `Longer sessions maintain stable productivity (avg ${longAvgProd.toFixed(1)} vs ${shortAvgProd.toFixed(1)} for shorter sessions).` };
+    } else if (longAvgProd < shortAvgProd - 0.2 && avgHours > 3) {
+      focusInsight = { type: 'warning', text: 'Productivity declines during extended sessions. Consider introducing structured breaks to sustain performance.' };
+    } else {
+      focusInsight = { type: 'positive', text: 'Productivity is consistent across both short and long sessions.' };
+    }
+  } else if (shortSessions.length >= 2) {
+    focusInsight = { type: 'positive', text: 'Insufficient data for long sessions. Current pattern reflects primarily short-session performance.' };
+  } else if (longSessions.length >= 2) {
+    focusInsight = { type: 'positive', text: 'Insufficient data for short sessions. Current pattern reflects primarily extended-session performance.' };
+  }
+
+  // ── 5. SUMMARY ────────────────────────────────────────────────────────────
+  let summaryText;
+  if (burnoutDetected) {
+    summaryText = `Recent study behaviour shows signs of performance strain. Session duration is increasing while output efficiency is declining — a structured reduction in load is recommended.`;
+  } else if (prodStdDev >= 1.2) {
+    summaryText = `Study behaviour shows high variability in performance outcomes. Establishing a more consistent session routine may improve predictability and output quality.`;
+  } else if (isMoodDriven && moodProdCorr >= 0.7) {
+    summaryText = `Cognitive state has a dominant influence on productivity. Managing pre-session mental readiness is the highest-leverage area for performance improvement.`;
+  } else if (isShortSession && isHighProd) {
+    summaryText = `Current study behaviour demonstrates strong efficiency within short, focused sessions. Sustaining this pattern with consistent scheduling should yield reliable output.`;
+  } else {
+    summaryText = `Recent study behaviour shows ${stabilityLabel.toLowerCase()} consistency with ${burnoutSignals.length === 0 ? 'no significant fatigue indicators' : 'mild fatigue signals'} across the most recent sessions.`;
+  }
+
+  // ── 6. RENDER ─────────────────────────────────────────────────────────────
+  const patternHTML = `
+    <div class="aba-section-label">Performance Pattern</div>
+    <div class="aba-style-box">
+      <div class="aba-style-icon">${patternIcon}</div>
+      <div class="aba-style-body">
+        <div class="aba-style-label">Identified pattern</div>
+        <div class="aba-style-name">${patternName}</div>
+        <div class="aba-style-desc">${patternDesc}</div>
+        <div class="aba-style-desc" style="margin-top:0.5rem;font-style:italic;opacity:0.85"><strong>Recommendation:</strong> ${patternRec}</div>
+        <div class="aba-signals">
+          ${patternSignals.map(s => `<span class="aba-signal-tag">${s}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const burnoutHTML = burnoutDetected
+    ? `
+      <div class="aba-section-label">Fatigue & Load Analysis</div>
+      <div class="aba-burnout-box">
+        <div class="aba-burnout-icon">⚠️</div>
+        <div class="aba-burnout-body">
+          <div class="aba-burnout-title">Performance decline indicators detected.</div>
+          <div class="aba-burnout-desc">${burnoutInsightMessages.join(' ')}</div>
+          <div class="aba-burnout-signals">
+            ${burnoutSignals.map(s => `<span class="aba-burnout-tag">${s.label} — ${s.detail}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `
+    : `
+      <div class="aba-section-label">Fatigue & Load Analysis</div>
+      <div class="aba-ok-box">
+        <span style="font-size:1.1rem">✓</span>
+        <span>No significant fatigue indicators detected. Hours, cognitive state, and productivity output remain within balanced ranges.</span>
+      </div>
+    `;
+
+  const stabilityHTML = `
+    <div class="aba-section-label">Productivity Stability</div>
+    <div class="insight ${stabilityClass}" style="margin-bottom:0.8rem">
+      <span class="emoji">📉</span>
+      <span><strong>${stabilityLabel}</strong> — ${stabilityDesc}</span>
+    </div>
+  `;
+
+  const focusHTML = focusInsight ? `
+    <div class="aba-section-label">Focus Efficiency</div>
+    <div class="insight ${focusInsight.type}" style="margin-bottom:0.8rem">
+      <span class="emoji">⏱</span>
+      <span>${focusInsight.text}</span>
+    </div>
+  ` : '';
+
+  const summaryHTML = `
+    <div class="aba-section-label">Summary</div>
+    <div style="padding:0.9rem 1rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:0.88rem;line-height:1.6;color:var(--text)">
+      ${summaryText}
+    </div>
+  `;
+
+  el.innerHTML = patternHTML + burnoutHTML + stabilityHTML + focusHTML + summaryHTML;
+}
+
+function render() {
+  const entries = getEntries();
+
+  // Stats
+  const hours = entries.map(e => e.hours);
+  const prods = entries.map(e => e.productivity);
+  const avgH = avg(hours);
+  const avgP = avg(prods);
+  document.getElementById('avgHours').textContent = avgH !== null ? avgH.toFixed(1) : '—';
+  document.getElementById('avgProd').textContent = avgP !== null ? avgP.toFixed(1) : '—';
+
+  // Table
+  const tbody = document.getElementById('tableBody');
+  const noData = document.getElementById('noData');
+  tbody.innerHTML = '';
+  if (entries.length === 0) {
+    noData.style.display = 'block';
+  } else {
+    noData.style.display = 'none';
+    [...entries].reverse().forEach(e => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${e.date}</td>
+        <td><span class="badge badge-subject">${e.subject || '—'}</span></td>
+        <td>${e.hours}h</td>
+        <td><span class="badge badge-mood">${e.mood}/5</span></td>
+        <td><span class="badge badge-prod">${e.productivity}/5</span></td>
+        <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Insights
+  const insights = [];
+  if (entries.length >= 3) {
+    const highMoodEntries = entries.filter(e => e.mood >= 4);
+    const lowMoodEntries = entries.filter(e => e.mood < 4);
+    if (highMoodEntries.length && lowMoodEntries.length) {
+      const highMoodProd = avg(highMoodEntries.map(e => e.productivity));
+      const lowMoodProd = avg(lowMoodEntries.map(e => e.productivity));
+      if (highMoodProd > lowMoodProd + 0.3) {
+        insights.push({ type: 'positive', emoji: '🌟', text: 'You perform better when your mood is high. Protect your mental energy before studying.' });
+      }
+    }
+
+    const longHours = entries.filter(e => e.hours > 4);
+    const shortHours = entries.filter(e => e.hours <= 4);
+    if (longHours.length && shortHours.length) {
+      const longProd = avg(longHours.map(e => e.productivity));
+      const shortProd = avg(shortHours.map(e => e.productivity));
+      if (longProd < shortProd - 0.3) {
+        insights.push({ type: 'warning', emoji: '⚠️', text: 'Long study hours may reduce your productivity. Try shorter, focused sessions with breaks.' });
+      }
+    }
+  }
+
+  const insightEl = document.getElementById('insights');
+  if (insights.length === 0) {
+    insightEl.innerHTML = '<p class="no-insight">Add at least 3 entries to unlock insights.</p>';
+  } else {
+    insightEl.innerHTML = insights.map(i =>
+      `<div class="insight ${i.type}"><span class="emoji">${i.emoji}</span><span>${i.text}</span></div>`
+    ).join('');
+  }
+
+  // Best Study Pattern
+  renderBestPattern(entries);
+
+  // Smart Recommendations
+  renderSmartRecs(entries);
+
+  // Subject Insights
+  renderSubjectInsights(entries);
+
+  // Progress Tracking
+  renderProgressTracking(entries);
+
+  // Cognitive Performance Analysis
+  renderAIBehaviorAnalysis(entries);
+
+  // Chart
+  const labels = entries.map(e => e.date);
+  const data = entries.map(e => e.productivity);
+
+  if (chart) chart.destroy();
+  const ctx = document.getElementById('chart').getContext('2d');
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Productivity',
+        data,
+        borderColor: '#c2622f',
+        backgroundColor: 'rgba(194,98,47,0.08)',
+        pointBackgroundColor: '#c2622f',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.35,
+        borderWidth: 2.5
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` Productivity: ${ctx.parsed.y}/5`
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0, max: 5,
+          ticks: {
+            stepSize: 1,
+            font: { family: 'DM Sans', size: 11 },
+            color: '#7a7368'
+          },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        x: {
+          ticks: {
+            font: { family: 'DM Sans', size: 11 },
+            color: '#7a7368',
+            maxRotation: 30
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+render();
+</script>
+</body>
+</html>
