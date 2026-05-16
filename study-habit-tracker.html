@@ -446,164 +446,84 @@
     text-align: center;
   }
 
-  /* ── INSIGHT CARDS ──────────────────────────────────────── */
+  /* ── INSIGHT TAGS ────────────────────────────────────────── */
   .insight {
     display: flex;
     align-items: flex-start;
-    gap: 0.85rem;
-    padding: 1rem 1.1rem;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    margin-bottom: 0.6rem;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin-bottom: 0.7rem;
     animation: fadeUp 0.4s ease both;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-
-  .insight:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(26,23,20,0.08);
   }
 
   .insight.positive {
     background: var(--accent2-light);
-    color: #2d5a4a;
+    color: var(--accent2);
     border: 1px solid #b8d9d1;
   }
 
   .insight.warning {
     background: var(--accent-light);
-    color: #8f3e1a;
+    color: var(--accent);
     border: 1px solid #e5c4b0;
   }
 
-  .insight .emoji {
-    font-size: 1.05rem;
-    flex-shrink: 0;
-    margin-top: 2px;
-    line-height: 1;
-  }
-
-  .insight-text strong { font-weight: 700; }
+  .insight .emoji { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
 
   .no-insight {
     color: var(--muted);
     font-size: 0.85rem;
     text-align: center;
-    padding: 1.5rem 0.6rem;
-    line-height: 1.5;
+    padding: 1.2rem 0.6rem;
   }
-
-  /* Insight section group header */
-  .insight-group-label {
-    font-size: 0.67rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    font-weight: 700;
-    margin: 1.1rem 0 0.5rem;
-    padding-left: 0.1rem;
-  }
-
-  .insight-group-label:first-child { margin-top: 0; }
 
   /* ── TABLE ───────────────────────────────────────────────── */
   .table-wrap { overflow-x: auto; }
 
   table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 0.45rem;
+    border-collapse: collapse;
     font-size: 0.87rem;
   }
 
   thead th {
     text-align: left;
-    font-size: 0.67rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: var(--muted);
     font-weight: 600;
-    padding: 0 0.9rem 0.5rem;
-    border-bottom: none;
+    padding: 0 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--border);
   }
 
   tbody tr {
-    background: var(--bg);
-    border-radius: 10px;
-    transition: box-shadow 0.15s, background 0.15s;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
   }
 
-  tbody tr:hover {
-    background: #f0ece3;
-    box-shadow: 0 2px 10px rgba(26,23,20,0.07);
-  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
 
   tbody td {
-    padding: 0.82rem 0.9rem;
+    padding: 0.75rem 0.7rem;
     color: var(--text);
-    vertical-align: middle;
-    border-top: 1px solid transparent;
-    border-bottom: 1px solid transparent;
-  }
-
-  tbody td:first-child {
-    border-left: 1px solid transparent;
-    border-radius: 10px 0 0 10px;
-    font-size: 0.82rem;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  tbody td:last-child {
-    border-right: 1px solid transparent;
-    border-radius: 0 10px 10px 0;
-  }
-
-  tbody tr:hover td {
-    border-color: var(--border);
-  }
-
-  /* Session row hours display */
-  .session-hours {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1rem;
-    color: var(--text);
-    letter-spacing: -0.01em;
   }
 
   .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.22rem 0.65rem;
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
     font-size: 0.76rem;
     font-weight: 600;
   }
 
-  .badge-mood    { background: #fef3e2; color: #b07c1a; border: 1px solid #f5dfa8; }
-  .badge-prod    { background: var(--accent2-light); color: var(--accent2); border: 1px solid #b8d9d1; }
-  .badge-subject { background: #eae6f8; color: #5b4ba8; border: 1px solid #d4cef5; }
-
-  /* Mood/prod dot indicators */
-  .score-dots {
-    display: inline-flex;
-    gap: 3px;
-    align-items: center;
-    vertical-align: middle;
-    margin-left: 0.3rem;
-  }
-
-  .score-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--border);
-  }
-
-  .score-dot.filled-mood   { background: #d4a22a; }
-  .score-dot.filled-prod   { background: var(--accent2); }
+  .badge-mood    { background: #fef3e2; color: #b07c1a; }
+  .badge-prod    { background: var(--accent2-light); color: var(--accent2); }
+  .badge-subject { background: #eae6f8; color: #5b4ba8; }
 
   /* Subject Insights */
   .subject-grid {
@@ -632,78 +552,7 @@
     .subject-grid { grid-template-columns: 1fr; }
   }
 
-  /* ── Mobile hamburger toggle ─────────────────────────────── */
-  .mobile-menu-btn {
-    display: none;
-    position: fixed;
-    top: 0.9rem;
-    left: 0.9rem;
-    z-index: 300;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    width: 38px;
-    height: 38px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.1rem;
-    box-shadow: var(--shadow);
-    transition: background 0.15s;
-    padding: 0;
-  }
-  .mobile-menu-btn:hover { background: var(--bg); }
-
-  /* Sidebar overlay for mobile */
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,23,20,0.4);
-    z-index: 150;
-    opacity: 0;
-    transition: opacity 0.25s;
-  }
-  .sidebar-overlay.visible { opacity: 1; }
-
-  /* ── Table mobile card view (≤480px) ───────────────────── */
-  @media (max-width: 480px) {
-    .table-wrap { overflow-x: visible; }
-    table, thead, tbody, th, td, tr { display: block; }
-    table { min-width: unset; }
-    thead tr { position: absolute; top: -9999px; left: -9999px; }
-    tbody tr {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 0.65rem;
-      padding: 0.6rem 0.8rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.3rem 0.6rem;
-      background: var(--bg);
-    }
-    tbody td {
-      border: none;
-      padding: 0.25rem 0;
-      font-size: 0.82rem;
-      position: relative;
-      padding-left: 0;
-    }
-    tbody td::before {
-      content: attr(data-label);
-      display: block;
-      font-size: 0.62rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      font-weight: 600;
-      margin-bottom: 0.1rem;
-    }
-    tbody td:first-child  { border-radius: 0; grid-column: 1 / -1; }
-    tbody td:last-child   { border-radius: 0; grid-column: 1 / -1; text-align: right; }
-    tbody tr:hover { box-shadow: none; background: #f0ece3; }
-    tbody tr:hover td { border-color: transparent; }
-  }
+  .no-data {
     text-align: center;
     color: var(--muted);
     padding: 2rem;
@@ -783,14 +632,6 @@
     .pattern-grid { grid-template-columns: 1fr; }
   }
 
-  /* ── Touch-friendly tap targets ─────────────────────────── */
-  @media (hover: none) and (pointer: coarse) {
-    .nav-item { min-height: 44px; }
-    .btn { min-height: 48px; font-size: 1rem; }
-    .field input, .field select { min-height: 44px; font-size: 1rem; }
-    .delete-btn { min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; }
-  }
-
   /* ── CHART CARD WRAP ────────────────────────────────────── */
   .chart-wrap {
     position: relative;
@@ -859,154 +700,23 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Tablet (769–1024px) ────────────────────────────────── */
-  @media (max-width: 1024px) and (min-width: 769px) {
-    :root { --sidebar-w: 190px; }
-    .content { padding: 1.6rem 1.8rem 2.5rem; }
-    .topbar { padding: 1.3rem 1.8rem 1.2rem; }
-    .dash-grid-3 { grid-template-columns: repeat(3, 1fr); }
-    .stat-value { font-size: 1.7rem; }
-  }
-
-  /* ── Small tablet / large phone landscape (601–768px) ─── */
-  @media (max-width: 768px) {
-    :root { --sidebar-w: 220px; }
-    .mobile-menu-btn { display: flex; }
-
-    /* Sidebar becomes a slide-in drawer */
-    .sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.27s cubic-bezier(0.4,0,0.2,1);
-      z-index: 200;
-      box-shadow: 4px 0 32px rgba(26,23,20,0.15);
-    }
-    .sidebar.open { transform: translateX(0); }
-    .sidebar-overlay { display: block; }
-
-    /* Main takes full width */
-    .main { margin-left: 0; }
-
-    /* Topbar shifts right to clear the hamburger button */
-    .topbar {
-      padding: 1rem 1.2rem 1rem 4rem;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-    .topbar-greeting h1 { font-size: 1.25rem; }
-    .topbar-greeting p  { font-size: 0.82rem; }
-
-    /* Topbar stats collapse into a compact row below greeting */
-    .topbar-stats {
-      display: flex;
-      flex-direction: row;
-      gap: 0.75rem;
-      width: 100%;
-      padding-top: 0.4rem;
-      border-top: 1px solid var(--border);
-    }
-    .topbar-stat { text-align: left; padding: 0; }
-    .topbar-stat .ts-value { font-size: 1.1rem; }
-    .topbar-divider { height: 24px; }
-
-    .content { padding: 1.2rem 1.2rem 2.5rem; }
-
-    /* Grids → single column */
-    .dash-grid   { grid-template-columns: 1fr; }
+  @media (max-width: 900px) {
+    .form-row { grid-template-columns: 1fr 1fr; }
     .dash-grid-3 { grid-template-columns: 1fr 1fr; }
-    .form-row    { grid-template-columns: 1fr 1fr; }
-
-    /* Cards */
-    .card { padding: 1.2rem 1.2rem; }
-    .stat-value { font-size: 1.65rem; }
-    .panel-title { font-size: 1.15rem; margin-bottom: 1.1rem; }
-
-    /* Charts: taller aspect ratio on narrow screens for readability */
-    .chart-wrap canvas { aspect-ratio: auto; }
-    .card:has(canvas) { overflow: hidden; }
-
-    /* Table: enable horizontal scroll with sticky first col */
-    .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      border-radius: 8px;
-    }
-    table { min-width: 480px; font-size: 0.82rem; }
-    thead th { font-size: 0.62rem; padding: 0 0.7rem 0.5rem; }
-    tbody td  { padding: 0.65rem 0.7rem; }
-
-    /* Score dots — hide on very narrow */
-    .score-dots { display: none; }
-
-    /* Progress rows */
-    .progress-subject-row { flex-wrap: wrap; gap: 0.5rem; }
-    .progress-subject-row .ps-name { width: auto; flex: 0 0 100%; }
-    .progress-subject-row .ps-bar-wrap { flex: 1; }
-
-    /* Session plan steps */
-    .plan-step { gap: 0.6rem; }
-    .plan-step .step-time { min-width: 42px; font-size: 0.95rem; }
   }
 
-  /* ── Phone portrait (≤480px) ────────────────────────────── */
-  @media (max-width: 480px) {
-    .content { padding: 1rem 0.9rem 2.5rem; }
-    .topbar  { padding: 0.9rem 0.9rem 0.9rem 4rem; }
-    .topbar-greeting h1 { font-size: 1.1rem; }
-
-    /* One-column everything */
+  @media (max-width: 700px) {
+    .sidebar { width: 60px; }
+    .sidebar-logo, .nav-item span, .sidebar-footer, .nav-section-label { display: none; }
+    .nav-item { justify-content: center; padding: 0.75rem; }
+    .nav-item.active::before { display: none; }
+    .main { margin-left: 60px; }
+    .topbar { padding: 1.2rem 1.4rem; }
+    .content { padding: 1.4rem 1.4rem 2.5rem; }
+    .dash-grid { grid-template-columns: 1fr; }
     .dash-grid-3 { grid-template-columns: 1fr; }
-    .form-row    { grid-template-columns: 1fr; }
-    .advisor-inputs { grid-template-columns: 1fr; }
-
-    /* Cards tighter */
-    .card { padding: 1rem 0.95rem; margin-bottom: 0.9rem; }
-    .card-title { font-size: 0.95rem; }
-    .stat-value { font-size: 1.5rem; }
-    .stat-card  { padding: 1rem 1rem; }
-
-    /* Chart: lower aspect ratio so chart is taller relative to width */
-    .chart-wrap { padding: 0.25rem 0 0.5rem; }
-
-    /* Topbar stats: two cols, compact */
-    .topbar-stats { gap: 0.5rem; }
-    .topbar-stat .ts-value { font-size: 1rem; }
-    .topbar-stat .ts-label { font-size: 0.6rem; }
-    .topbar-divider { height: 20px; }
-
-    /* Table even more compact */
-    table { font-size: 0.78rem; }
-    .badge { font-size: 0.7rem; padding: 0.15rem 0.45rem; }
-    .session-hours { font-size: 0.9rem; }
-
-    /* Subject / progress bars */
-    .sub-label { width: 72px; font-size: 0.78rem; }
-    .ps-trend  { min-width: 80px; font-size: 0.72rem; }
-    .ps-delta  { width: 36px; font-size: 0.72rem; }
-
-    /* ABA / burnout boxes */
-    .aba-style-box   { gap: 0.7rem; padding: 0.9rem 1rem; }
-    .aba-style-icon  { font-size: 1.6rem; }
-    .aba-style-name  { font-size: 1.05rem; }
-    .aba-burnout-box { gap: 0.6rem; padding: 0.85rem 0.9rem; }
-
-    /* Advisor */
-    .plan-step { padding: 0.6rem 0.75rem; }
-
-    /* Insight cards */
-    .insight { padding: 0.8rem 0.9rem; font-size: 0.82rem; }
-
-    /* Panel title */
-    .panel-title { font-size: 1.05rem; margin-bottom: 0.9rem; }
-  }
-
-  /* ── Very small phones (≤360px) ─────────────────────────── */
-  @media (max-width: 360px) {
-    .content { padding: 0.8rem 0.75rem 2rem; }
-    .topbar  { padding: 0.8rem 0.75rem 0.8rem 3.8rem; }
-    .card    { padding: 0.85rem 0.8rem; }
-    .stat-value { font-size: 1.35rem; }
-    .topbar-stats { flex-direction: column; gap: 0.25rem; border-top: none; padding-top: 0; }
-    .topbar-divider { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .topbar-stats { display: none; }
   }
 
   /* Session Advisor */
@@ -1428,10 +1138,6 @@
 </head>
 <body>
 
-<!-- ── MOBILE HAMBURGER ──────────────────────────────────────── -->
-<button class="mobile-menu-btn" id="menuBtn" aria-label="Open navigation" onclick="toggleSidebar()">☰</button>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
 <!-- ── SIDEBAR ───────────────────────────────────────────────── -->
 <nav class="sidebar">
   <div class="sidebar-logo">
@@ -1609,14 +1315,14 @@
 
       <!-- All Entries Table -->
       <div class="card">
-        <div class="card-title"><span class="icon">🗂️</span> Recent Sessions</div>
+        <div class="card-title"><span class="icon">🗂️</span> All Entries</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Date</th>
                 <th>Subject</th>
-                <th>Duration</th>
+                <th>Hours</th>
                 <th>Mood</th>
                 <th>Productivity</th>
                 <th></th>
@@ -1624,11 +1330,7 @@
             </thead>
             <tbody id="tableBody"></tbody>
           </table>
-          <div id="noData" class="no-data" style="display:none;text-align:center;color:var(--muted);padding:2.5rem 1rem;font-size:0.9rem">
-            <div style="font-size:1.6rem;margin-bottom:0.5rem">📋</div>
-            <div style="font-weight:600;margin-bottom:0.25rem">No sessions yet</div>
-            <div style="font-size:0.82rem;opacity:0.75">Log your first session above to get started.</div>
-          </div>
+          <div id="noData" class="no-data" style="text-align:center;color:var(--muted);padding:2rem;font-size:0.9rem">No entries yet. Log your first session above!</div>
         </div>
       </div>
     </div>
@@ -1739,32 +1441,6 @@ function showPanel(name, btn) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
-  // Auto-close sidebar drawer on mobile after navigation
-  if (window.innerWidth <= 768) closeSidebar();
-}
-
-// ── Mobile sidebar drawer ────────────────────────────────────────
-function toggleSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const isOpen  = sidebar.classList.contains('open');
-  if (isOpen) { closeSidebar(); } else { openSidebar(); }
-}
-
-function openSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.add('open');
-  overlay.classList.add('visible');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.remove('open');
-  overlay.classList.remove('visible');
-  document.body.style.overflow = '';
 }
 
 // ── Dynamic greeting ────────────────────────────────────────────
@@ -1826,7 +1502,7 @@ function avg(arr) {
 // ── Build insights HTML (used by both dashboard and insights panel) ──
 function buildInsightsHTML(entries) {
   if (entries.length < 3) {
-    return '<p class="no-insight">Log at least 3 sessions to start seeing patterns.</p>';
+    return '<p class="no-insight">Add at least 3 entries to unlock insights.</p>';
   }
 
   const insights = [];
@@ -1839,14 +1515,14 @@ function buildInsightsHTML(entries) {
     const lowMoodProd  = avg(lowMoodEntries.map(e => e.productivity));
     const diff = highMoodProd - lowMoodProd;
     if (diff > 0.3) {
-      insights.push({ type: 'positive', emoji: '🌟', group: 'mood', text: `Your mood makes a real difference — you're <strong>${diff.toFixed(1)} points</strong> more productive when you're feeling good. Worth protecting that headspace before you sit down to study.` });
+      insights.push({ type: 'positive', emoji: '🌟', text: `You perform better when your mood is high (+${diff.toFixed(1)} avg productivity). Protect your mental energy before studying.` });
     } else if (diff < -0.3) {
-      insights.push({ type: 'warning', emoji: '🤔', group: 'mood', text: `Your productivity stays pretty similar regardless of how you're feeling (diff: ${diff.toFixed(1)}). Something else seems to be driving your output — keep an eye on duration and subject choice.` });
+      insights.push({ type: 'warning', emoji: '🤔', text: `Interestingly, your productivity is similar regardless of mood (diff: ${diff.toFixed(1)}). Other factors may matter more for you.` });
     } else {
-      insights.push({ type: 'positive', emoji: '😊', group: 'mood', text: `You stay consistent even on low-mood days — your output doesn't depend much on how you're feeling going in. That's a solid trait.` });
+      insights.push({ type: 'positive', emoji: '😊', text: `Your productivity stays consistent across mood levels — you study reliably regardless of how you feel.` });
     }
   } else if (highMoodEntries.length) {
-    insights.push({ type: 'positive', emoji: '😊', group: 'mood', text: `All your sessions have been logged with high mood (≥4). Add a few lower-mood sessions to see how you hold up comparatively.` });
+    insights.push({ type: 'positive', emoji: '😊', text: `All logged sessions have high mood (≥4). Add some lower-mood sessions to compare your performance patterns.` });
   }
 
   // ── 2. Long vs short hours (conditional on having long sessions) ─────────
@@ -1856,13 +1532,14 @@ function buildInsightsHTML(entries) {
     const longProd  = avg(longHours.map(e => e.productivity));
     const shortProd = avg(shortHours.map(e => e.productivity));
     if (longProd < shortProd - 0.3) {
-      insights.push({ type: 'warning', emoji: '⚠️', group: 'duration', text: `Longer sessions seem to wear you out — productivity drops when you go past 4 hours. Shorter, focused blocks with breaks might get you further.` });
+      insights.push({ type: 'warning', emoji: '⚠️', text: 'Long study hours may reduce your productivity. Try shorter, focused sessions with breaks.' });
     } else {
-      insights.push({ type: 'positive', emoji: '⏱️', group: 'duration', text: `You handle long sessions well — productivity stays strong even past 4 hours (avg ${longProd.toFixed(1)} vs ${shortProd.toFixed(1)} for shorter ones).` });
+      insights.push({ type: 'positive', emoji: '⏱️', text: `Your productivity holds up well in longer sessions (avg ${longProd.toFixed(1)} vs ${shortProd.toFixed(1)} for shorter ones).` });
     }
   } else if (!longHours.length) {
+    // All sessions are ≤ 4h — give useful avg feedback instead of silence
     const avgProd = avg(entries.map(e => e.productivity));
-    insights.push({ type: 'positive', emoji: '⏱️', group: 'duration', text: `Your sessions are all under 4 hours, averaging <strong>${avgProd.toFixed(1)}/5</strong> productivity. Focused and consistent — keep it up.` });
+    insights.push({ type: 'positive', emoji: '⏱️', text: `All your sessions are ≤ 4 hours with an average productivity of ${avgProd.toFixed(1)}/5. Consistent and focused!` });
   }
 
   // ── 3. Best mood level (always-on once ≥3 entries) ──────────────────────
@@ -1876,7 +1553,7 @@ function buildInsightsHTML(entries) {
     .sort((a, b) => b.avgProd - a.avgProd);
   if (moodAvgs.length >= 2) {
     const best = moodAvgs[0];
-    insights.push({ type: 'positive', emoji: '🎯', group: 'pattern', text: `Your sweet spot is mood <strong>${best.mood}/5</strong> — that's when your average productivity hits <strong>${best.avgProd.toFixed(1)}/5</strong>. Try to schedule your harder material around those days.` });
+    insights.push({ type: 'positive', emoji: '🎯', text: `Your most productive mood level is <strong>${best.mood}/5</strong> with avg productivity ${best.avgProd.toFixed(1)}/5.` });
   }
 
   // ── 4. Best subject (always-on when subjects exist) ──────────────────────
@@ -1891,31 +1568,18 @@ function buildInsightsHTML(entries) {
     .sort((a, b) => b.avgProd - a.avgProd);
   if (subjectAvgs.length >= 1) {
     const best = subjectAvgs[0];
-    insights.push({ type: 'positive', emoji: '📚', group: 'subject', text: `<strong>${best.name}</strong> is your strongest subject right now, averaging <strong>${best.avgProd.toFixed(1)}/5</strong>. Great anchor for building momentum.` });
+    insights.push({ type: 'positive', emoji: '📚', text: `Your strongest subject is <strong>${best.name}</strong> with avg productivity ${best.avgProd.toFixed(1)}/5.` });
   }
 
   // ── Fallback: data exists but no pattern insights fired ──────────────────
   if (insights.length === 0) {
     const avgProd = avg(entries.map(e => e.productivity));
-    insights.push({ type: 'positive', emoji: '📊', group: 'general', text: `${entries.length} sessions logged so far, averaging <strong>${avgProd ? avgProd.toFixed(1) : '—'}/5</strong> productivity. Keep logging — patterns will start emerging soon.` });
+    insights.push({ type: 'positive', emoji: '📊', text: `${entries.length} sessions logged. Average productivity: ${avgProd ? avgProd.toFixed(1) : '—'}/5. Keep logging to unlock deeper insights.` });
   }
 
-  // Group by category for visual separation
-  const groupOrder = ['mood', 'duration', 'pattern', 'subject', 'general'];
-  const groupLabels = { mood: 'Mood & Energy', duration: 'Session Duration', pattern: 'Peak Performance', subject: 'Subjects', general: 'Overview' };
-  let html = '';
-  const seen = new Set();
-  for (const g of groupOrder) {
-    const group = insights.filter(i => i.group === g);
-    if (!group.length) continue;
-    if (insights.length > 1) {
-      html += `<div class="insight-group-label">${groupLabels[g]}</div>`;
-    }
-    html += group.map(i =>
-      `<div class="insight ${i.type}"><span class="emoji">${i.emoji}</span><span class="insight-text">${i.text}</span></div>`
-    ).join('');
-  }
-  return html;
+  return insights.map(i =>
+    `<div class="insight ${i.type}"><span class="emoji">${i.emoji}</span><span>${i.text}</span></div>`
+  ).join('');
 }
 
 function renderBestPattern(entries, targetId) {
@@ -2065,7 +1729,7 @@ function renderSubjectInsights(entries) {
 function renderSmartRecs(entries) {
   const el = document.getElementById('smartRecs');
   if (entries.length < 3) {
-    el.innerHTML = '<p class="no-insight">Log at least 3 sessions to get personalised recommendations.</p>';
+    el.innerHTML = '<p class="no-insight">Add at least 3 entries to get recommendations.</p>';
     return;
   }
 
@@ -2091,7 +1755,7 @@ function renderSmartRecs(entries) {
     bestDuration = buckets.reduce((a, b) => b.value > a.value ? b : a);
     suggestions.push({
       emoji: '⏱️',
-      text: `<strong>${bestDuration.label}</strong> is your productivity sweet spot. Plan sessions around that length when you can.`
+      text: `Try studying for <strong>${bestDuration.label}</strong> — that's when your productivity peaks.`
     });
   }
 
@@ -2106,7 +1770,7 @@ function renderSmartRecs(entries) {
     moodBoost = true;
     suggestions.push({
       emoji: '😊',
-      text: `Your best work happens when your mood is high (4–5). Save the tough material for those days.`
+      text: 'Study when your mood is high (4–5) for the best results.'
     });
   }
 
@@ -2118,7 +1782,7 @@ function renderSmartRecs(entries) {
       longHoursDrop = true;
       suggestions.push({
         emoji: '☕',
-        text: `Long sessions (4h+) are hurting your output. Shorter blocks with breaks will get you more done overall.`
+        text: 'Avoid studying continuously for more than 4 hours. Take regular breaks to stay sharp.'
       });
     }
   }
@@ -2131,38 +1795,36 @@ function renderSmartRecs(entries) {
     weakSubject   = subjectStats[subjectStats.length - 1];
     suggestions.push({
       emoji: '📌',
-      text: `<strong>${weakSubject.name}</strong> needs the most attention — tackle it first, when your focus is fresh.`
+      text: `Focus on <strong>${weakSubject.name}</strong> during your best study time — it needs the most attention.`
     });
     suggestions.push({
       emoji: '⚡',
-      text: `Use <strong>${strongSubject.name}</strong> as a warm-up or a confidence reset between harder blocks.`
+      text: `Use <strong>${strongSubject.name}</strong> for quick revision or a confidence boost.`
     });
   }
 
-  // --- Today's Plan (combined) ---
+  // --- Next Step (combined plan) ---
   const durationPart = bestDuration ? bestDuration.label : 'a focused session';
-  const moodPart     = moodBoost ? ' on a high-mood day' : '';
-  const breakPart    = longHoursDrop ? ' — and keep breaks in' : '';
-  const weakPart     = weakSubject
-    ? `Start with <strong>${weakSubject.name}</strong> for ${durationPart}${moodPart}${breakPart}.`
-    : `Aim for ${durationPart}${moodPart}${breakPart}.`;
-  const strongPart   = strongSubject ? ` Follow up with <strong>${strongSubject.name}</strong> to finish strong.` : '';
-  const nextStep     = `${weakPart}${strongPart}`;
+  const moodPart     = moodBoost ? ' when your mood is high' : '';
+  const breakPart    = longHoursDrop ? '. Avoid long sessions' : '';
+  const weakPart     = weakSubject ? `Study <strong>${weakSubject.name}</strong> (weak subject) for ${durationPart}${moodPart}${breakPart}.` : `Study for ${durationPart}${moodPart}${breakPart}.`;
+  const strongPart   = strongSubject ? ` Revise <strong>${strongSubject.name}</strong> (strong subject) after that.` : '';
+  const nextStep     = `Today's Plan: ${weakPart}${strongPart}`;
 
   el.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1.1rem">
+    <div style="display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1rem">
       ${suggestions.map(s => `
         <div class="insight positive" style="margin-bottom:0">
           <span class="emoji">${s.emoji}</span>
-          <span class="insight-text">${s.text}</span>
+          <span>${s.text}</span>
         </div>
       `).join('')}
     </div>
-    <div style="background:var(--accent);border-radius:10px;padding:1rem 1.15rem;display:flex;align-items:flex-start;gap:0.85rem;box-shadow:0 3px 12px rgba(194,98,47,0.22)">
-      <span style="font-size:1.1rem;flex-shrink:0;margin-top:2px">🗓️</span>
+    <div style="background:var(--accent);border-radius:8px;padding:0.9rem 1rem;display:flex;align-items:flex-start;gap:0.75rem">
+      <span style="font-size:1rem;flex-shrink:0;margin-top:1px">🗓️</span>
       <div>
-        <div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.65);font-weight:700;margin-bottom:0.3rem">Today's Plan</div>
-        <div style="font-size:0.91rem;color:#fff;line-height:1.6;font-weight:400">${nextStep}</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:0.25rem">Today's Plan</div>
+        <div style="font-size:0.92rem;color:#fff;line-height:1.5">${nextStep}</div>
       </div>
     </div>
   `;
@@ -2724,19 +2386,19 @@ function renderProgressTracking(entries) {
   // ── 3. Adaptive feedback ─────────────────────────────────────────────────
   const feedbackItems = subjectAnalysis.map(s => {
     if (s.trend === 'improving') {
-      return { type: 'positive', emoji: '📈', text: `<strong>${s.name}</strong> is trending up (+${s.delta.toFixed(1)}). Keep the momentum going.` };
+      return { type: 'positive', emoji: '📈', text: `<strong>${s.name}</strong> is improving steadily (+${s.delta.toFixed(1)}). Maintain your consistency.` };
     } else if (s.trend === 'declining') {
-      return { type: 'warning', emoji: '📉', text: `<strong>${s.name}</strong> has dipped recently (${s.delta.toFixed(1)}). A bit more focused time here could turn it around.` };
+      return { type: 'warning', emoji: '📉', text: `<strong>${s.name}</strong> performance is declining (${s.delta.toFixed(1)}). Spend more focused time on it.` };
     } else {
-      return { type: 'positive', emoji: '➡️', text: `<strong>${s.name}</strong> is holding steady. A small extra push this week could nudge it upward.` };
+      return { type: 'positive', emoji: '➡️', text: `<strong>${s.name}</strong> is holding steady. Push for a slight improvement this week.` };
     }
   });
 
   // ── 4. Render ─────────────────────────────────────────────────────────────
   const weeklyMeta = {
-    improving: { cls: 'wt-improving', icon: '🚀', label: 'Overall Trend', value: 'Improving — you\'re building momentum.' },
-    stable:    { cls: 'wt-stable',    icon: '📊', label: 'Overall Trend', value: 'Stable — solid and consistent.' },
-    declining: { cls: 'wt-declining', icon: '⚠️', label: 'Overall Trend', value: 'Slipping a bit — worth refocusing.' }
+    improving: { cls: 'wt-improving', icon: '🚀', label: 'Overall Weekly Trend', value: 'Improving — great momentum!' },
+    stable:    { cls: 'wt-stable',    icon: '📊', label: 'Overall Weekly Trend', value: 'Stable — consistent performance.' },
+    declining: { cls: 'wt-declining', icon: '⚠️', label: 'Overall Weekly Trend', value: 'Declining — time to refocus.' }
   }[weeklyTrend];
 
   const subjectRowsHTML = subjectAnalysis.length ? `
@@ -2767,7 +2429,7 @@ function renderProgressTracking(entries) {
       ${feedbackItems.map(f => `
         <div class="insight ${f.type}" style="margin-bottom:0">
           <span class="emoji">${f.emoji}</span>
-          <span class="insight-text">${f.text}</span>
+          <span>${f.text}</span>
         </div>
       `).join('')}
     </div>
@@ -2790,7 +2452,7 @@ function renderProgressTracking(entries) {
 function renderAIBehaviorAnalysis(entries) {
   const el = document.getElementById('aiBehaviorAnalysis');
   if (entries.length < 5) {
-    el.innerHTML = '<p class="no-insight">Log 5 or more sessions to unlock your performance profile.</p>';
+    el.innerHTML = '<p class="no-insight">Add at least 5 entries to unlock behavior analysis.</p>';
     return;
   }
 
@@ -2867,28 +2529,28 @@ function renderAIBehaviorAnalysis(entries) {
   let patternName, patternIcon, patternDesc, patternRec, patternSignals;
 
   if (isMoodDriven) {
-    patternName    = 'Mood-Driven Learner';
+    patternName    = 'Mood-Sensitive Productivity Pattern';
     patternIcon    = '📊';
-    patternDesc    = 'Your productivity closely tracks how you\'re feeling going into each session. When you\'re in a good headspace, the work flows — and that shows in your scores.';
-    patternRec     = 'A short mood-boosting ritual before studying (a walk, music, quick journaling) could meaningfully lift your output on average days.';
-    patternSignals = [`Mood–productivity link: ${(moodProdCorr * 100).toFixed(0)}%`, `Avg mood: ${moodMean.toFixed(1)}/5`];
+    patternDesc    = 'Productivity output shows a strong positive correlation with reported cognitive state. Performance is significantly influenced by pre-session mental readiness.';
+    patternRec     = 'Prioritise mood stabilisation strategies before study sessions. Consider journaling, light exercise, or a brief mindfulness routine to establish a baseline cognitive state.';
+    patternSignals = [`Mood–productivity correlation: ${(moodProdCorr * 100).toFixed(0)}%`, `Avg cognitive state: ${moodMean.toFixed(1)}/5`];
   } else if (isShortSession && isHighProd) {
-    patternName    = 'Deep Focus Sprinter';
+    patternName    = 'High-Intensity Focus Pattern';
     patternIcon    = '📊';
-    patternDesc    = 'You do your best work in shorter, concentrated bursts. Your productivity per hour is high, and you seem to peak before fatigue sets in.';
-    patternRec     = 'Lean into this strength — plan clear goals for each session and keep them tight. 50-minute focused blocks tend to work well for this profile.';
+    patternDesc    = 'Productivity output is consistently high during shorter sessions. Performance data indicates peak cognitive efficiency within concentrated time blocks.';
+    patternRec     = 'Maintain structured short sessions with defined goals. Use timed intervals (e.g. 50-minute blocks) to sustain this performance model without fatigue accumulation.';
     patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`];
   } else if (isLongSession && avgProd >= 3) {
-    patternName    = 'Steady Long-Haul Studier';
+    patternName    = 'Consistent Performance Pattern';
     patternIcon    = '📊';
-    patternDesc    = 'You maintain solid output even in longer sessions — your focus holds up well over time. That\'s a useful trait for deep work and exam prep.';
-    patternRec     = 'Build in deliberate recovery time between heavy sessions to keep this going. Pacing matters more the longer your streaks get.';
+    patternDesc    = 'Data indicates sustained output across extended study durations. Performance remains within acceptable range throughout longer sessions.';
+    patternRec     = 'Schedule structured recovery periods between extended sessions to prevent gradual efficiency loss. Weekly load distribution should remain balanced.';
     patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`];
   } else {
-    patternName    = 'Emerging Pattern';
+    patternName    = 'Variable Attention Pattern';
     patternIcon    = '📊';
-    patternDesc    = 'Your sessions are still varied enough that no dominant pattern has emerged yet. That\'s normal early on — more data will sharpen the picture.';
-    patternRec     = 'Try keeping session length and timing more consistent over the next week. A regular rhythm makes it much easier to spot what\'s actually working.';
+    patternDesc    = 'Session length and productivity output vary without a consistent trend. No dominant performance model has emerged from the current data set.';
+    patternRec     = 'Introduce a consistent session structure to establish a baseline. Standardising start times, duration, and subject rotation may help identify a more stable performance pattern.';
     patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`, `${entries.length} sessions logged`];
   }
 
@@ -2897,15 +2559,15 @@ function renderAIBehaviorAnalysis(entries) {
   if (prodStdDev < 0.6) {
     stabilityLabel = 'Stable';
     stabilityClass = 'positive';
-    stabilityDesc  = 'Your output is reliably consistent from session to session.';
+    stabilityDesc  = 'Productivity output remains consistent across sessions.';
   } else if (prodStdDev < 1.2) {
-    stabilityLabel = 'Somewhat Variable';
+    stabilityLabel = 'Moderately Variable';
     stabilityClass = 'warning';
-    stabilityDesc  = 'Productivity shifts a bit between sessions — worth keeping an eye on what\'s different on high vs low days.';
+    stabilityDesc  = 'Productivity shows moderate fluctuations between sessions.';
   } else {
     stabilityLabel = 'Highly Variable';
     stabilityClass = 'warning';
-    stabilityDesc  = 'Big swings between sessions suggest your study conditions or energy levels vary a lot. Narrowing that down could unlock more consistent results.';
+    stabilityDesc  = 'Productivity varies significantly between sessions, suggesting inconsistent study conditions.';
   }
 
   // ── 4. FOCUS EFFICIENCY ANALYSIS ─────────────────────────────────────────
@@ -2917,32 +2579,32 @@ function renderAIBehaviorAnalysis(entries) {
     const longAvgProd  = average(longSessions.map(e => e.productivity));
     const diff = shortAvgProd - longAvgProd;
     if (diff > 0.4) {
-      focusInsight = { type: 'positive', text: `Shorter sessions are working better for you right now (avg ${shortAvgProd.toFixed(1)} vs ${longAvgProd.toFixed(1)} in longer ones).` };
+      focusInsight = { type: 'positive', text: `Short focused sessions currently perform better (avg ${shortAvgProd.toFixed(1)} vs ${longAvgProd.toFixed(1)} for longer sessions).` };
     } else if (diff < -0.4) {
-      focusInsight = { type: 'positive', text: `Longer sessions suit you well — productivity actually holds steady over time (avg ${longAvgProd.toFixed(1)} vs ${shortAvgProd.toFixed(1)} in shorter ones).` };
+      focusInsight = { type: 'positive', text: `Longer sessions maintain stable productivity (avg ${longAvgProd.toFixed(1)} vs ${shortAvgProd.toFixed(1)} for shorter sessions).` };
     } else if (longAvgProd < shortAvgProd - 0.2 && avgHours > 3) {
-      focusInsight = { type: 'warning', text: 'There\'s a slight dip during longer sessions. Planned breaks could help keep your focus from tapering off.' };
+      focusInsight = { type: 'warning', text: 'Productivity declines during extended sessions. Consider introducing structured breaks to sustain performance.' };
     } else {
-      focusInsight = { type: 'positive', text: 'Your focus holds up consistently whether sessions are short or long. Nice.' };
+      focusInsight = { type: 'positive', text: 'Productivity is consistent across both short and long sessions.' };
     }
   } else if (shortSessions.length >= 2) {
-    focusInsight = { type: 'positive', text: 'Not enough long sessions yet to compare — current data reflects your shorter-session performance.' };
+    focusInsight = { type: 'positive', text: 'Insufficient data for long sessions. Current pattern reflects primarily short-session performance.' };
   } else if (longSessions.length >= 2) {
-    focusInsight = { type: 'positive', text: 'Not enough short sessions yet to compare — current data reflects your longer-session performance.' };
+    focusInsight = { type: 'positive', text: 'Insufficient data for short sessions. Current pattern reflects primarily extended-session performance.' };
   }
 
   // ── 5. SUMMARY ────────────────────────────────────────────────────────────
   let summaryText;
   if (burnoutDetected) {
-    summaryText = `Things look a bit stretched lately — sessions are getting longer while output is dipping. A lighter week with deliberate rest might be the most productive thing you can do right now.`;
+    summaryText = `Recent study behaviour shows signs of performance strain. Session duration is increasing while output efficiency is declining — a structured reduction in load is recommended.`;
   } else if (prodStdDev >= 1.2) {
-    summaryText = `Your results are all over the place, which usually means the study conditions vary too much. Building a more consistent routine is likely the fastest way to improve your average.`;
+    summaryText = `Study behaviour shows high variability in performance outcomes. Establishing a more consistent session routine may improve predictability and output quality.`;
   } else if (isMoodDriven && moodProdCorr >= 0.7) {
-    summaryText = `Your mood has a strong influence on what you get done. The good news: this is one of the most actionable levers — small pre-session habits can make a real difference.`;
+    summaryText = `Cognitive state has a dominant influence on productivity. Managing pre-session mental readiness is the highest-leverage area for performance improvement.`;
   } else if (isShortSession && isHighProd) {
-    summaryText = `You're getting a lot done in short windows — your focus-to-time ratio is solid. Keep the structure tight and the goals clear, and this approach scales well.`;
+    summaryText = `Current study behaviour demonstrates strong efficiency within short, focused sessions. Sustaining this pattern with consistent scheduling should yield reliable output.`;
   } else {
-    summaryText = `Overall, your sessions show ${stabilityLabel.toLowerCase()} consistency with ${burnoutSignals.length === 0 ? 'no signs of fatigue' : 'a few mild fatigue signals'} across recent entries.`;
+    summaryText = `Recent study behaviour shows ${stabilityLabel.toLowerCase()} consistency with ${burnoutSignals.length === 0 ? 'no significant fatigue indicators' : 'mild fatigue signals'} across the most recent sessions.`;
   }
 
   // ── 6. RENDER ─────────────────────────────────────────────────────────────
@@ -2964,11 +2626,11 @@ function renderAIBehaviorAnalysis(entries) {
 
   const burnoutHTML = burnoutDetected
     ? `
-      <div class="aba-section-label">Fatigue & Load</div>
+      <div class="aba-section-label">Fatigue & Load Analysis</div>
       <div class="aba-burnout-box">
         <div class="aba-burnout-icon">⚠️</div>
         <div class="aba-burnout-body">
-          <div class="aba-burnout-title">You might be pushing a bit too hard.</div>
+          <div class="aba-burnout-title">Performance decline indicators detected.</div>
           <div class="aba-burnout-desc">${burnoutInsightMessages.join(' ')}</div>
           <div class="aba-burnout-signals">
             ${burnoutSignals.map(s => `<span class="aba-burnout-tag">${s.label} — ${s.detail}</span>`).join('')}
@@ -2977,18 +2639,18 @@ function renderAIBehaviorAnalysis(entries) {
       </div>
     `
     : `
-      <div class="aba-section-label">Fatigue & Load</div>
+      <div class="aba-section-label">Fatigue & Load Analysis</div>
       <div class="aba-ok-box">
         <span style="font-size:1.1rem">✓</span>
-        <span>No signs of overload. Your hours, mood, and output are all holding steady.</span>
+        <span>No significant fatigue indicators detected. Hours, cognitive state, and productivity output remain within balanced ranges.</span>
       </div>
     `;
 
   const stabilityHTML = `
-    <div class="aba-section-label">Consistency</div>
+    <div class="aba-section-label">Productivity Stability</div>
     <div class="insight ${stabilityClass}" style="margin-bottom:0.8rem">
       <span class="emoji">📉</span>
-      <span class="insight-text"><strong>${stabilityLabel}</strong> — ${stabilityDesc}</span>
+      <span><strong>${stabilityLabel}</strong> — ${stabilityDesc}</span>
     </div>
   `;
 
@@ -2996,13 +2658,13 @@ function renderAIBehaviorAnalysis(entries) {
     <div class="aba-section-label">Focus Efficiency</div>
     <div class="insight ${focusInsight.type}" style="margin-bottom:0.8rem">
       <span class="emoji">⏱</span>
-      <span class="insight-text">${focusInsight.text}</span>
+      <span>${focusInsight.text}</span>
     </div>
   ` : '';
 
   const summaryHTML = `
-    <div class="aba-section-label">Takeaway</div>
-    <div style="padding:1rem 1.1rem;border-radius:10px;background:var(--bg);border:1px solid var(--border);font-size:0.88rem;line-height:1.65;color:var(--text)">
+    <div class="aba-section-label">Summary</div>
+    <div style="padding:0.9rem 1rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:0.88rem;line-height:1.6;color:var(--text)">
       ${summaryText}
     </div>
   `;
@@ -3053,18 +2715,14 @@ function render() {
   } else {
     noData.style.display = 'none';
     [...entries].reverse().forEach(e => {
-      const moodDots = Array.from({length:5}, (_,i) =>
-        `<span class="score-dot ${i < e.mood ? 'filled-mood' : ''}"></span>`).join('');
-      const prodDots = Array.from({length:5}, (_,i) =>
-        `<span class="score-dot ${i < e.productivity ? 'filled-prod' : ''}"></span>`).join('');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="Date">${e.date}</td>
-        <td data-label="Subject"><span class="badge badge-subject">${e.subject || '—'}</span></td>
-        <td data-label="Duration"><span class="session-hours">${e.hours}h</span></td>
-        <td data-label="Mood"><span class="badge badge-mood">${e.mood}/5</span> <span class="score-dots">${moodDots}</span></td>
-        <td data-label="Productivity"><span class="badge badge-prod">${e.productivity}/5</span> <span class="score-dots">${prodDots}</span></td>
-        <td><button class="delete-btn" onclick="deleteEntry(${e.id})" title="Remove">✕</button></td>
+        <td>${e.date}</td>
+        <td><span class="badge badge-subject">${e.subject || '—'}</span></td>
+        <td>${e.hours}h</td>
+        <td><span class="badge badge-mood">${e.mood}/5</span></td>
+        <td><span class="badge badge-prod">${e.productivity}/5</span></td>
+        <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -3128,7 +2786,7 @@ function render() {
     options: {
       responsive: true,
       maintainAspectRatio: true,
-      aspectRatio: window.innerWidth <= 480 ? 1.6 : window.innerWidth <= 768 ? 2.0 : 2.8,
+      aspectRatio: 2.8,    // wider than tall — gives charts room to breathe
       layout: {
         padding: { top: 8, right: 8, bottom: 4, left: 4 }
       },
