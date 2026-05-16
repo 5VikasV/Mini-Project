@@ -9,6 +9,8 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { overflow-x: hidden; }
+
   :root {
     --bg: #f5f2eb;
     --surface: #fffdf7;
@@ -31,6 +33,7 @@
     color: var(--text);
     min-height: 100vh;
     display: flex;
+    overflow-x: hidden;
   }
 
   /* ── SIDEBAR ─────────────────────────────────────────────── */
@@ -700,23 +703,246 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ── RESPONSIVE BREAKPOINTS ──────────────────────────────── */
+
   @media (max-width: 900px) {
     .form-row { grid-template-columns: 1fr 1fr; }
     .dash-grid-3 { grid-template-columns: 1fr 1fr; }
+    .content { padding: 1.5rem 1.75rem 2.5rem; }
+    .topbar { padding: 1.4rem 1.75rem 1.2rem; }
+  }
+
+  /* ── MOBILE BOTTOM NAV + COLLAPSIBLE SIDEBAR ─────────────── */
+  @media (max-width: 700px) {
+    :root { --sidebar-w: 0px; }
+
+    /* Hide desktop sidebar entirely */
+    .sidebar {
+      display: none;
+    }
+
+    /* Main takes full width */
+    .main {
+      margin-left: 0;
+      padding-bottom: 72px; /* space for bottom nav */
+    }
+
+    /* Topbar */
+    .topbar {
+      padding: 1rem 1rem 0.85rem;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+
+    .topbar-greeting h1 {
+      font-size: 1.25rem;
+    }
+
+    .topbar-greeting p {
+      font-size: 0.8rem;
+    }
+
+    /* Show stats below greeting in a row on mobile */
+    .topbar-stats {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      width: 100%;
+    }
+
+    .topbar-stat {
+      text-align: left;
+      padding: 0.3rem 0.5rem;
+    }
+
+    .topbar-stat .ts-value {
+      font-size: 1.15rem;
+    }
+
+    .topbar-stat .ts-label {
+      font-size: 0.6rem;
+    }
+
+    .topbar-divider {
+      height: 24px;
+    }
+
+    /* Content padding */
+    .content {
+      padding: 1rem 0.9rem 1.5rem;
+    }
+
+    /* Panel title */
+    .panel-title {
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Cards */
+    .card {
+      padding: 1.1rem 1rem;
+      margin-bottom: 0.9rem;
+      border-radius: 11px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      margin-bottom: 0.9rem;
+    }
+
+    /* Grids */
+    .dash-grid,
+    .dash-grid-3 {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    /* Stat cards smaller on mobile */
+    .stat-value { font-size: 1.65rem; }
+
+    /* Form */
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .field input,
+    .field select {
+      padding: 0.75rem 0.9rem;
+      font-size: 1rem; /* prevent iOS zoom */
+    }
+
+    .btn {
+      padding: 0.85rem;
+      font-size: 1rem;
+      border-radius: 10px;
+    }
+
+    /* Charts — flatter aspect ratio on narrow screens */
+    .chart-wrap canvas { max-width: 100%; }
+
+    /* Table — horizontal scroll only inside table-wrap */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -1rem;
+      padding: 0 1rem;
+    }
+
+    table { font-size: 0.82rem; min-width: 420px; }
+
+    thead th { padding: 0 0.5rem 0.75rem; font-size: 0.65rem; }
+    tbody td { padding: 0.6rem 0.5rem; }
+
+    /* Progress bar rows */
+    .progress-subject-row {
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .progress-subject-row .ps-name {
+      width: 80px;
+      font-size: 0.82rem;
+    }
+
+    .ps-trend { min-width: 90px; font-size: 0.72rem; }
+
+    /* Pattern grid and subject grid — already have 600px breakpoints, reinforce */
+    .pattern-grid,
+    .subject-grid { grid-template-columns: 1fr; }
+
+    /* Advisor inputs */
+    .advisor-inputs { grid-template-columns: 1fr; gap: 0.75rem; }
+
+    /* Plan steps */
+    .plan-step { padding: 0.65rem 0.8rem; font-size: 0.85rem; }
+    .plan-step .step-time { font-size: 0.95rem; min-width: 44px; }
+
+    /* ABA style box */
+    .aba-style-box { flex-direction: column; gap: 0.6rem; padding: 0.9rem; }
+    .aba-style-icon { font-size: 1.5rem; }
+    .aba-style-name { font-size: 1.1rem; }
+
+    /* Burnout box */
+    .aba-burnout-box { padding: 0.85rem; }
+
+    /* Weekly trend box */
+    .weekly-trend-box { gap: 0.75rem; padding: 0.8rem 0.9rem; }
+
+    /* Insights */
+    .insight { padding: 0.75rem 0.85rem; font-size: 0.84rem; }
+  }
+
+  /* ── MOBILE BOTTOM NAVIGATION BAR ───────────────────────── */
+  .mobile-nav {
+    display: none;
   }
 
   @media (max-width: 700px) {
-    .sidebar { width: 60px; }
-    .sidebar-logo, .nav-item span, .sidebar-footer, .nav-section-label { display: none; }
-    .nav-item { justify-content: center; padding: 0.75rem; }
-    .nav-item.active::before { display: none; }
-    .main { margin-left: 60px; }
-    .topbar { padding: 1.2rem 1.4rem; }
-    .content { padding: 1.4rem 1.4rem 2.5rem; }
-    .dash-grid { grid-template-columns: 1fr; }
-    .dash-grid-3 { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .topbar-stats { display: none; }
+    .mobile-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 20px rgba(26,23,20,0.08);
+      padding: 0 0 env(safe-area-inset-bottom, 0);
+    }
+
+    .mobile-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 0.55rem 0.25rem 0.5rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color 0.15s, background 0.15s;
+      border-radius: 0;
+      position: relative;
+    }
+
+    .mobile-nav-item .mn-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      transition: transform 0.15s;
+    }
+
+    .mobile-nav-item.active {
+      color: var(--accent);
+    }
+
+    .mobile-nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 2.5px;
+      background: var(--accent);
+      border-radius: 0 0 3px 3px;
+    }
+
+    .mobile-nav-item.active .mn-icon {
+      transform: translateY(-1px);
+    }
+
+    .mobile-nav-item:active {
+      background: var(--bg);
+    }
   }
 
   /* Session Advisor */
@@ -1430,6 +1656,30 @@
   </div><!-- /content -->
 </div><!-- /main -->
 
+<!-- ── MOBILE BOTTOM NAV ──────────────────────────────────────── -->
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-item active" onclick="showPanel('dashboard', this); syncMobileNav(this)">
+    <span class="mn-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('sessions', this); syncMobileNav(this)">
+    <span class="mn-icon">✏️</span>
+    <span>Sessions</span>
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('analytics', this); syncMobileNav(this)">
+    <span class="mn-icon">📈</span>
+    <span>Analytics</span>
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('insights', this); syncMobileNav(this)">
+    <span class="mn-icon">💡</span>
+    <span>Insights</span>
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('advisor', this); syncMobileNav(this)">
+    <span class="mn-icon">🧭</span>
+    <span>Advisor</span>
+  </button>
+</nav>
+
 <script>
 const STORAGE_KEY = 'study_tracker_entries';
 let chart = null;
@@ -1440,6 +1690,18 @@ function showPanel(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
+  // Sync desktop nav
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + name + "'")) {
+      n.classList.add('active');
+    }
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Keep mobile bottom nav active state in sync
+function syncMobileNav(btn) {
+  document.querySelectorAll('.mobile-nav-item').forEach(n => n.classList.remove('active'));
   btn.classList.add('active');
 }
 
@@ -2786,7 +3048,7 @@ function render() {
     options: {
       responsive: true,
       maintainAspectRatio: true,
-      aspectRatio: 2.8,    // wider than tall — gives charts room to breathe
+      aspectRatio: window.innerWidth < 700 ? 1.6 : 2.8,    // narrower on mobile
       layout: {
         padding: { top: 8, right: 8, bottom: 4, left: 4 }
       },
