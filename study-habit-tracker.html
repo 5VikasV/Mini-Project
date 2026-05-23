@@ -4,1404 +4,2028 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Study Habit Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; scroll-behavior: smooth; }
 
-  html { overflow-x: hidden; }
+:root {
+  --bg:         #f7f7f6;
+  --surface:    #ffffff;
+  --border:     #e4e2de;
+  --border-2:   #d0cdc8;
+  --text:       #1c1917;
+  --text-2:     #44403c;
+  --muted:      #78716c;
+  --muted-2:    #a8a29e;
+  --accent:     #b45309;
+  --accent-dim: #fef3c7;
+  --accent-border: #d97706;
+  --green:      #15803d;
+  --green-dim:  #dcfce7;
+  --green-border: #86efac;
+  --red:        #b91c1c;
+  --red-dim:    #fee2e2;
+  --red-border: #fca5a5;
+  --indigo:     #4338ca;
+  --indigo-dim: #eef2ff;
+  --indigo-border: #a5b4fc;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow:     0 2px 8px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --radius:     8px;
+  --radius-sm:  5px;
+  --sidebar-w:  228px;
+  --font:       'IBM Plex Sans', system-ui, sans-serif;
+  --mono:       'IBM Plex Mono', monospace;
+}
 
-  :root {
-    --bg: #f5f2eb;
-    --surface: #fffdf7;
-    --border: #e0d9cc;
-    --text: #1a1714;
-    --muted: #7a7368;
-    --accent: #c2622f;
-    --accent-light: #f2e8e0;
-    --accent2: #3a6b5a;
-    --accent2-light: #e2eeea;
-    --shadow: 0 2px 16px rgba(26,23,20,0.07);
-    --shadow-md: 0 4px 24px rgba(26,23,20,0.10);
-    --radius: 14px;
-    --sidebar-w: 220px;
-  }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    overflow-x: hidden;
-  }
+/* ── SIDEBAR ──────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
 
-  /* ── SIDEBAR ─────────────────────────────────────────────── */
-  .sidebar {
-    width: var(--sidebar-w);
-    min-height: 100vh;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 0 2rem;
-    position: fixed;
-    top: 0; left: 0;
-    z-index: 100;
-    box-shadow: 2px 0 16px rgba(26,23,20,0.05);
-  }
+.sidebar-logo {
+  padding: 20px 20px 18px;
+  border-bottom: 1px solid var(--border);
+}
 
-  .sidebar-logo {
-    padding: 0 1.5rem 2rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 1.5rem;
-  }
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
 
-  .sidebar-logo .logo-dot {
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    display: inline-block;
-    margin-bottom: 0.55rem;
-  }
+.logo-icon {
+  width: 26px; height: 26px;
+  background: var(--text);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 
-  .sidebar-logo h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.15rem;
-    color: var(--text);
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-  }
+.logo-icon svg {
+  width: 14px; height: 14px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
-  .sidebar-logo p {
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-    font-weight: 400;
-  }
+.sidebar-logo h2 {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
 
-  .nav-section-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    font-weight: 600;
-    padding: 0 1.5rem;
-    margin-bottom: 0.4rem;
-    margin-top: 0.5rem;
-  }
+.sidebar-logo p {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
 
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.6rem 1.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    border-radius: 0;
-    transition: color 0.15s, background 0.15s;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-    position: relative;
-  }
+.nav-group {
+  padding: 12px 0 4px;
+}
 
-  .nav-item .nav-icon { font-size: 0.95rem; width: 18px; flex-shrink: 0; }
+.nav-group-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  padding: 0 16px;
+  margin-bottom: 3px;
+}
 
-  .nav-item:hover {
-    color: var(--text);
-    background: var(--bg);
-  }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 16px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: color 0.12s, background 0.12s;
+  border-radius: 0;
+  position: relative;
+  font-family: var(--font);
+}
 
-  .nav-item.active {
-    color: var(--accent);
-    background: var(--accent-light);
-    font-weight: 600;
-  }
+.nav-item:hover {
+  color: var(--text);
+  background: var(--bg);
+}
 
-  .nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent);
-    border-radius: 0 2px 2px 0;
-  }
+.nav-item.active {
+  color: var(--text);
+  background: var(--bg);
+  font-weight: 500;
+}
 
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 1.2rem 1.5rem 0;
-    border-top: 1px solid var(--border);
-  }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 2px;
+  background: var(--text);
+  border-radius: 0 2px 2px 0;
+}
 
-  .sidebar-footer p {
-    font-size: 0.72rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+}
 
-  /* ── MAIN CONTENT ────────────────────────────────────────── */
+.nav-item.active .nav-icon,
+.nav-item:hover .nav-icon {
+  opacity: 0.8;
+}
+
+.nav-icon svg {
+  width: 15px; height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-footer p {
+  font-size: 11.5px;
+  color: var(--muted-2);
+  line-height: 1.6;
+}
+
+/* ── MAIN ──────────────────────────────────────────────────── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ──────────────────────────────────────────────── */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 28px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-greeting h1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.topbar-greeting p {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.topbar-stats {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.topbar-stat {
+  padding: 6px 14px;
+  text-align: right;
+}
+
+.ts-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-2);
+  margin-bottom: 2px;
+}
+
+.ts-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+/* ── STATS ROW (hidden, JS compat) ──────────────────────── */
+.stats-row { display: none; }
+
+/* ── CONTENT ──────────────────────────────────────────────── */
+.content {
+  padding: 24px 28px 40px;
+  flex: 1;
+}
+
+.panel { display: none; }
+.panel.active {
+  display: block;
+  animation: fadeUp 0.22s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.panel-subtitle {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* ── CARDS ──────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.card-title-icon {
+  width: 18px; height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.card-title-icon svg {
+  width: 15px; height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── GRIDS ──────────────────────────────────────────────── */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.dash-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* ── STAT CARDS ──────────────────────────────────────────── */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.stat-badge {
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.stat-badge.amber { background: var(--accent-dim); color: var(--accent); }
+.stat-badge.green { background: var(--green-dim);  color: var(--green); }
+.stat-badge.indigo { background: var(--indigo-dim); color: var(--indigo); }
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.stat-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.stat-trend {
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--muted);
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── INSIGHT ITEMS ──────────────────────────────────────── */
+.insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  line-height: 1.6;
+  margin-bottom: 6px;
+  border: 1px solid transparent;
+}
+
+.insight.positive {
+  background: #f6faf7;
+  border-color: #d1e8d8;
+  color: #2d5a3d;
+}
+
+.insight.warning {
+  background: #fdf8f0;
+  border-color: #e8d5b0;
+  color: #6b4c1e;
+}
+
+.insight-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.insight.positive .insight-dot { background: #3a7d52; }
+.insight.warning  .insight-dot { background: #b07a2e; }
+
+.insight .emoji {
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  line-height: 1.55;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.no-insight {
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  padding: 20px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-2);
+}
+
+/* ── FORM ──────────────────────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 13.5px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--text-2);
+  box-shadow: 0 0 0 3px rgba(28,25,23,0.07);
+  background: var(--surface);
+}
+
+.field input::placeholder { color: var(--muted-2); }
+
+.btn {
+  width: 100%;
+  padding: 9px 16px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn:hover { opacity: 0.85; }
+.btn:active { opacity: 0.75; }
+
+/* ── TABLE ──────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  padding: 0 10px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg); }
+
+tbody td {
+  padding: 10px 10px;
+  color: var(--text-2);
+  vertical-align: middle;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--mono);
+}
+
+.badge-mood    { background: var(--accent-dim); color: var(--accent); }
+.badge-prod    { background: var(--green-dim);  color: var(--green); }
+.badge-subject { background: var(--indigo-dim); color: var(--indigo); }
+
+.delete-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--muted-2);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  font-family: var(--font);
+}
+.delete-btn:hover { color: var(--red); border-color: var(--red-border); background: var(--red-dim); }
+
+/* ── CHART ──────────────────────────────────────────────── */
+.chart-wrap {
+  position: relative;
+  margin-top: 4px;
+}
+
+.chart-wrap canvas { display: block; max-width: 100%; }
+
+.chart-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.chart-legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chart-legend-line {
+  width: 18px; height: 2px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── PATTERN/SUBJECT GRIDS ──────────────────────────────── */
+.pattern-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pattern-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.pattern-item.highlight {
+  background: var(--green-dim);
+  border-color: var(--green-border);
+}
+
+.pattern-item .p-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.pattern-item.highlight .p-label { color: #166534; }
+
+.pattern-item .p-value {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.pattern-item.highlight .p-value { color: var(--green); }
+
+.pattern-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 14px 0;
+}
+
+/* Bars */
+.duration-bars, .subject-bars { display: flex; flex-direction: column; gap: 7px; }
+
+.dur-row, .sub-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.dur-label, .sub-label {
+  width: 72px;
+  color: var(--muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+.dur-bar-wrap, .sub-bar-wrap {
+  flex: 1;
+  background: var(--border);
+  border-radius: 3px;
+  height: 5px;
+  overflow: hidden;
+}
+
+.dur-bar, .sub-bar {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--muted-2);
+  transition: width 0.5s ease;
+}
+
+.dur-bar.best, .sub-bar.strong { background: var(--green); }
+.sub-bar.weak { background: var(--accent-border); }
+
+.dur-val, .sub-val {
+  width: 26px;
+  text-align: right;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* ── PROGRESS TRACKING ──────────────────────────────────── */
+.progress-subject-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.progress-subject-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.progress-subject-row .ps-name {
+  width: 96px;
+  font-weight: 500;
+  font-size: 12.5px;
+  color: var(--text);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress-subject-row .ps-bar-wrap {
+  flex: 1;
+  background: var(--border);
+  border-radius: 3px;
+  height: 5px;
+  overflow: hidden;
+}
+
+.progress-subject-row .ps-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.ps-bar.trend-improving { background: var(--green); }
+.ps-bar.trend-stable    { background: var(--indigo); }
+.ps-bar.trend-declining { background: var(--accent-border); }
+
+.progress-subject-row .ps-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  min-width: 96px;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ps-trend.trend-improving { background: var(--green-dim); color: var(--green); }
+.ps-trend.trend-stable    { background: var(--indigo-dim); color: var(--indigo); }
+.ps-trend.trend-declining { background: var(--red-dim); color: var(--red); }
+
+.ps-delta {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mono);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ps-delta.pos { color: var(--green); }
+.ps-delta.neg { color: var(--red); }
+.ps-delta.neu { color: var(--muted); }
+
+.progress-feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.weekly-trend-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.weekly-trend-box .wt-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--muted);
+}
+.weekly-trend-box .wt-body { flex: 1; }
+
+.weekly-trend-box .wt-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.weekly-trend-box .wt-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.weekly-trend-box.wt-improving { background: #f6faf7; border-color: #c8dece; }
+.weekly-trend-box.wt-improving .wt-value { color: #2d5a3d; }
+.weekly-trend-box.wt-improving .wt-icon  { color: #3a7d52; }
+
+.weekly-trend-box.wt-declining { background: #fdf6f5; border-color: #e0c8c2; }
+.weekly-trend-box.wt-declining .wt-value { color: #7a3228; }
+.weekly-trend-box.wt-declining .wt-icon  { color: #9a4438; }
+
+.weekly-trend-box.wt-stable { background: var(--bg); border-color: var(--border-2); }
+.weekly-trend-box.wt-stable .wt-value { color: var(--text-2); }
+.weekly-trend-box.wt-stable .wt-icon  { color: var(--muted); }
+
+.progress-section-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 16px;
+}
+
+.progress-section-label:first-child { margin-top: 0; }
+
+/* ── ABA ANALYSIS ──────────────────────────────────────── */
+.aba-style-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.aba-style-icon {
+  width: 28px; height: 28px;
+  border-radius: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.aba-style-body { flex: 1; }
+
+.aba-style-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.aba-style-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.aba-style-desc {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.aba-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.aba-signal-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  font-family: var(--mono);
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border-2);
+}
+
+.aba-burnout-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: #fdf8f6;
+  border: 1px solid #e8cfc6;
+  margin-bottom: 10px;
+}
+
+.aba-burnout-icon {
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  background: #fdeee8;
+  border: 1px solid #e8cfc6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.aba-burnout-body { flex: 1; }
+
+.aba-burnout-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #9a3c28;
+  margin-bottom: 4px;
+}
+
+.aba-burnout-desc {
+  font-size: 12px;
+  color: #7a4535;
+  line-height: 1.6;
+}
+
+.aba-burnout-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.aba-burnout-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  background: #fdeee8;
+  color: #9a3c28;
+  border: 1px solid #e8cfc6;
+  font-family: var(--mono);
+}
+
+.aba-ok-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  background: #f6faf7;
+  border: 1px solid #c8dece;
+  font-size: 12.5px;
+  color: #2d5a3d;
+  margin-bottom: 10px;
+}
+
+.aba-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 18px;
+}
+
+.aba-section-label:first-child { margin-top: 0; }
+
+/* ── REPLAY ─────────────────────────────────────────────── */
+.replay-no-data {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+  font-size: 13px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  line-height: 1.7;
+}
+
+.replay-no-data-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+
+/* ── Summary stat row ── */
+.replay-summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.replay-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px 14px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.replay-stat::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 18px; right: 18px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--border);
+}
+
+.replay-stat.rs-accent::after  { background: #3a7d52; }
+.replay-stat.rs-amber::after   { background: #c8951a; }
+.replay-stat.rs-indigo::after  { background: #4338ca; }
+.replay-stat.rs-neutral::after { background: var(--muted-2); }
+
+.replay-stat .rs-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.replay-stat .rs-value {
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.replay-stat .rs-sub {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── Timeline ── */
+.replay-timeline {
+  position: relative;
+  padding-left: 36px;
+  margin-top: 2px;
+}
+
+.replay-timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 14px;
+  bottom: 14px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--border) 0%, var(--border-2) 40%, var(--border) 100%);
+}
+
+.replay-event {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.replay-event-dot {
+  position: absolute;
+  left: -29px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--border-2);
+  z-index: 1;
+}
+
+/* Timeline connector tick */
+.replay-event-dot::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.replay-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12.5px;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  cursor: default;
+}
+
+.replay-block:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-2);
+}
+
+.replay-block.rb-high   { border-left: 2px solid #3a7d52; }
+.replay-block.rb-mid    { border-left: 2px solid #c8951a; }
+.replay-block.rb-low    { border-left: 2px solid #b91c1c; }
+.replay-block.rb-break  { border-left: 2px solid var(--border-2); background: var(--bg); opacity: 0.6; }
+.replay-block.rb-streak { border-left: 2px solid #4338ca; }
+
+.replay-event-dot.dot-high   { background: #3a7d52; box-shadow: 0 0 0 1px #86efac; }
+.replay-event-dot.dot-mid    { background: #c8951a; box-shadow: 0 0 0 1px #fcd34d; }
+.replay-event-dot.dot-low    { background: #b91c1c; box-shadow: 0 0 0 1px #fca5a5; }
+.replay-event-dot.dot-break  { background: var(--border-2); box-shadow: 0 0 0 1px var(--border); }
+.replay-event-dot.dot-streak { background: #4338ca; box-shadow: 0 0 0 1px #a5b4fc; }
+
+.rb-index {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted-2);
+  min-width: 20px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.rb-date {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  min-width: 56px;
+  flex-shrink: 0;
+  padding-right: 2px;
+}
+
+.rb-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.rb-subject {
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.3;
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rb-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.rb-tag {
+  font-size: 10px;
+  font-weight: 500;
+  font-family: var(--mono);
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.rb-tag.t-prod-high  { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.rb-tag.t-prod-mid   { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.rb-tag.t-prod-low   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.rb-tag.t-hours      { background: var(--indigo-dim); color: #3730a3; border: 1px solid var(--indigo-border); }
+.rb-tag.t-mood       { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+.rb-tag.t-streak     { background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe; }
+.rb-tag.t-break      { background: var(--bg); color: var(--muted-2); border: 1px solid var(--border); }
+.rb-tag.t-peak       { background: #f0fdf4; color: #14532d; border: 1px solid #86efac; font-weight: 600; }
+.rb-tag.t-drop       { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+
+.rb-event-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 34px;
+  text-align: right;
+}
+
+/* ── Trend visualization ── */
+.replay-trend-section {
+  margin-bottom: 14px;
+}
+
+.replay-trend-chart-area {
+  position: relative;
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 0 1px;
+  margin-bottom: 2px;
+}
+
+/* Horizontal reference lines */
+.replay-trend-chart-area::before,
+.replay-trend-chart-area::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--border);
+  pointer-events: none;
+}
+
+.replay-trend-chart-area::before { top: 0; }
+.replay-trend-chart-area::after  { top: 50%; }
+
+.replay-trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  flex: 1;
+  height: 100%;
+}
+
+.replay-trend-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.replay-trend-bar-wrap:hover .replay-trend-bar {
+  opacity: 0.75;
+}
+
+.replay-trend-bar {
+  width: 100%;
+  min-height: 3px;
+  border-radius: 2px 2px 0 0;
+  transition: opacity 0.15s;
+}
+
+.replay-trend-bar.prod-5 { background: #3a7d52; }
+.replay-trend-bar.prod-4 { background: #6aab80; }
+.replay-trend-bar.prod-3 { background: #c8951a; }
+.replay-trend-bar.prod-2 { background: #d97706; }
+.replay-trend-bar.prod-1 { background: #b91c1c; }
+
+.replay-trend-axis {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.replay-trend-axis-label {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--muted-2);
+}
+
+/* ── Replay Insights ── */
+.replay-insight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.replay-insight-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: flex-start;
+  gap: 0;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  line-height: 1.65;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.replay-insight-item.ri-green  { border-color: #c8dece; }
+.replay-insight-item.ri-amber  { border-color: #e8d5b0; }
+.replay-insight-item.ri-indigo { border-color: #c7d2fe; }
+.replay-insight-item.ri-red    { border-color: #fecaca; }
+
+.replay-insight-icon {
+  width: 28px;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.replay-insight-item.ri-green  .replay-insight-icon { background: #f0fdf4; color: #3a7d52; }
+.replay-insight-item.ri-amber  .replay-insight-icon { background: #fffbeb; color: #b07a2e; }
+.replay-insight-item.ri-indigo .replay-insight-icon { background: #eef2ff; color: #4338ca; }
+.replay-insight-item.ri-red    .replay-insight-icon { background: #fef2f2; color: #b91c1c; }
+
+.replay-insight-body {
+  padding: 11px 13px;
+}
+
+.replay-insight-item.ri-green  .replay-insight-body { color: #1e3a2a; }
+.replay-insight-item.ri-amber  .replay-insight-body { color: #5a3d18; }
+.replay-insight-item.ri-indigo .replay-insight-body { color: #2e2777; }
+.replay-insight-item.ri-red    .replay-insight-body { color: #7f1d1d; }
+
+.replay-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 18px;
+}
+
+.replay-section-label:first-child { margin-top: 0; }
+
+/* ── Legend row ── */
+.replay-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.replay-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.replay-legend-swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .replay-summary-row { grid-template-columns: 1fr 1fr; }
+  .rb-event-label { display: none; }
+  .rb-date { min-width: 44px; font-size: 10px; }
+  .rb-index { display: none; }
+  .rb-divider { display: none; }
+}
+
+@media (max-width: 480px) {
+  .replay-summary-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── ADVISOR ────────────────────────────────────────────── */
+.advisor-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.advisor-result {
+  display: none;
+  margin-top: 20px;
+  animation: fadeUp 0.25s ease both;
+}
+
+.advisor-result.visible { display: block; }
+
+/* ── Context bar (replaces emoji banner) ── */
+.adv-context-bar {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.adv-context-bar.mood-high { border-color: #c8dece; }
+.adv-context-bar.mood-mid  { border-color: var(--border-2); }
+.adv-context-bar.mood-low  { border-color: #e0d0b0; }
+
+.adv-context-stripe {
+  width: 4px;
+  flex-shrink: 0;
+}
+.mood-high .adv-context-stripe { background: #3a7d52; }
+.mood-mid  .adv-context-stripe { background: var(--muted-2); }
+.mood-low  .adv-context-stripe { background: #c8951a; }
+
+.adv-context-body {
+  flex: 1;
+  padding: 14px 16px;
+}
+
+.adv-context-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.adv-context-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+}
+
+.adv-context-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mood-high .adv-context-status { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.mood-mid  .adv-context-status { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+.mood-low  .adv-context-status { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+
+.adv-context-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 3px;
+}
+
+.adv-context-desc {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.adv-context-right {
+  padding: 14px 18px 14px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.adv-context-right-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  font-weight: 600;
+}
+
+.adv-context-right-value {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.adv-context-right-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+/* ── Plan header ── */
+.adv-plan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.adv-plan-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+}
+
+.adv-plan-meta {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+/* ── Session plan steps ── */
+.advisor-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.plan-step {
+  display: grid;
+  grid-template-columns: 4px 52px 1px 1fr auto;
+  align-items: center;
+  gap: 0 10px;
+  padding: 10px 12px 10px 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.12s, box-shadow 0.12s;
+  overflow: hidden;
+}
+
+.plan-step:hover {
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-sm);
+}
+
+.plan-step .step-marker {
+  align-self: stretch;
+  border-radius: 0;
+  width: 4px;
+  margin-right: 2px;
+}
+
+.plan-step .step-time {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: right;
+  flex-shrink: 0;
+  padding-right: 2px;
+}
+
+.plan-step .step-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.plan-step .step-info { flex: 1; min-width: 0; }
+
+.plan-step .step-subject {
+  font-weight: 500;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-step .step-tag-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.plan-step.step-weak   { border-color: #ead9b6; background: #fefbf4; }
+.plan-step.step-weak   .step-time    { color: #a0732a; }
+.plan-step.step-weak   .step-subject { color: #4a3218; }
+.plan-step.step-weak   .step-marker  { background: #c8951a; }
+.plan-step.step-weak   .step-tag-pill { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+
+.plan-step.step-strong { border-color: #c0dbc8; background: #f5faf7; }
+.plan-step.step-strong .step-time    { color: #2e6b44; }
+.plan-step.step-strong .step-subject { color: #1a3d28; }
+.plan-step.step-strong .step-marker  { background: #3a7d52; }
+.plan-step.step-strong .step-tag-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+.plan-step.step-other  { border-color: var(--border); background: var(--surface); }
+.plan-step.step-other  .step-time    { color: var(--muted); }
+.plan-step.step-other  .step-subject { color: var(--text-2); }
+.plan-step.step-other  .step-marker  { background: var(--border-2); }
+.plan-step.step-other  .step-tag-pill { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+.plan-step.step-break  {
+  border-style: dashed;
+  background: var(--bg);
+  opacity: 0.6;
+}
+.plan-step.step-break .step-subject  { color: var(--muted-2); font-weight: 400; font-size: 12px; }
+.plan-step.step-break .step-marker   { background: var(--border); }
+.plan-step.step-break .step-tag-pill { background: var(--surface); color: var(--muted-2); border: 1px solid var(--border); }
+.plan-step.step-break .step-time     { color: var(--muted-2); }
+
+/* ── Reasoning section ── */
+.adv-reasoning {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.adv-reasoning-header {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.adv-reasoning-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+}
+
+.adv-reasoning-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adv-reason-item {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.adv-reason-indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.adv-reason-indicator.ind-green  { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.adv-reason-indicator.ind-amber  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.adv-reason-indicator.ind-indigo { background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe; }
+.adv-reason-indicator.ind-neutral { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+.advisor-no-data {
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+  padding: 24px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-2);
+}
+
+.advisor-explanation {
+  margin-top: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid var(--border);
+}
+
+.advisor-explanation.mood-high { background: #f6faf7; color: #2d5a3d; border-color: #c8dece; }
+.advisor-explanation.mood-mid  { background: var(--bg); color: var(--text-2); border-color: var(--border); }
+.advisor-explanation.mood-low  { background: #fdf8f0; color: #5a3d18; border-color: #e0d0b0; }
+
+/* ── ML PREDICTION BOX ──────────────────────────────────── */
+#mlPrediction {
+  display: none;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-2);
+  background: var(--bg);
+}
+
+/* ── MOBILE NAV ──────────────────────────────────────────── */
+.mobile-nav { display: none; }
+
+/* ── NO DATA ──────────────────────────────────────────────── */
+.no-data {
+  text-align: center;
+  color: var(--muted);
+  padding: 28px;
+  font-size: 12.5px;
+}
+
+/* ── DIVIDER SECTION ──────────────────────────────────────── */
+.section-divider {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-2);
+  margin-bottom: 10px;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .form-row { grid-template-columns: 1fr 1fr; }
+  .dash-grid-3 { grid-template-columns: 1fr 1fr; }
+  .content { padding: 20px 20px 32px; }
+  .topbar { padding: 14px 20px; }
+}
+
+@media (max-width: 700px) {
+  :root { --sidebar-w: 0px; }
+
+  .sidebar { display: none; }
+
   .main {
-    margin-left: var(--sidebar-w);
-    flex: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    margin-left: 0;
+    padding-bottom: 64px;
   }
 
-  /* ── TOP WELCOME BAR ──────────────────────────────────────── */
   .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 1.6rem 2.5rem 1.4rem;
-    display: flex;
+    padding: 12px 14px;
+    flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
-    animation: fadeUp 0.4s ease both;
+    gap: 8px;
+    position: static;
   }
 
-  .topbar-greeting h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.65rem;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    line-height: 1.15;
-  }
-
-  .topbar-greeting p {
-    color: var(--muted);
-    font-size: 0.88rem;
-    margin-top: 0.3rem;
-    font-weight: 400;
-  }
+  .topbar-greeting h1 { font-size: 14px; }
+  .topbar-greeting p  { font-size: 11.5px; }
 
   .topbar-stats {
-    display: flex;
-    gap: 1.2rem;
-    align-items: center;
-  }
-
-  .topbar-stat {
-    text-align: right;
-    padding: 0.35rem 0.7rem;
-    border-radius: 9px;
-    transition: background 0.15s;
-  }
-
-  .topbar-stat:hover { background: var(--bg); }
-
-  .topbar-stat .ts-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 0.1rem;
-  }
-
-  .topbar-stat .ts-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.45rem;
-    color: var(--accent);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-  }
-
-  .topbar-divider {
-    width: 1px;
-    height: 32px;
-    background: var(--border);
-    margin: 0 0.2rem;
-  }
-
-  /* ── CONTENT PANELS ──────────────────────────────────────── */
-  .content {
-    padding: 2rem 2.5rem 3rem;
-    flex: 1;
-  }
-
-  .panel { display: none; }
-  .panel.active { display: block; animation: fadeUp 0.35s ease both; }
-
-  .panel-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.35rem;
-    color: var(--text);
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.01em;
-  }
-
-  /* ── CARDS ───────────────────────────────────────────────── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.6rem 1.8rem;
-    margin-bottom: 1.3rem;
-    box-shadow: var(--shadow);
-  }
-
-  .card-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.05rem;
-    margin-bottom: 1.2rem;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .card-title .icon { font-size: 1rem; }
-
-  /* ── DASHBOARD GRID ──────────────────────────────────────── */
-  .dash-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.1rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .dash-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.1rem;
-    margin-bottom: 1.1rem;
-  }
-
-  /* ── STAT CARDS ──────────────────────────────────────────── */
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.4rem 1.2rem;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
     gap: 0;
-    transition: box-shadow 0.2s, transform 0.2s;
-    position: relative;
-    overflow: hidden;
   }
 
-  .stat-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-  }
+  .topbar-stat { text-align: left; padding: 4px 12px 4px 0; }
+  .ts-value { font-size: 15px; }
 
-  /* Subtle top accent stripe */
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--border);
-    border-radius: var(--radius) var(--radius) 0 0;
-  }
+  .content { padding: 14px 14px 24px; }
 
-  .stat-card.accent-card::before  { background: var(--accent); }
-  .stat-card.accent2-card::before { background: var(--accent2); }
-  .stat-card.neutral-card::before { background: #8b7dc4; }
+  .dash-grid,
+  .dash-grid-3 { grid-template-columns: 1fr; }
 
-  .stat-card.accent-card  { border-color: rgba(194,98,47,0.2);  background: linear-gradient(135deg, #fffdf7 60%, #fdf0e8); }
-  .stat-card.accent2-card { border-color: rgba(58,107,90,0.2);  background: linear-gradient(135deg, #fffdf7 60%, #eaf4f0); }
-  .stat-card.neutral-card { border-color: rgba(139,125,196,0.2); background: linear-gradient(135deg, #fffdf7 60%, #f2f0fd); }
-
-  /* Icon + label row */
-  .stat-header {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .stat-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-  }
-
-  .accent-card  .stat-icon { background: rgba(194,98,47,0.12); }
-  .accent2-card .stat-icon { background: rgba(58,107,90,0.12); }
-  .neutral-card .stat-icon { background: rgba(139,125,196,0.12); }
-
-  .stat-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--muted);
-    font-weight: 600;
-    line-height: 1;
-  }
-
-  .stat-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2rem;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.3rem;
-  }
-
-  .accent-card  .stat-value { color: var(--accent); }
-  .accent2-card .stat-value { color: var(--accent2); }
-  .neutral-card .stat-value { color: #5b4ba8; }
-
-  .stat-sub {
-    font-size: 0.72rem;
-    color: var(--muted);
-    font-weight: 400;
-    line-height: 1.3;
-  }
-
-  /* Sparkle trend chip */
-  .stat-trend {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin-top: 0.55rem;
-    padding: 0.18rem 0.55rem;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    width: fit-content;
-  }
-
-  .accent-card  .stat-trend { background: rgba(194,98,47,0.1);  color: var(--accent); }
-  .accent2-card .stat-trend { background: rgba(58,107,90,0.1);  color: var(--accent2); }
-  .neutral-card .stat-trend { background: rgba(139,125,196,0.1); color: #5b4ba8; }
-
-  /* ── FORM ELEMENTS ───────────────────────────────────────── */
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .field label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.4rem;
-  }
+  .form-row { grid-template-columns: 1fr; gap: 10px; }
 
   .field input,
-  .field select {
-    width: 100%;
-    padding: 0.65rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.93rem;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    appearance: none;
+  .field select { padding: 10px 12px; font-size: 16px; }
+
+  .card { padding: 16px 14px; }
+
+  .stat-value { font-size: 24px; }
+
+  table { font-size: 12px; min-width: 400px; }
+  thead th { font-size: 10px; padding: 0 8px 8px; }
+  tbody td { padding: 9px 8px; }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -14px;
+    padding: 0 14px;
   }
 
-  .field input:focus,
-  .field select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(194,98,47,0.12);
-  }
+  .pattern-grid, .subject-grid { grid-template-columns: 1fr; }
 
-  .btn {
-    width: 100%;
-    padding: 0.78rem;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 9px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.93rem;
-    font-weight: 600;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(194,98,47,0.25);
-  }
+  .advisor-inputs { grid-template-columns: 1fr; gap: 10px; }
 
-  .btn:hover { background: #a8522a; box-shadow: 0 4px 14px rgba(194,98,47,0.3); }
-  .btn:active { transform: scale(0.99); }
+  .aba-style-box { flex-direction: column; gap: 8px; }
 
-  /* ── LEGACY STATS ROW (kept for JS compat) ───────────────── */
-  .stats-row {
-    display: none; /* stats moved to topbar */
-  }
+  .progress-subject-row { flex-wrap: wrap; gap: 7px; }
+  .progress-subject-row .ps-name { width: 80px; }
+  .ps-trend { min-width: 85px; font-size: 10px; }
 
-  .stat-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.2rem 1.5rem;
-    box-shadow: var(--shadow);
-    text-align: center;
-  }
-
-  /* ── INSIGHT TAGS ────────────────────────────────────────── */
-  .insight {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    border-radius: 9px;
-    font-size: 0.88rem;
-    line-height: 1.55;
-    margin-bottom: 0.7rem;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .insight.positive {
-    background: var(--accent2-light);
-    color: var(--accent2);
-    border: 1px solid #b8d9d1;
-  }
-
-  .insight.warning {
-    background: var(--accent-light);
-    color: var(--accent);
-    border: 1px solid #e5c4b0;
-  }
-
-  .insight .emoji { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-
-  .no-insight {
-    color: var(--muted);
-    font-size: 0.85rem;
-    text-align: center;
-    padding: 1.2rem 0.6rem;
-  }
-
-  /* ── TABLE ───────────────────────────────────────────────── */
-  .table-wrap { overflow-x: auto; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.87rem;
-  }
-
-  thead th {
-    text-align: left;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
-    padding: 0 0.7rem 0.85rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--bg); }
-
-  tbody td {
-    padding: 0.75rem 0.7rem;
-    color: var(--text);
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.76rem;
-    font-weight: 600;
-  }
-
-  .badge-mood    { background: #fef3e2; color: #b07c1a; }
-  .badge-prod    { background: var(--accent2-light); color: var(--accent2); }
-  .badge-subject { background: #eae6f8; color: #5b4ba8; }
-
-  /* Subject Insights */
-  .subject-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .subject-bars { display: flex; flex-direction: column; gap: 0.55rem; }
-
-  .sub-row { display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; }
-
-  .sub-label { width: 90px; color: var(--muted); flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  .sub-bar-wrap { flex: 1; background: var(--border); border-radius: 999px; height: 7px; overflow: hidden; }
-
-  .sub-bar { height: 100%; border-radius: 999px; background: #8b7dc4; transition: width 0.5s ease; }
-
-  .sub-bar.strong { background: var(--accent2); }
-  .sub-bar.weak   { background: var(--accent); }
-
-  .sub-val { width: 28px; text-align: right; color: var(--muted); font-size: 0.8rem; flex-shrink: 0; }
-
-  @media (max-width: 600px) {
-    .subject-grid { grid-template-columns: 1fr; }
-  }
-
-  .no-data {
-    text-align: center;
-    color: var(--muted);
-    padding: 2rem;
-    font-size: 0.9rem;
-  }
-
-  .delete-btn {
-    background: none;
-    border: none;
-    color: #ccc;
-    cursor: pointer;
-    font-size: 0.85rem;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    transition: color 0.2s;
-  }
-  .delete-btn:hover { color: var(--accent); }
-
-  /* Best Study Pattern */
-  .pattern-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.9rem;
-  }
-
-  .pattern-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.9rem 1rem;
-  }
-
-  .pattern-item .p-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 0.35rem;
-  }
-
-  .pattern-item .p-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.05rem;
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .pattern-item.highlight {
-    border-color: #b8d9d1;
-    background: var(--accent2-light);
-  }
-
-  .pattern-item.highlight .p-value { color: var(--accent2); }
-
-  .pattern-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 1rem 0;
-  }
-
-  .duration-bars { display: flex; flex-direction: column; gap: 0.55rem; }
-
-  .dur-row { display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; }
-
-  .dur-label { width: 72px; color: var(--muted); flex-shrink: 0; }
-
-  .dur-bar-wrap { flex: 1; background: var(--border); border-radius: 999px; height: 7px; overflow: hidden; }
-
-  .dur-bar { height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.5s ease; }
-
-  .dur-bar.best { background: var(--accent2); }
-
-  .dur-val { width: 28px; text-align: right; color: var(--muted); font-size: 0.8rem; flex-shrink: 0; }
-
-  @media (max-width: 600px) {
-    .pattern-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ── CHART CARD WRAP ────────────────────────────────────── */
-  .chart-wrap {
-    position: relative;
-    padding: 0.5rem 0.25rem 0.75rem;
-    margin-top: 0.5rem;
-  }
-
-  /* Ensure canvas never clips on small containers */
-  .chart-wrap canvas {
-    display: block;
-    max-width: 100%;
-  }
-
-  /* Chart card: title gets a cleaner divider with a subtle description slot */
-  .card:has(canvas) .card-title {
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0;   /* chart-subtitle handles spacing below the line */
-  }
-
-  /* Subtitle line under chart card title — shows axis context */
-  .chart-subtitle {
-    font-size: 0.78rem;
-    color: var(--muted);
-    font-weight: 400;
-    padding: 0.6rem 0 0.75rem;
-    line-height: 1.4;
-  }
-
-  /* Legend row rendered below each chart */
-  .chart-legend {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-    padding: 0.65rem 0.25rem 0;
-    border-top: 1px solid var(--border);
-    margin-top: 0.5rem;
-  }
-
-  .chart-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.76rem;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .chart-legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .chart-legend-line {
-    width: 22px;
-    height: 3px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── RESPONSIVE BREAKPOINTS ──────────────────────────────── */
-
-  @media (max-width: 900px) {
-    .form-row { grid-template-columns: 1fr 1fr; }
-    .dash-grid-3 { grid-template-columns: 1fr 1fr; }
-    .content { padding: 1.5rem 1.75rem 2.5rem; }
-    .topbar { padding: 1.4rem 1.75rem 1.2rem; }
-  }
-
-  /* ── MOBILE BOTTOM NAV + COLLAPSIBLE SIDEBAR ─────────────── */
-  @media (max-width: 700px) {
-    :root { --sidebar-w: 0px; }
-
-    /* Hide desktop sidebar entirely */
-    .sidebar {
-      display: none;
-    }
-
-    /* Main takes full width */
-    .main {
-      margin-left: 0;
-      padding-bottom: 72px; /* space for bottom nav */
-    }
-
-    /* Topbar */
-    .topbar {
-      padding: 1rem 1rem 0.85rem;
-      flex-direction: column;
-      gap: 0.6rem;
-      align-items: flex-start;
-    }
-
-    .topbar-greeting h1 {
-      font-size: 1.25rem;
-    }
-
-    .topbar-greeting p {
-      font-size: 0.8rem;
-    }
-
-    /* Show stats below greeting in a row on mobile */
-    .topbar-stats {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-      width: 100%;
-    }
-
-    .topbar-stat {
-      text-align: left;
-      padding: 0.3rem 0.5rem;
-    }
-
-    .topbar-stat .ts-value {
-      font-size: 1.15rem;
-    }
-
-    .topbar-stat .ts-label {
-      font-size: 0.6rem;
-    }
-
-    .topbar-divider {
-      height: 24px;
-    }
-
-    /* Content padding */
-    .content {
-      padding: 1rem 0.9rem 1.5rem;
-    }
-
-    /* Panel title */
-    .panel-title {
-      font-size: 1.15rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Cards */
-    .card {
-      padding: 1.1rem 1rem;
-      margin-bottom: 0.9rem;
-      border-radius: 11px;
-    }
-
-    .card-title {
-      font-size: 0.95rem;
-      margin-bottom: 0.9rem;
-    }
-
-    /* Grids */
-    .dash-grid,
-    .dash-grid-3 {
-      grid-template-columns: 1fr;
-      gap: 0.9rem;
-    }
-
-    /* Stat cards smaller on mobile */
-    .stat-value { font-size: 1.65rem; }
-
-    /* Form */
-    .form-row {
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-bottom: 0.9rem;
-    }
-
-    .field input,
-    .field select {
-      padding: 0.75rem 0.9rem;
-      font-size: 1rem; /* prevent iOS zoom */
-    }
-
-    .btn {
-      padding: 0.85rem;
-      font-size: 1rem;
-      border-radius: 10px;
-    }
-
-    /* Charts — flatter aspect ratio on narrow screens */
-    .chart-wrap canvas { max-width: 100%; }
-
-    /* Table — horizontal scroll only inside table-wrap */
-    .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 0 -1rem;
-      padding: 0 1rem;
-    }
-
-    table { font-size: 0.82rem; min-width: 420px; }
-
-    thead th { padding: 0 0.5rem 0.75rem; font-size: 0.65rem; }
-    tbody td { padding: 0.6rem 0.5rem; }
-
-    /* Progress bar rows */
-    .progress-subject-row {
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-
-    .progress-subject-row .ps-name {
-      width: 80px;
-      font-size: 0.82rem;
-    }
-
-    .ps-trend { min-width: 90px; font-size: 0.72rem; }
-
-    /* Pattern grid and subject grid — already have 600px breakpoints, reinforce */
-    .pattern-grid,
-    .subject-grid { grid-template-columns: 1fr; }
-
-    /* Advisor inputs */
-    .advisor-inputs { grid-template-columns: 1fr; gap: 0.75rem; }
-
-    /* Plan steps */
-    .plan-step { padding: 0.65rem 0.8rem; font-size: 0.85rem; }
-    .plan-step .step-time { font-size: 0.95rem; min-width: 44px; }
-
-    /* ABA style box */
-    .aba-style-box { flex-direction: column; gap: 0.6rem; padding: 0.9rem; }
-    .aba-style-icon { font-size: 1.5rem; }
-    .aba-style-name { font-size: 1.1rem; }
-
-    /* Burnout box */
-    .aba-burnout-box { padding: 0.85rem; }
-
-    /* Weekly trend box */
-    .weekly-trend-box { gap: 0.75rem; padding: 0.8rem 0.9rem; }
-
-    /* Insights */
-    .insight { padding: 0.75rem 0.85rem; font-size: 0.84rem; }
-  }
-
-  /* ── MOBILE BOTTOM NAVIGATION BAR ───────────────────────── */
   .mobile-nav {
-    display: none;
-  }
-
-  @media (max-width: 700px) {
-    .mobile-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 200;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      box-shadow: 0 -4px 20px rgba(26,23,20,0.08);
-      padding: 0 0 env(safe-area-inset-bottom, 0);
-    }
-
-    .mobile-nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      padding: 0.55rem 0.25rem 0.5rem;
-      cursor: pointer;
-      border: none;
-      background: none;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--muted);
-      font-size: 0.62rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      transition: color 0.15s, background 0.15s;
-      border-radius: 0;
-      position: relative;
-    }
-
-    .mobile-nav-item .mn-icon {
-      font-size: 1.25rem;
-      line-height: 1;
-      transition: transform 0.15s;
-    }
-
-    .mobile-nav-item.active {
-      color: var(--accent);
-    }
-
-    .mobile-nav-item.active::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 20%;
-      right: 20%;
-      height: 2.5px;
-      background: var(--accent);
-      border-radius: 0 0 3px 3px;
-    }
-
-    .mobile-nav-item.active .mn-icon {
-      transform: translateY(-1px);
-    }
-
-    .mobile-nav-item:active {
-      background: var(--bg);
-    }
-  }
-
-  /* Session Advisor */
-  .advisor-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .advisor-result {
-    display: none;
-    margin-top: 1.2rem;
-    border-radius: 10px;
-    overflow: hidden;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .advisor-result.visible { display: block; }
-
-  .advisor-banner {
-    padding: 1.1rem 1.2rem;
     display: flex;
-    align-items: flex-start;
-    gap: 0.85rem;
-    border-radius: 10px;
-    border: 1px solid transparent;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    padding: 0 0 env(safe-area-inset-bottom, 0);
   }
 
-  .advisor-banner.mood-high {
-    background: var(--accent2-light);
-    border-color: #b8d9d1;
-    color: var(--accent2);
-  }
-
-  .advisor-banner.mood-low {
-    background: var(--accent-light);
-    border-color: #e5c4b0;
-    color: var(--accent);
-  }
-
-  .advisor-banner.mood-mid {
-    background: #fef9ec;
-    border-color: #f0e0a8;
-    color: #8a6b10;
-  }
-
-  .advisor-banner .adv-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
-
-  .advisor-banner .adv-body {}
-
-  .advisor-banner .adv-main {
-    font-size: 0.95rem;
-    font-weight: 600;
-    line-height: 1.45;
-    margin-bottom: 0.3rem;
-  }
-
-  .advisor-banner .adv-sub {
-    font-size: 0.82rem;
-    opacity: 0.8;
-    line-height: 1.4;
-  }
-
-  .advisor-no-data {
-    color: var(--muted);
-    font-size: 0.88rem;
-    text-align: center;
-    padding: 0.6rem;
-  }
-
-  .advisor-plan {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-  }
-
-  .plan-step {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding: 0.72rem 0.95rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    font-size: 0.9rem;
-    animation: fadeUp 0.35s ease both;
-  }
-
-  .plan-step .step-time {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.05rem;
-    color: var(--accent);
-    min-width: 52px;
-    flex-shrink: 0;
-  }
-
-  .plan-step .step-divider {
-    width: 1px;
-    height: 22px;
-    background: var(--border);
-    flex-shrink: 0;
-  }
-
-  .plan-step .step-info { flex: 1; }
-
-  .plan-step .step-subject {
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.2;
-  }
-
-  .plan-step .step-tag {
-    font-size: 0.74rem;
-    color: var(--muted);
-    margin-top: 0.1rem;
-  }
-
-  .plan-step.step-weak   { border-color: #e5c4b0; background: var(--accent-light); }
-  .plan-step.step-weak   .step-time { color: var(--accent); }
-
-  .plan-step.step-strong { border-color: #b8d9d1; background: var(--accent2-light); }
-  .plan-step.step-strong .step-time { color: var(--accent2); }
-
-  .plan-step.step-other  { border-color: #d4cef5; background: #f2f0fd; }
-  .plan-step.step-other  .step-time { color: #5b4ba8; }
-
-  .plan-step.step-break  { border-color: var(--border); background: var(--bg); border-style: dashed; opacity: 0.75; }
-  .plan-step.step-break  .step-time { color: var(--muted); font-size: 0.9rem; }
-
-  .advisor-explanation {
-    margin-top: 0.9rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    line-height: 1.5;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-  }
-
-  .advisor-explanation.mood-high  { background: var(--accent2-light); color: var(--accent2); border: 1px solid #b8d9d1; }
-  .advisor-explanation.mood-mid   { background: #fef9ec; color: #8a6b10; border: 1px solid #f0e0a8; }
-  .advisor-explanation.mood-low   { background: var(--accent-light); color: var(--accent); border: 1px solid #e5c4b0; }
-
-  @media (max-width: 600px) {
-    .advisor-inputs { grid-template-columns: 1fr; }
-  }
-
-  /* ── Progress Tracking ── */
-  .progress-subject-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .progress-subject-row {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    animation: fadeUp 0.35s ease both;
-  }
-
-  .progress-subject-row .ps-name {
-    width: 100px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--text);
-    flex-shrink: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .progress-subject-row .ps-bar-wrap {
+  .mobile-nav-item {
     flex: 1;
-    background: var(--border);
-    border-radius: 999px;
-    height: 7px;
-    overflow: hidden;
-  }
-
-  .progress-subject-row .ps-bar {
-    height: 100%;
-    border-radius: 999px;
-    transition: width 0.5s ease;
-  }
-
-  .ps-bar.trend-improving { background: var(--accent2); }
-  .ps-bar.trend-stable    { background: #8b7dc4; }
-  .ps-bar.trend-declining { background: var(--accent); }
-
-  .progress-subject-row .ps-trend {
-    display: inline-flex;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 0.18rem 0.6rem;
-    border-radius: 999px;
-    flex-shrink: 0;
-    min-width: 105px;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 4px 7px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: var(--font);
+    color: var(--muted-2);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.12s;
+    position: relative;
+  }
+
+  .mobile-nav-item .mn-icon {
+    width: 20px; height: 20px;
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
 
-  .ps-trend.trend-improving { background: var(--accent2-light); color: var(--accent2); border: 1px solid #b8d9d1; }
-  .ps-trend.trend-stable    { background: #eae6f8; color: #5b4ba8; border: 1px solid #d4cef5; }
-  .ps-trend.trend-declining { background: var(--accent-light); color: var(--accent); border: 1px solid #e5c4b0; }
-
-  .ps-delta {
-    font-size: 0.78rem;
-    font-weight: 600;
-    width: 44px;
-    text-align: right;
-    flex-shrink: 0;
+  .mobile-nav-item .mn-icon svg {
+    width: 18px; height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
-  .ps-delta.pos { color: var(--accent2); }
-  .ps-delta.neg { color: var(--accent); }
-  .ps-delta.neu { color: #7a73a8; }
+  .mobile-nav-item.active { color: var(--text); }
 
-  .progress-feedback-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    margin-bottom: 1.1rem;
+  .mobile-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 18%; right: 18%;
+    height: 2px;
+    background: var(--text);
+    border-radius: 0 0 2px 2px;
   }
+}
 
-  .weekly-trend-box {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.95rem 1.1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-  }
-
-  .weekly-trend-box .wt-icon { font-size: 1.4rem; flex-shrink: 0; }
-
-  .weekly-trend-box .wt-body { flex: 1; }
-
-  .weekly-trend-box .wt-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 0.2rem;
-  }
-
-  .weekly-trend-box .wt-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.1rem;
-    line-height: 1.3;
-  }
-
-  .weekly-trend-box.wt-improving { border-color: #b8d9d1; background: var(--accent2-light); }
-  .weekly-trend-box.wt-improving .wt-value { color: var(--accent2); }
-
-  .weekly-trend-box.wt-declining { border-color: #e5c4b0; background: var(--accent-light); }
-  .weekly-trend-box.wt-declining .wt-value { color: var(--accent); }
-
-  .weekly-trend-box.wt-stable { border-color: #d4cef5; background: #f2f0fd; }
-  .weekly-trend-box.wt-stable .wt-value { color: #5b4ba8; }
-
-  .progress-section-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 0.6rem;
-    margin-top: 1rem;
-  }
-
-  .progress-section-label:first-child { margin-top: 0; }
-
-  /* ── AI Behavior Analysis ── */
-  .aba-style-box {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1.1rem 1.2rem;
-    border-radius: 10px;
-    background: #f2f0fd;
-    border: 1px solid #d4cef5;
-    margin-bottom: 1rem;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .aba-style-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-    line-height: 1;
-  }
-
-  .aba-style-body { flex: 1; }
-
-  .aba-style-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #7a73a8;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-
-  .aba-style-name {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.25rem;
-    color: #3d3480;
-    margin-bottom: 0.35rem;
-    line-height: 1.2;
-  }
-
-  .aba-style-desc {
-    font-size: 0.88rem;
-    color: #5b4ba8;
-    line-height: 1.55;
-  }
-
-  .aba-signals {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-top: 0.65rem;
-  }
-
-  .aba-signal-tag {
-    display: inline-block;
-    padding: 0.2rem 0.65rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    background: #eae6f8;
-    color: #5b4ba8;
-    border: 1px solid #d4cef5;
-  }
-
-  .aba-burnout-box {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.85rem;
-    padding: 1rem 1.1rem;
-    border-radius: 10px;
-    background: #fff4f0;
-    border: 1.5px solid #e5a090;
-    animation: fadeUp 0.4s ease both;
-    margin-bottom: 0.8rem;
-  }
-
-  .aba-burnout-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 1px; }
-
-  .aba-burnout-body { flex: 1; }
-
-  .aba-burnout-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1rem;
-    color: #b84040;
-    margin-bottom: 0.3rem;
-  }
-
-  .aba-burnout-desc {
-    font-size: 0.85rem;
-    color: #c05050;
-    line-height: 1.5;
-  }
-
-  .aba-burnout-signals {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 0.55rem;
-  }
-
-  .aba-burnout-tag {
-    display: inline-block;
-    padding: 0.18rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.74rem;
-    font-weight: 600;
-    background: #fde8e3;
-    color: #b84040;
-    border: 1px solid #f0b8aa;
-  }
-
-  .aba-ok-box {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    border-radius: 8px;
-    background: var(--accent2-light);
-    border: 1px solid #b8d9d1;
-    font-size: 0.88rem;
-    color: var(--accent2);
-    animation: fadeUp 0.4s ease both;
-    margin-bottom: 0.8rem;
-  }
-
-  .aba-section-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 0.6rem;
-    margin-top: 1rem;
-  }
-  .aba-section-label:first-child { margin-top: 0; }
+@media (max-width: 480px) {
+  .dash-grid-3 .stat-card:nth-child(3) { grid-column: 1; }
+}
 </style>
 </head>
 <body>
 
-<!-- ── SIDEBAR ───────────────────────────────────────────────── -->
+<!-- ── SIDEBAR ───────────────────────────────────────────── -->
 <nav class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-dot"></div>
-    <h2>Study Habit<br>Tracker</h2>
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h2>StudyTrack</h2>
+    </div>
     <p>Spot your patterns.</p>
   </div>
 
-  <div class="nav-section-label">Menu</div>
-  <button class="nav-item active" onclick="showPanel('dashboard', this)">
-    <span class="nav-icon">🏠</span><span>Dashboard</span>
-  </button>
-  <button class="nav-item" onclick="showPanel('sessions', this)">
-    <span class="nav-icon">✏️</span><span>Sessions</span>
-  </button>
-  <button class="nav-item" onclick="showPanel('analytics', this)">
-    <span class="nav-icon">📈</span><span>Analytics</span>
-  </button>
-  <button class="nav-item" onclick="showPanel('insights', this)">
-    <span class="nav-icon">💡</span><span>Insights</span>
-  </button>
-  <button class="nav-item" onclick="showPanel('advisor', this)">
-    <span class="nav-icon">🧭</span><span>Session Advisor</span>
-  </button>
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <button class="nav-item active" onclick="showPanel('dashboard', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showPanel('sessions', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+      Sessions
+    </button>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Insights</div>
+    <button class="nav-item" onclick="showPanel('analytics', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+      Analytics
+    </button>
+    <button class="nav-item" onclick="showPanel('insights', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      Insights
+    </button>
+    <button class="nav-item" onclick="showPanel('advisor', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+      Session Advisor
+    </button>
+    <button class="nav-item" onclick="showPanel('replay', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+      Study Replay
+    </button>
+  </div>
 
   <div class="sidebar-footer">
-    <p>Log sessions.<br>Track patterns.<br>Study smarter.</p>
+    <p>Log sessions. Track patterns.<br>Study smarter.</p>
   </div>
 </nav>
 
-<!-- ── MAIN ──────────────────────────────────────────────────── -->
+<!-- ── MAIN ──────────────────────────────────────────────── -->
 <div class="main">
 
-  <!-- Top Welcome Bar -->
+  <!-- Topbar -->
   <div class="topbar">
     <div class="topbar-greeting">
-      <h1 id="greetingText">Good morning 👋</h1>
-      <p>Here's your productivity overview for today.</p>
+      <h1 id="greetingText">Good morning</h1>
+      <p>Your productivity overview</p>
     </div>
     <div class="topbar-stats">
       <div class="topbar-stat">
@@ -1416,7 +2040,7 @@
     </div>
   </div>
 
-  <!-- Hidden stat-boxes kept for JS compat -->
+  <!-- Hidden stat-boxes for JS compat -->
   <div class="stats-row" aria-hidden="true">
     <div class="stat-box"><div class="stat-label">Avg Study Hours</div><div class="stat-value" id="avgHoursHidden">—</div></div>
     <div class="stat-box"><div class="stat-label">Avg Productivity</div><div class="stat-value" id="avgProdHidden">—</div></div>
@@ -1424,84 +2048,94 @@
 
   <div class="content">
 
-    <!-- ══ DASHBOARD PANEL ══════════════════════════════════════ -->
+    <!-- ══ DASHBOARD ══════════════════════════════════════════ -->
     <div class="panel active" id="panel-dashboard">
-      <div class="panel-title">Dashboard Overview</div>
+      <div class="panel-header">
+        <div class="panel-title">Dashboard</div>
+        <div class="panel-subtitle">Overview of your study performance</div>
+      </div>
 
       <div class="dash-grid-3">
-
-        <!-- Avg Study Hours -->
-        <div class="stat-card accent-card">
+        <div class="stat-card">
           <div class="stat-header">
-            <div class="stat-icon">⏱</div>
             <div class="stat-label">Avg Study Hours</div>
+            <span class="stat-badge amber">hrs / session</span>
           </div>
           <div class="stat-value" id="dashAvgHours">—</div>
           <div class="stat-sub">hours per session</div>
-          <div class="stat-trend" id="dashHoursTrend">per session</div>
+          <div class="stat-trend" id="dashHoursTrend">No data yet</div>
         </div>
 
-        <!-- Avg Productivity -->
-        <div class="stat-card accent2-card">
+        <div class="stat-card">
           <div class="stat-header">
-            <div class="stat-icon">📈</div>
             <div class="stat-label">Avg Productivity</div>
+            <span class="stat-badge green">out of 5</span>
           </div>
           <div class="stat-value" id="dashAvgProd">—</div>
-          <div class="stat-sub">score out of 5</div>
-          <div class="stat-trend" id="dashProdTrend">out of 5.0</div>
+          <div class="stat-sub">productivity score</div>
+          <div class="stat-trend" id="dashProdTrend">No data yet</div>
         </div>
 
-        <!-- Total Sessions -->
-        <div class="stat-card neutral-card">
+        <div class="stat-card">
           <div class="stat-header">
-            <div class="stat-icon">🗂</div>
             <div class="stat-label">Total Sessions</div>
+            <span class="stat-badge indigo">logged</span>
           </div>
           <div class="stat-value" id="dashTotalSessions">—</div>
-          <div class="stat-sub">sessions logged</div>
-          <div class="stat-trend" id="dashSessionsTrend">logged</div>
+          <div class="stat-sub">sessions recorded</div>
+          <div class="stat-trend" id="dashSessionsTrend">Start logging</div>
         </div>
-
       </div>
 
       <div class="dash-grid">
-        <!-- Quick Insights -->
         <div class="card">
-          <div class="card-title"><span class="icon">💡</span> Quick Insights</div>
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+            Quick Insights
+          </div>
           <div id="dashInsights"><p class="no-insight">Add a few entries to see insights.</p></div>
         </div>
-        <!-- Best Pattern -->
         <div class="card">
-          <div class="card-title"><span class="icon">🎯</span> Best Study Pattern</div>
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            Best Study Pattern
+          </div>
           <div id="dashBestPattern"><p class="no-insight">Add at least 3 entries to see your best pattern.</p></div>
         </div>
       </div>
 
-      <!-- Chart -->
       <div class="card">
-        <div class="card-title"><span class="icon">📈</span> Productivity Over Time</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+          Productivity Over Time
+        </div>
         <div class="chart-subtitle">Session-by-session productivity score (1–5). Each point is one logged session.</div>
         <div class="chart-wrap"><canvas id="chart"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item">
-            <div class="chart-legend-line" style="background:#c2622f"></div>
+            <div class="chart-legend-line" style="background:#b45309"></div>
             Productivity trend
           </div>
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background:#c2622f"></div>
+            <div class="chart-legend-dot" style="background:#b45309"></div>
             Individual session
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ══ SESSIONS PANEL ═══════════════════════════════════════ -->
+    <!-- ══ SESSIONS ═══════════════════════════════════════════ -->
     <div class="panel" id="panel-sessions">
-      <div class="panel-title">Log a Session</div>
+      <div class="panel-header">
+        <div class="panel-title">Log a Session</div>
+        <div class="panel-subtitle">Record your study activity</div>
+      </div>
 
       <div class="card">
-        <div class="card-title"><span class="icon">✏️</span> New Entry</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+          New Entry
+        </div>
         <div class="form-row">
           <div class="field">
             <label>Study Hours</label>
@@ -1530,18 +2164,20 @@
             </select>
           </div>
         </div>
-        <div class="form-row" style="grid-template-columns:1fr;margin-bottom:1.2rem">
+        <div class="form-row" style="grid-template-columns:1fr;margin-bottom:14px">
           <div class="field">
             <label>Subject</label>
-            <input type="text" id="subject" placeholder="e.g. Math, Physics, OS…" />
+            <input type="text" id="subject" placeholder="e.g. Math, Physics, Operating Systems…" />
           </div>
         </div>
         <button class="btn" onclick="addEntry()">Add Entry</button>
       </div>
 
-      <!-- All Entries Table -->
       <div class="card">
-        <div class="card-title"><span class="icon">🗂️</span> All Entries</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+          All Entries
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -1556,127 +2192,239 @@
             </thead>
             <tbody id="tableBody"></tbody>
           </table>
-          <div id="noData" class="no-data" style="text-align:center;color:var(--muted);padding:2rem;font-size:0.9rem">No entries yet. Log your first session above!</div>
+          <div id="noData" class="no-data">No entries yet. Log your first session above.</div>
         </div>
       </div>
     </div>
 
-    <!-- ══ ANALYTICS PANEL ══════════════════════════════════════ -->
+    <!-- ══ ANALYTICS ══════════════════════════════════════════ -->
     <div class="panel" id="panel-analytics">
-      <div class="panel-title">Analytics</div>
+      <div class="panel-header">
+        <div class="panel-title">Analytics</div>
+        <div class="panel-subtitle">Subject performance and progress data</div>
+      </div>
 
       <div class="dash-grid">
         <div class="card">
-          <div class="card-title"><span class="icon">📚</span> Subject Insights</div>
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
+            Subject Insights
+          </div>
           <div id="subjectInsights"><p class="no-insight">Add entries with subjects to see insights.</p></div>
         </div>
         <div class="card">
-          <div class="card-title"><span class="icon">📊</span> Progress Tracking</div>
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+            Progress Tracking
+          </div>
           <div id="progressTracking"><p class="no-insight">Add at least 4 entries with subjects to see progress tracking.</p></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="icon">📈</span> Productivity Over Time</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+          Productivity Over Time
+        </div>
         <div class="chart-subtitle">Session-by-session productivity score (1–5). Each point is one logged session.</div>
         <div class="chart-wrap"><canvas id="chartAnalytics"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item">
-            <div class="chart-legend-line" style="background:#c2622f"></div>
+            <div class="chart-legend-line" style="background:#b45309"></div>
             Productivity trend
           </div>
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background:#c2622f"></div>
+            <div class="chart-legend-dot" style="background:#b45309"></div>
             Individual session
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ══ INSIGHTS PANEL ═══════════════════════════════════════ -->
+    <!-- ══ INSIGHTS ═══════════════════════════════════════════ -->
     <div class="panel" id="panel-insights">
-      <div class="panel-title">Insights &amp; Recommendations</div>
+      <div class="panel-header">
+        <div class="panel-title">Insights &amp; Recommendations</div>
+        <div class="panel-subtitle">Data-driven patterns from your study history</div>
+      </div>
 
       <div class="dash-grid">
         <div class="card">
-          <div class="card-title"><span class="icon">💡</span> Insights</div>
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+            Insights
+          </div>
           <div id="insights"><p class="no-insight">Add a few entries to see insights.</p></div>
         </div>
         <div class="card">
-          <div class="card-title"><span class="icon">🚀</span> Smart Recommendations</div>
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+            Smart Recommendations
+          </div>
           <div id="smartRecs"><p class="no-insight">Add at least 3 entries to get recommendations.</p></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="icon">🧠</span> Cognitive Performance Analysis</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></span>
+          Cognitive Performance Analysis
+        </div>
         <div id="aiBehaviorAnalysis"><p class="no-insight">Add at least 5 entries to unlock performance analysis.</p></div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="icon">🎯</span> Best Study Pattern</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+          Best Study Pattern
+        </div>
         <div id="bestPattern"><p class="no-insight">Add at least 3 entries to see your best pattern.</p></div>
       </div>
     </div>
 
-    <!-- ══ SESSION ADVISOR PANEL ════════════════════════════════ -->
+    <!-- ══ SESSION ADVISOR ════════════════════════════════════ -->
     <div class="panel" id="panel-advisor">
-      <div class="panel-title">Session Advisor</div>
+      <div class="panel-header">
+        <div class="panel-title">Session Advisor</div>
+        <div class="panel-subtitle">Generates a personalised session plan from your logged data</div>
+      </div>
 
       <div class="card">
-        <div class="card-title"><span class="icon">🧭</span> Plan Your Session</div>
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          Session Parameters
+        </div>
         <div class="advisor-inputs">
           <div class="field">
-            <label>Current Mood (1–5)</label>
+            <label>Cognitive State (1–5)</label>
             <select id="advMood">
-              <option value="" disabled selected>Select</option>
-              <option value="1">1 – Poor</option>
-              <option value="2">2 – Low</option>
-              <option value="3">3 – Okay</option>
-              <option value="4">4 – Good</option>
-              <option value="5">5 – Great</option>
+              <option value="" disabled selected>Rate your current state</option>
+              <option value="1">1 — Fatigued / Unmotivated</option>
+              <option value="2">2 — Below baseline</option>
+              <option value="3">3 — Neutral / Okay</option>
+              <option value="4">4 — Focused / Motivated</option>
+              <option value="5">5 — Peak / Energised</option>
             </select>
           </div>
           <div class="field">
             <label>Available Time (hours)</label>
-            <input type="number" id="advHours" min="0.5" max="24" step="0.5" placeholder="e.g. 2" />
+            <input type="number" id="advHours" min="0.5" max="24" step="0.5" placeholder="e.g. 2.5" />
           </div>
         </div>
-        <!-- ML prediction result -->
-        <div id="mlPrediction" style="display:none;margin-bottom:1rem;padding:0.85rem 1rem;border-radius:9px;border:1px solid #d4cef5;background:#f2f0fd">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#5b4ba8;font-weight:600;margin-bottom:0.4rem">&#x1F916; ML Prediction</div>
-          <div id="mlPredText" style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:#5b4ba8;line-height:1.1;margin-bottom:0.3rem">&#x2014;</div>
-          <div id="mlPredMsg" style="font-size:0.85rem;color:#7a7368;line-height:1.45"></div>
+        <!-- ML prediction -->
+        <div id="mlPrediction">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted-2);font-weight:600;margin-bottom:5px">Predicted Productivity</div>
+          <div id="mlPredText" style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--text);letter-spacing:-0.02em;line-height:1;margin-bottom:4px">—</div>
+          <div id="mlPredMsg" style="font-size:12.5px;color:var(--muted);line-height:1.5"></div>
         </div>
-        <button class="btn" onclick="getAdvisorSuggestion()">Get Suggestion</button>
+        <button class="btn" onclick="getAdvisorSuggestion()">Generate Session Plan</button>
         <div class="advisor-result" id="advisorResult"></div>
+      </div>
+    </div>
+
+    <!-- ══ STUDY REPLAY ══════════════════════════════════════ -->
+    <div class="panel" id="panel-replay">
+      <div class="panel-header">
+        <div class="panel-title">Study Replay</div>
+        <div class="panel-subtitle">Chronological reconstruction of your study behavior and performance signals</div>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="replay-summary-row" id="replaySummaryRow"></div>
+
+      <!-- Productivity trend chart -->
+      <div class="card replay-trend-section">
+        <div class="card-header" style="margin-bottom:12px;padding-bottom:12px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div class="card-title" style="margin-bottom:0">
+              <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+              Productivity Output Over Time
+            </div>
+            <div style="font-size:11.5px;color:var(--muted);margin-left:25px">Each bar represents one session. Height maps to score (1–5).</div>
+          </div>
+          <div class="replay-legend">
+            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#3a7d52"></div>High 4–5</div>
+            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#c8951a"></div>Mid 3</div>
+            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#b91c1c"></div>Low 1–2</div>
+          </div>
+        </div>
+        <div class="replay-trend-chart-area">
+          <div id="replayTrendBars" class="replay-trend-bars"></div>
+        </div>
+        <div class="replay-trend-axis">
+          <span class="replay-trend-axis-label">Session 1</span>
+          <span class="replay-trend-axis-label" id="replayAxisEnd">—</span>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header" style="margin-bottom:14px;padding-bottom:12px">
+          <div>
+            <div class="card-title" style="margin-bottom:2px">
+              <span class="card-title-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
+              Session Timeline
+            </div>
+            <div style="font-size:11.5px;color:var(--muted);margin-left:25px">All sessions in chronological order with behavioral annotations</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+            <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)">
+              <div style="width:6px;height:6px;border-radius:50%;background:#3a7d52;box-shadow:0 0 0 1.5px #86efac"></div>High
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)">
+              <div style="width:6px;height:6px;border-radius:50%;background:#c8951a;box-shadow:0 0 0 1.5px #fcd34d"></div>Mid
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)">
+              <div style="width:6px;height:6px;border-radius:50%;background:#b91c1c;box-shadow:0 0 0 1.5px #fca5a5"></div>Low
+            </div>
+          </div>
+        </div>
+        <div id="replayTimeline"><p class="replay-no-data">No sessions to replay yet. Log your first session to begin.</p></div>
+      </div>
+
+      <!-- Replay Insights -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom:14px;padding-bottom:12px">
+          <div>
+            <div class="card-title" style="margin-bottom:2px">
+              <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></span>
+              Behavioral Insights
+            </div>
+            <div style="font-size:11.5px;color:var(--muted);margin-left:25px">Patterns derived from your full session history</div>
+          </div>
+        </div>
+        <div id="replayInsights"><p class="no-insight">Add at least 3 sessions to generate replay insights.</p></div>
       </div>
     </div>
 
   </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- ── MOBILE BOTTOM NAV ──────────────────────────────────────── -->
+<!-- ── MOBILE BOTTOM NAV ──────────────────────────────────── -->
 <nav class="mobile-nav" id="mobileNav">
   <button class="mobile-nav-item active" onclick="showPanel('dashboard', this); syncMobileNav(this)">
-    <span class="mn-icon">🏠</span>
-    <span>Home</span>
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+    Home
   </button>
   <button class="mobile-nav-item" onclick="showPanel('sessions', this); syncMobileNav(this)">
-    <span class="mn-icon">✏️</span>
-    <span>Sessions</span>
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+    Sessions
   </button>
   <button class="mobile-nav-item" onclick="showPanel('analytics', this); syncMobileNav(this)">
-    <span class="mn-icon">📈</span>
-    <span>Analytics</span>
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+    Analytics
   </button>
   <button class="mobile-nav-item" onclick="showPanel('insights', this); syncMobileNav(this)">
-    <span class="mn-icon">💡</span>
-    <span>Insights</span>
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+    Insights
   </button>
   <button class="mobile-nav-item" onclick="showPanel('advisor', this); syncMobileNav(this)">
-    <span class="mn-icon">🧭</span>
-    <span>Advisor</span>
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+    Advisor
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('replay', this); syncMobileNav(this)">
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+    Replay
   </button>
 </nav>
 
@@ -1708,7 +2456,7 @@ function syncMobileNav(btn) {
 // ── Dynamic greeting ────────────────────────────────────────────
 (function setGreeting() {
   const h = new Date().getHours();
-  const greet = h < 12 ? 'Good morning 👋' : h < 17 ? 'Good afternoon 👋' : 'Good evening 👋';
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   const el = document.getElementById('greetingText');
   if (el) el.textContent = greet;
 })();
@@ -1840,7 +2588,7 @@ function buildInsightsHTML(entries) {
   }
 
   return insights.map(i =>
-    `<div class="insight ${i.type}"><span class="emoji">${i.emoji}</span><span>${i.text}</span></div>`
+    `<div class="insight ${i.type}"><span class="insight-dot"></span><span>${i.text}</span></div>`
   ).join('');
 }
 
@@ -1974,11 +2722,11 @@ function renderSubjectInsights(entries) {
   el.innerHTML = `
     <div class="subject-grid">
       <div class="pattern-item highlight">
-        <div class="p-label">💪 Strong Subject</div>
+        <div class="p-label">Strong Subject</div>
         <div class="p-value">${strong.name}</div>
       </div>
-      <div class="pattern-item" style="border-color:#e5c4b0;background:var(--accent-light)">
-        <div class="p-label" style="color:var(--muted)">📌 Weak Subject</div>
+      <div class="pattern-item" style="border-color:#fde68a;background:var(--accent-dim)">
+        <div class="p-label" style="color:var(--muted)">Weak Subject</div>
         <div class="p-value" style="color:var(--accent)">${weak.name}</div>
       </div>
     </div>
@@ -2074,20 +2822,17 @@ function renderSmartRecs(entries) {
   const nextStep     = `Today's Plan: ${weakPart}${strongPart}`;
 
   el.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1rem">
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
       ${suggestions.map(s => `
-        <div class="insight positive" style="margin-bottom:0">
-          <span class="emoji">${s.emoji}</span>
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font-size:12.5px;line-height:1.6;color:var(--text-2)">
+          <span style="width:4px;height:4px;border-radius:50%;background:var(--muted-2);flex-shrink:0;margin-top:6px"></span>
           <span>${s.text}</span>
         </div>
       `).join('')}
     </div>
-    <div style="background:var(--accent);border-radius:8px;padding:0.9rem 1rem;display:flex;align-items:flex-start;gap:0.75rem">
-      <span style="font-size:1rem;flex-shrink:0;margin-top:1px">🗓️</span>
-      <div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:0.25rem">Today's Plan</div>
-        <div style="font-size:0.92rem;color:#fff;line-height:1.5">${nextStep}</div>
-      </div>
+    <div style="background:var(--bg);border:1px solid var(--border-2);border-radius:var(--radius-sm);padding:12px 14px">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted-2);font-weight:600;margin-bottom:6px">Today's Plan</div>
+      <div style="font-size:12.5px;color:var(--text-2);line-height:1.65">${nextStep}</div>
     </div>
   `;
 }
@@ -2107,14 +2852,14 @@ function showMLPrediction(pred, meta) {
 
   let message, color;
   if (pred >= 4) {
-    message = '✅ This is a highly productive study setup.';
-    color   = 'var(--accent2)';
+    message = 'High-productivity setup based on your patterns.';
+    color   = 'var(--green)';
   } else if (pred >= 3) {
-    message = '🟡 This setup should work reasonably well.';
-    color   = '#8a6b10';
-  } else {
-    message = '⚠️ Try adjusting your study duration or subject focus.';
+    message = 'Moderate setup — should yield reasonable output.';
     color   = 'var(--accent)';
+  } else {
+    message = 'Consider adjusting session duration or subject focus.';
+    color   = 'var(--red)';
   }
 
   msg.textContent = message;
@@ -2138,14 +2883,14 @@ function showMLPrediction(pred, meta) {
     const topLabel  = factorMap[topKey];
 
     // Confidence colour
-    const confColor = confidence >= 75 ? 'var(--accent2)' : confidence >= 50 ? '#8a6b10' : 'var(--accent)';
+    const confColor = confidence >= 75 ? 'var(--green)' : confidence >= 50 ? 'var(--accent)' : 'var(--red)';
 
     metaEl.innerHTML = `
       <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
-        <span style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;color:#7a7368">Confidence</span>
-        <span style="font-family:'DM Serif Display',serif;font-size:1rem;color:${confColor}">${confidence}%</span>
-        <span style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;color:#7a7368;margin-left:0.6rem">Top Factor</span>
-        <span style="font-size:0.82rem;font-weight:600;color:#5b4ba8">${topLabel} (${importance[topKey]}%)</span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;color:var(--muted-2)">Confidence</span>
+        <span style="font-family:var(--mono);font-size:12.5px;color:${confColor}">${confidence}%</span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;color:var(--muted-2);margin-left:0.6rem">Top Factor</span>
+        <span style="font-size:12px;font-weight:600;color:var(--text-2)">${topLabel} (${importance[topKey]}%)</span>
       </div>
       <div style="display:flex;gap:0.4rem;align-items:center">
         ${['mood','hours','subject'].map(k => {
@@ -2154,11 +2899,11 @@ function showMLPrediction(pred, meta) {
           const isTop = k === topKey;
           return `
             <div style="flex:1;text-align:center">
-              <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a7368;margin-bottom:0.2rem;font-weight:600">${label}</div>
-              <div style="background:var(--border);border-radius:999px;height:5px;overflow:hidden;margin-bottom:0.2rem">
-                <div style="width:${pct}%;height:100%;border-radius:999px;background:${isTop ? '#5b4ba8' : '#b8aee8'};transition:width 0.5s ease"></div>
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted-2);margin-bottom:3px;font-weight:600">${label}</div>
+              <div style="background:var(--border);border-radius:3px;height:4px;overflow:hidden;margin-bottom:3px">
+                <div style="width:${pct}%;height:100%;border-radius:3px;background:${isTop ? 'var(--muted)' : 'var(--border-2)'};transition:width 0.5s ease"></div>
               </div>
-              <div style="font-size:0.78rem;font-weight:600;color:${isTop ? '#5b4ba8' : '#7a7368'}">${pct}%</div>
+              <div style="font-size:11px;font-weight:600;font-family:var(--mono);color:${isTop ? 'var(--text-2)' : 'var(--muted-2)'}">  ${pct}%</div>
             </div>
           `;
         }).join('')}
@@ -2178,7 +2923,7 @@ async function getAdvisorSuggestion() {
 
   if (isNaN(moodVal) || isNaN(hoursVal) || hoursVal <= 0) {
     result.className = 'advisor-result visible';
-    result.innerHTML = '<p class="advisor-no-data">⚠️ Please enter your mood and available time.</p>';
+    result.innerHTML = '<p class="advisor-no-data">Please enter your mood and available time.</p>';
     return;
   }
 
@@ -2190,20 +2935,6 @@ async function getAdvisorSuggestion() {
   }
 
   // --- ML Optimizer: pick best of 3 time distributions via /predict --------
-  //
-  // Three candidate weight sets applied to [weak, others..., strong]:
-  //   1. weak-heavy   → weak gets most time
-  //   2. balanced     → equal time across all
-  //   3. strong-heavy → strong gets most time
-  //
-  // For each distribution we call /predict for every subject, using
-  // hours proportional to that subject's share of total time.
-  // We pick the distribution whose average predicted productivity is highest,
-  // then wire its weights into subjectQueue below so all existing
-  // rendering/break logic runs unchanged.
-  //
-  // Falls back silently to mood-based weights if Flask is unreachable.
-
   const subjectStatsForML = getSubjectStats(entries);
   const strongForML = subjectStatsForML.length >= 1
     ? subjectStatsForML[0].name : '';
@@ -2221,22 +2952,17 @@ async function getAdvisorSuggestion() {
     ...(strongForML && strongForML !== weakForML ? [strongForML] : [])
   ];
 
-  // Weight presets: index matches mlSubjects order [weak, ...others, strong]
-  // Each preset defines relative weights; last slot = strong subject
   function makeWeights(n, preset) {
-    // preset: 'weak-heavy' | 'balanced' | 'strong-heavy'
     if (n === 0) return [];
     if (n === 1) return [1];
-    const w = Array(n).fill(1); // balanced baseline
+    const w = Array(n).fill(1);
     if (preset === 'weak-heavy')   { w[0] = 3; w[n - 1] = 1; }
     if (preset === 'strong-heavy') { w[0] = 1; w[n - 1] = 3; }
-    // 'balanced' stays all 1s
     return w;
   }
 
   const PRESETS = ['weak-heavy', 'balanced', 'strong-heavy'];
 
-  // Helper: call /predict for one subject with its share of total hours
   async function predictOne(subject, hours) {
     const res = await fetch('/predict', {
       method: 'POST',
@@ -2245,11 +2971,11 @@ async function getAdvisorSuggestion() {
     });
     if (!res.ok) throw new Error('bad response');
     const d = await res.json();
-    return d; // full object: { predicted_productivity, confidence, importance }
+    return d;
   }
 
-  let mlWinnerWeights = null; // will be set if Flask is reachable
-  let _mlMeta = null;        // { confidence, importance } from winning prediction
+  let mlWinnerWeights = null;
+  let _mlMeta = null;
 
   try {
     let bestPreset = null, bestScore = -Infinity;
@@ -2258,7 +2984,6 @@ async function getAdvisorSuggestion() {
       const weights   = makeWeights(mlSubjects.length, preset);
       const totalW    = weights.reduce((a, b) => a + b, 0) || 1;
 
-      // Predict productivity for each subject under this distribution
       const scores = await Promise.all(
         mlSubjects.map((subj, i) => {
           const subjectHours = hoursVal * (weights[i] / totalW);
@@ -2272,29 +2997,24 @@ async function getAdvisorSuggestion() {
         bestScore  = avgScore;
         bestPreset = preset;
         mlWinnerWeights = weights;
-        // Aggregate confidence and importance from the winning set of predictions
         _mlMeta = {
           confidence: Math.round(scores.reduce((a, b) => a + b.confidence, 0) / scores.length),
-          importance: scores[0].importance // importance is model-level, same across calls
+          importance: scores[0].importance
         };
       }
     }
 
-    // Show the winning predicted score in the existing ML box
     showMLPrediction(bestScore, _mlMeta);
 
   } catch (err) {
-    // Flask not running — hide ML box and proceed with mood-based weights
     document.getElementById('mlPrediction').style.display = 'none';
     mlWinnerWeights = null;
   }
-  // -------------------------------------------------------------------------
 
   // --- Subject analysis (preserving existing logic) ---
   const subjectStats = getSubjectStats(entries);
   const strongSubject = subjectStats.length >= 1 ? subjectStats[0] : null;
   const weakSubject   = subjectStats.length >= 2 ? subjectStats[subjectStats.length - 1] : null;
-  // "Other" subjects: everything that's not the first (strong) or last (weak)
   const otherSubjects = subjectStats.length >= 3
     ? subjectStats.slice(1, subjectStats.length - 1)
     : [];
@@ -2307,53 +3027,50 @@ async function getAdvisorSuggestion() {
   const avgLowMoodProd  = avg(lowMoodEntries.map(e => e.productivity));
   const moodBoostsPerf  = avgHighMoodProd !== null && avgLowMoodProd !== null && avgHighMoodProd > avgLowMoodProd + 0.3;
 
-  // --- Build priority-ordered subject list based on mood ---
-  // Each entry: { subject, tag, cssClass, weight }
-  // Weights sum to total; used to proportion time across ALL subjects.
-
-  let moodClass, icon, explanation;
-  let subjectQueue = []; // ordered list of subjects with weights
+  let moodClass, icon, explanation, moodStatusLabel, contextTitle;
+  let subjectQueue = [];
 
   if (moodVal >= 4) {
-    icon = '🔥';
+    icon = '↑';
     moodClass = 'mood-high';
+    moodStatusLabel = moodVal === 5 ? 'Peak State' : 'High Focus';
+    contextTitle = moodBoostsPerf
+      ? 'High cognitive state — your data shows mood ≥ 4 measurably improves output. Prioritising challenging material now.'
+      : 'High cognitive state — good window for difficult or unfamiliar content. Lean into harder tasks while focus is high.';
     explanation = moodBoostsPerf
       ? 'High mood detected — your data confirms this boosts productivity. Perfect time to tackle weaker areas.'
       : 'High mood detected — good time to focus on weaker areas and challenging content.';
-    // Priority: weak first, then others, then strong (lower weight)
-    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'weak subject',   cssClass: 'step-weak',   weight: 3 });
-    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'other subject',  cssClass: 'step-other',  weight: 2 }));
-    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'strong subject', cssClass: 'step-strong', weight: 1 });
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 3 });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 1 });
   } else if (moodVal === 3) {
-    icon = '📖';
+    icon = '→';
     moodClass = 'mood-mid';
+    moodStatusLabel = 'Neutral';
+    contextTitle = 'Baseline cognitive state — mixing challenging and familiar material keeps momentum without overloading focus.';
     explanation = 'Neutral mood detected — steady, balanced work is best. Mix weak areas with familiar subjects.';
-    // Priority: weak, then others (equal), then strong
-    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'weak subject',   cssClass: 'step-weak',   weight: 2 });
-    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'other subject',  cssClass: 'step-other',  weight: 2 }));
-    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'strong subject', cssClass: 'step-strong', weight: 1 });
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 2 });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 1 });
   } else {
-    icon = '🌿';
+    icon = '↓';
     moodClass = 'mood-low';
+    moodStatusLabel = 'Below Baseline';
+    contextTitle = moodBoostsPerf
+      ? 'Reduced cognitive state — your logged data shows performance dips below mood 3. Leading with familiar subjects to rebuild momentum.'
+      : 'Reduced cognitive state — starting with your strongest material builds confidence and eases you into the session.';
     explanation = moodBoostsPerf
       ? 'Low mood detected — your data shows this reduces focus. Stick to familiar, confidence-building material.'
       : 'Low mood detected — easy wins with strong subjects help rebuild motivation. Keep it comfortable.';
-    // Priority: strong first, then others, then weak (lighter load)
-    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'strong subject', cssClass: 'step-strong', weight: 3 });
-    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'other subject',  cssClass: 'step-other',  weight: 2 }));
-    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'weak subject',   cssClass: 'step-weak',   weight: 1 });
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 3 });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 1 });
   }
 
-  // --- ML weight override ---
-  // If the ML optimizer found a winning distribution, replace the mood-based
-  // weights on each slot. Order stays the same; only the numbers change.
-  // mlWinnerWeights is indexed as [weak, ...others, strong] which matches
-  // the order subjects were pushed into subjectQueue above.
   if (mlWinnerWeights && mlWinnerWeights.length === subjectQueue.length) {
     subjectQueue.forEach((slot, i) => { slot.weight = mlWinnerWeights[i]; });
   }
 
-  // --- Render ---
   result.className = 'advisor-result visible';
 
   if (subjectQueue.length === 0) {
@@ -2361,74 +3078,44 @@ async function getAdvisorSuggestion() {
     return;
   }
 
-  // --- Convert available time to total minutes ---
   const totalMinutes = Math.round(hoursVal * 60);
 
-  // --- Helper: snap a raw minute value to a clean number ---
-  // Allowed clean values: 25, 30, 40; otherwise round to nearest 10 (min 10)
   function snapToClean(raw) {
     if (raw <= 0) return 10;
     const candidates = [25, 30, 40];
-    // Find closest preferred value within ±8 min
     for (const c of candidates) {
       if (Math.abs(raw - c) <= 8) return c;
     }
-    // Otherwise round to nearest 10, minimum 10
     return Math.max(10, Math.round(raw / 10) * 10);
   }
 
-  // --- Distribute total minutes proportionally by weight ---
   const totalWeight = subjectQueue.reduce((s, x) => s + x.weight, 0);
-
-  // Step 1: calculate raw minutes per subject
   const rawMins = subjectQueue.map(s => (totalMinutes * s.weight) / totalWeight);
-
-  // Step 2: snap each to a clean value (all but last)
   const snappedMins = rawMins.map((m, i) =>
-    i < rawMins.length - 1 ? snapToClean(m) : null // last slot handled below
+    i < rawMins.length - 1 ? snapToClean(m) : null
   );
-
-  // Step 3: last subject absorbs the remainder so total is exact
   const allocatedSoFar = snappedMins.slice(0, -1).reduce((a, b) => a + b, 0);
   snappedMins[snappedMins.length - 1] = Math.max(10, totalMinutes - allocatedSoFar);
-
-  // Build subject slots with final minutes
   const subjectSlots = subjectQueue.map((s, i) => ({ ...s, mins: snappedMins[i] }));
 
-  // --- Adaptive break logic ---
-  // Break interval and duration are computed from mood, ML prediction,
-  // subject strength, and total session length. No fixed constants.
-
-  // 1. Read the ML predicted score if available (1–10 scale from Flask)
   const mlScoreEl = document.getElementById('mlPredText');
   const mlScoreRaw = mlScoreEl ? parseFloat(mlScoreEl.textContent) : NaN;
-  const mlScore = isNaN(mlScoreRaw) ? null : mlScoreRaw; // null = no ML data
+  const mlScore = isNaN(mlScoreRaw) ? null : mlScoreRaw;
 
-  // 2. Derive a "focus capacity" score (0–4) from mood + ML prediction.
-  //    High capacity → longer focus blocks. Low capacity → earlier breaks.
   let focusCapacity = 0;
-
-  // Mood contribution (0–2)
   if (moodVal >= 5)      focusCapacity += 2;
   else if (moodVal >= 4) focusCapacity += 1.5;
   else if (moodVal === 3) focusCapacity += 1;
   else if (moodVal === 2) focusCapacity += 0.5;
-  // moodVal === 1 → +0
 
-  // ML prediction contribution (0–2), only if available
   if (mlScore !== null) {
     if (mlScore >= 8)      focusCapacity += 2;
     else if (mlScore >= 6) focusCapacity += 1.5;
     else if (mlScore >= 4) focusCapacity += 0.75;
-    // mlScore < 4 → +0
   } else {
-    // No ML data: fall back to a neutral +1 so mood alone still drives things
     focusCapacity += 1;
   }
-  // focusCapacity is now in [0, 4]
 
-  // 3. Base break interval from focus capacity.
-  //    Range: 35 min (very low capacity) → 80 min (very high capacity)
   let breakInterval;
   if      (focusCapacity >= 3.5) breakInterval = 80;
   else if (focusCapacity >= 2.5) breakInterval = 65;
@@ -2436,34 +3123,20 @@ async function getAdvisorSuggestion() {
   else if (focusCapacity >= 0.5) breakInterval = 40;
   else                           breakInterval = 35;
 
-  // 4. Shorten the interval further when the next subject is weak.
-  //    Difficult material drains focus faster — take a breather beforehand.
-  //    (Applied slot-by-slot inside the loop below.)
-
-  // 5. Long-session penalty: for sessions > 3 h, compress interval by 15%;
-  //    for sessions > 4.5 h, compress by 25%. More time = fatigue accumulates faster.
   if      (hoursVal > 4.5) breakInterval = Math.round(breakInterval * 0.75);
   else if (hoursVal > 3)   breakInterval = Math.round(breakInterval * 0.85);
 
-  // 6. Break duration: 5 min for short focused sessions, 10 min otherwise.
-  //    High-mood / high-prediction sessions can get away with a shorter pause.
   const breakDuration = (focusCapacity >= 3 && hoursVal <= 2.5) ? 5 : 10;
 
-  // 7. Build the plan — insert a break whenever accumulated study time
-  //    hits the interval OR the *next* slot is a weak subject and we've
-  //    already done a meaningful block (≥ 30 min).
   const planSteps = [];
   let accumulated = 0;
 
   subjectSlots.forEach((slot, i) => {
     if (i > 0) {
-      const nextIsWeak = slot.tag === 'weak subject';
-
-      // Tighten threshold before a weak subject: break 10 min earlier
+      const nextIsWeak = slot.tag === 'needs work';
       const effectiveInterval = nextIsWeak
         ? Math.max(25, breakInterval - 10)
         : breakInterval;
-
       if (accumulated >= effectiveInterval) {
         planSteps.push({ type: 'break', duration: breakDuration });
         accumulated = 0;
@@ -2473,131 +3146,135 @@ async function getAdvisorSuggestion() {
     accumulated += slot.mins;
   });
 
-  // --- Helper: format minutes for display ---
-  function fmtMins(m) {
-    return m + ' min';
-  }
+  function fmtMins(m) { return m + ' min'; }
 
-  // --- Build HTML for each step ---
   let stepIndex = 0;
   const stepsHTML = planSteps.map(step => {
     if (step.type === 'break') {
       return `
         <div class="plan-step step-break" style="animation-delay:${0.05 * stepIndex++}s">
-          <span class="step-time" style="color:var(--muted)">${step.duration} min</span>
+          <div class="step-marker"></div>
+          <span class="step-time">${step.duration} min</span>
           <div class="step-divider"></div>
           <div class="step-info">
-            <div class="step-subject" style="color:var(--muted)">☕ Break</div>
-            <div class="step-tag">rest &amp; recharge</div>
+            <div class="step-subject">Recovery interval</div>
           </div>
+          <span class="step-tag-pill">Break</span>
         </div>
       `;
     }
     return `
       <div class="plan-step ${step.cssClass}" style="animation-delay:${0.05 * stepIndex++}s">
+        <div class="step-marker"></div>
         <span class="step-time">${fmtMins(step.mins)}</span>
         <div class="step-divider"></div>
         <div class="step-info">
           <div class="step-subject">${step.name}</div>
-          <div class="step-tag">${step.tag}</div>
         </div>
+        <span class="step-tag-pill">${step.tag}</span>
       </div>
     `;
   }).join('');
 
-  // --- Build AI explanation points from existing computed signals ---
-  const whyPoints = [];
-
-  // 1. Weak subject prioritisation
+  // Build reasoning items with typed indicators
+  const hasBreaks = planSteps.some(s => s.type === 'break');
+  const reasonItems = [];
   if (weakSubject) {
     const firstSlot = subjectSlots[0];
     if (firstSlot && firstSlot.name === weakSubject.name) {
-      whyPoints.push(`<strong>${weakSubject.name}</strong> was prioritised because it is currently your weakest subject (avg productivity ${weakSubject.avgProd.toFixed(1)}).`);
+      reasonItems.push({ ind: 'ind-amber', sym: '↓', text: `<strong>${weakSubject.name}</strong> was placed first — it is currently your weakest subject (avg ${weakSubject.avgProd.toFixed(1)}/5). High cognitive states are best spent on challenging material.` });
     }
   }
-
-  // 2. Strong subject placed last / for revision
   if (strongSubject) {
     const lastStudySlot = [...subjectSlots].reverse().find(s => s.name === strongSubject.name);
     if (lastStudySlot) {
-      whyPoints.push(`<strong>${strongSubject.name}</strong> is scheduled last as a confidence boost — it is your strongest subject (avg productivity ${strongSubject.avgProd.toFixed(1)}).`);
+      reasonItems.push({ ind: 'ind-green', sym: '↑', text: `<strong>${strongSubject.name}</strong> anchors the end of the session — your strongest subject (avg ${strongSubject.avgProd.toFixed(1)}/5) provides a confidence-building finish.` });
     }
   }
-
-  // 3. Mood-based rationale (data-backed)
   if (moodBoostsPerf && moodVal >= 4) {
-    whyPoints.push(`Your data shows mood ≥ 4 lifts your productivity by ${(avgHighMoodProd - avgLowMoodProd).toFixed(1)} points on average — high-focus tasks are scheduled first.`);
+    reasonItems.push({ ind: 'ind-green', sym: '→', text: `Your logged data shows mood ≥ 4 increases productivity by ${(avgHighMoodProd - avgLowMoodProd).toFixed(1)} points on average. Harder subjects are scheduled while focus is high.` });
   } else if (moodBoostsPerf && moodVal < 3) {
-    whyPoints.push(`Your data confirms low mood reduces focus, so easier, familiar subjects lead the plan to rebuild momentum.`);
+    reasonItems.push({ ind: 'ind-amber', sym: '→', text: `Data confirms reduced focus at low mood — familiar material leads to rebuild momentum before harder content.` });
   } else if (moodVal >= 4) {
-    whyPoints.push(`High mood conditions tend to improve concentration — this plan takes advantage of that with challenging content early.`);
+    reasonItems.push({ ind: 'ind-indigo', sym: '→', text: `High focus state favours front-loading challenging content. Familiar subjects are placed later as the session winds down.` });
   } else if (moodVal < 3) {
-    whyPoints.push(`Low mood was detected — lighter, confidence-building material is placed first to ease into the session.`);
+    reasonItems.push({ ind: 'ind-amber', sym: '→', text: `Below-baseline state detected — this plan starts with material you know well to ease cognitive load before moving to harder topics.` });
   }
-
-  // 4. Breaks (only if any were inserted)
-  const hasBreaks = planSteps.some(s => s.type === 'break');
   if (hasBreaks) {
     let breakRationale;
     if (focusCapacity >= 3.5) {
-      breakRationale = `Short ${breakDuration}-min breaks are spaced every ~${breakInterval} min — your high mood and predicted score support long focus blocks.`;
-    } else if (focusCapacity >= 2.5) {
-      breakRationale = `Breaks every ~${breakInterval} min keep concentration steady across this session.`;
+      breakRationale = `${breakDuration}-min recovery intervals every ~${breakInterval} min — your high focus state supports longer uninterrupted blocks.`;
     } else if (moodVal <= 2) {
-      breakRationale = `Frequent ${breakDuration}-min breaks every ~${breakInterval} min help compensate for the low mood today — short bursts work better.`;
+      breakRationale = `Breaks tightened to every ~${breakInterval} min. Shorter bursts with frequent recovery work better at reduced cognitive state.`;
     } else if (mlScore !== null && mlScore < 4) {
-      breakRationale = `The ML model predicts lower focus for this session — breaks are tightened to every ~${breakInterval} min to prevent fatigue.`;
+      breakRationale = `Model predicts lower-than-average output for this session — break frequency increased to ~${breakInterval} min to manage fatigue.`;
     } else if (hoursVal > 4.5) {
-      breakRationale = `Long session detected — breaks are scheduled more frequently (~${breakInterval} min) to sustain concentration over ${hoursVal} hours.`;
+      breakRationale = `Long session (${hoursVal}h) — break frequency is increased to sustain focus across the full duration.`;
     } else {
-      breakRationale = `Breaks every ~${breakInterval} min balance study depth with recovery for this session.`;
+      breakRationale = `Recovery intervals every ~${breakInterval} min balance deep work with cognitive recovery.`;
     }
-    // Add note if a break was pulled earlier due to a weak subject
-    const weakBreakExists = subjectSlots.some(s => s.tag === 'weak subject') && hasBreaks;
-    if (weakBreakExists) {
-      breakRationale += ` A break is placed before your weak subject to help you approach it with a fresh mind.`;
-    }
-    whyPoints.push(breakRationale);
+    const weakBreakExists = subjectSlots.some(s => s.tag === 'needs work') && hasBreaks;
+    if (weakBreakExists) breakRationale += ` A break is inserted before your weaker subject to approach it with a fresh baseline.`;
+    reasonItems.push({ ind: 'ind-neutral', sym: '⏱', text: breakRationale });
   }
 
-  // 5. ML score context (only if ML box is visible)
   const mlBox = document.getElementById('mlPrediction');
   const mlText = document.getElementById('mlPredText');
   if (mlBox && mlBox.style.display !== 'none' && mlText && mlText.textContent !== '—') {
     const score = parseFloat(mlText.textContent);
     if (!isNaN(score)) {
-      const label = score >= 7 ? 'high' : score >= 5 ? 'moderate' : 'low';
-      whyPoints.push(`The ML model predicts a <strong>${label}</strong> productivity score of <strong>${score.toFixed(1)}</strong> for this setup.`);
+      const label = score >= 7 ? 'high' : score >= 5 ? 'moderate' : 'below-average';
+      reasonItems.push({ ind: score >= 7 ? 'ind-green' : score >= 5 ? 'ind-neutral' : 'ind-amber', sym: '◈', text: `Productivity model predicts a <strong>${label}</strong> session score of <strong>${score.toFixed(1)}</strong> under this configuration.` });
     }
   }
 
-  const whyHTML = whyPoints.length ? `
-    <div style="margin-top:1rem">
-      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:600;margin-bottom:0.55rem">Why this plan?</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:0.45rem;padding:0;margin:0">
-        ${whyPoints.map(p => `
-          <li style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem;line-height:1.5;color:var(--text)">
-            <span style="color:var(--accent);flex-shrink:0;margin-top:1px">›</span>
-            <span>${p}</span>
-          </li>`).join('')}
-      </ul>
+  const reasoningHTML = reasonItems.length ? `
+    <div class="adv-reasoning">
+      <div class="adv-reasoning-header">
+        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-2)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span class="adv-reasoning-title">Why this plan</span>
+      </div>
+      <div class="adv-reasoning-body">
+        ${reasonItems.map(r => `
+          <div class="adv-reason-item">
+            <div class="adv-reason-indicator ${r.ind}">${r.sym}</div>
+            <span>${r.text}</span>
+          </div>
+        `).join('')}
+      </div>
     </div>` : '';
 
+  const totalH = Math.floor(totalMinutes / 60);
+  const totalM = totalMinutes % 60;
+  const totalStr = totalH > 0 ? (totalM > 0 ? `${totalH}h ${totalM}m` : `${totalH}h`) : `${totalM}m`;
+
   result.innerHTML = `
-    <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:600;margin-bottom:0.55rem;margin-top:1.1rem">Session Plan</div>
-    <div class="advisor-plan">${stepsHTML}</div>
-    <div class="advisor-explanation ${moodClass}">
-      <span style="font-size:1rem;flex-shrink:0">${icon}</span>
-      <span>${explanation}</span>
+    <div class="adv-context-bar ${moodClass}">
+      <div class="adv-context-stripe"></div>
+      <div class="adv-context-body">
+        <div class="adv-context-meta">
+          <span class="adv-context-label">Cognitive State</span>
+          <span class="adv-context-status">${moodStatusLabel}</span>
+        </div>
+        <div class="adv-context-title">${contextTitle}</div>
+      </div>
+      <div class="adv-context-right">
+        <div class="adv-context-right-label">Duration</div>
+        <div class="adv-context-right-value">${totalStr}</div>
+        <div class="adv-context-right-sub">${planSteps.filter(s => s.type === 'study').length} block${planSteps.filter(s => s.type === 'study').length !== 1 ? 's' : ''}</div>
+      </div>
     </div>
-    ${whyHTML}
+    <div class="adv-plan-header">
+      <span class="adv-plan-title">Session Schedule</span>
+      <span class="adv-plan-meta">${totalMinutes} min total</span>
+    </div>
+    <div class="advisor-plan">${stepsHTML}</div>
+    ${reasoningHTML}
   `;
 }
 
 function renderProgressTracking(entries) {
   const el = document.getElementById('progressTracking');
-
-  // Need entries with real subjects
   const withSubject = entries.filter(e => e.subject && e.subject !== '—');
 
   if (withSubject.length < 4) {
@@ -2605,15 +3282,12 @@ function renderProgressTracking(entries) {
     return;
   }
 
-  // ── 1. Per-subject improvement analysis ──────────────────────────────────
-  // Group entries per subject (preserve chronological order)
   const subjectMap = {};
   withSubject.forEach(e => {
     if (!subjectMap[e.subject]) subjectMap[e.subject] = [];
     subjectMap[e.subject].push(e.productivity);
   });
 
-  // Only include subjects with ≥ 2 entries so we can split into halves
   const subjectAnalysis = Object.entries(subjectMap)
     .filter(([, prods]) => prods.length >= 2)
     .map(([name, prods]) => {
@@ -2629,10 +3303,8 @@ function renderProgressTracking(entries) {
       else                    trend = 'stable';
       return { name, avgFirst, avgRecent, delta, trend, count: prods.length };
     })
-    .sort((a, b) => b.delta - a.delta); // best improvers first
+    .sort((a, b) => b.delta - a.delta);
 
-  // ── 2. Weekly overall trend ───────────────────────────────────────────────
-  // Split all entries (chronological) into first-half vs second-half by productivity
   const allProds = entries.map(e => e.productivity);
   const wMid = Math.ceil(allProds.length / 2);
   const weeklyAvgOld    = avg(allProds.slice(0, wMid));
@@ -2645,22 +3317,20 @@ function renderProgressTracking(entries) {
   else if (weeklyDelta <= -0.2) weeklyTrend = 'declining';
   else                          weeklyTrend = 'stable';
 
-  // ── 3. Adaptive feedback ─────────────────────────────────────────────────
   const feedbackItems = subjectAnalysis.map(s => {
     if (s.trend === 'improving') {
-      return { type: 'positive', emoji: '📈', text: `<strong>${s.name}</strong> is improving steadily (+${s.delta.toFixed(1)}). Maintain your consistency.` };
+      return { type: 'positive', text: `<strong>${s.name}</strong> is improving steadily (+${s.delta.toFixed(1)}). Maintain your consistency.` };
     } else if (s.trend === 'declining') {
-      return { type: 'warning', emoji: '📉', text: `<strong>${s.name}</strong> performance is declining (${s.delta.toFixed(1)}). Spend more focused time on it.` };
+      return { type: 'warning', text: `<strong>${s.name}</strong> performance is declining (${s.delta.toFixed(1)}). Spend more focused time on it.` };
     } else {
-      return { type: 'positive', emoji: '➡️', text: `<strong>${s.name}</strong> is holding steady. Push for a slight improvement this week.` };
+      return { type: 'positive', text: `<strong>${s.name}</strong> is holding steady. Push for a slight improvement this week.` };
     }
   });
 
-  // ── 4. Render ─────────────────────────────────────────────────────────────
   const weeklyMeta = {
-    improving: { cls: 'wt-improving', icon: '🚀', label: 'Overall Weekly Trend', value: 'Improving — great momentum!' },
-    stable:    { cls: 'wt-stable',    icon: '📊', label: 'Overall Weekly Trend', value: 'Stable — consistent performance.' },
-    declining: { cls: 'wt-declining', icon: '⚠️', label: 'Overall Weekly Trend', value: 'Declining — time to refocus.' }
+    improving: { cls: 'wt-improving', icon: '↑', label: 'Overall Weekly Trend', value: 'Improving — great momentum!' },
+    stable:    { cls: 'wt-stable',    icon: '→', label: 'Overall Weekly Trend', value: 'Stable — consistent performance.' },
+    declining: { cls: 'wt-declining', icon: '↓', label: 'Overall Weekly Trend', value: 'Declining — time to refocus.' }
   }[weeklyTrend];
 
   const subjectRowsHTML = subjectAnalysis.length ? `
@@ -2670,7 +3340,7 @@ function renderProgressTracking(entries) {
         const barWidth = ((s.avgRecent / 5) * 100).toFixed(1);
         const deltaStr = s.delta > 0 ? '+' + s.delta.toFixed(1) : s.delta.toFixed(1);
         const deltaClass = s.delta > 0 ? 'pos' : s.delta < 0 ? 'neg' : 'neu';
-        const trendLabel = { improving: '▲ Improving', stable: '● Stable', declining: '▼ Declining' }[s.trend];
+        const trendLabel = { improving: '↑ Improving', stable: '→ Stable', declining: '↓ Declining' }[s.trend];
         return `
           <div class="progress-subject-row" style="animation-delay:${0.05 * i}s">
             <span class="ps-name" title="${s.name}">${s.name}</span>
@@ -2690,7 +3360,7 @@ function renderProgressTracking(entries) {
     <div class="progress-feedback-list">
       ${feedbackItems.map(f => `
         <div class="insight ${f.type}" style="margin-bottom:0">
-          <span class="emoji">${f.emoji}</span>
+          <span class="insight-dot"></span>
           <span>${f.text}</span>
         </div>
       `).join('')}
@@ -2700,7 +3370,7 @@ function renderProgressTracking(entries) {
   const weeklyHTML = `
     <div class="progress-section-label">Overall Weekly Trend</div>
     <div class="weekly-trend-box ${weeklyMeta.cls}">
-      <span class="wt-icon">${weeklyMeta.icon}</span>
+      <span class="wt-icon" style="font-family:var(--mono);font-size:16px;font-weight:600">${weeklyMeta.icon}</span>
       <div class="wt-body">
         <div class="wt-label">${weeklyMeta.label}</div>
         <div class="wt-value">${weeklyMeta.value}</div>
@@ -2718,16 +3388,12 @@ function renderAIBehaviorAnalysis(entries) {
     return;
   }
 
-  // ── Helper ───────────────────────────────────────────────────────────────
   function average(arr) {
     if (!arr.length) return 0;
     return arr.reduce((s, v) => s + v, 0) / arr.length;
   }
 
-  // Use last N entries, chronologically ordered (oldest first)
   const recent = entries.slice(-Math.min(entries.length, 10));
-
-  // ── 1. BURNOUT / FATIGUE DETECTION ───────────────────────────────────────
   const half = Math.floor(recent.length / 2);
   const early = recent.slice(0, half);
   const late  = recent.slice(half);
@@ -2748,8 +3414,6 @@ function renderAIBehaviorAnalysis(entries) {
     burnoutSignals.push({ label: 'Cognitive state deteriorating', detail: `${earlyMood.toFixed(1)} → ${lateMood.toFixed(1)}` });
 
   const burnoutDetected = burnoutSignals.length >= 2;
-
-  // Build professional burnout insight messages
   const burnoutInsightMessages = [];
   if (lateHours > earlyHours + 0.3 && lateProd < earlyProd - 0.3)
     burnoutInsightMessages.push('Extended sessions are reducing productivity efficiency.');
@@ -2760,11 +3424,9 @@ function renderAIBehaviorAnalysis(entries) {
   if (!burnoutInsightMessages.length && burnoutDetected)
     burnoutInsightMessages.push('Multiple performance indicators have declined in recent sessions.');
 
-  // ── 2. PERFORMANCE PATTERN DETECTION ─────────────────────────────────────
   const avgHours = average(entries.map(e => e.hours));
   const avgProd  = average(entries.map(e => e.productivity));
 
-  // Mood–productivity correlation
   const moods = entries.map(e => e.mood);
   const prods = entries.map(e => e.productivity);
   const moodMean = average(moods);
@@ -2784,39 +3446,36 @@ function renderAIBehaviorAnalysis(entries) {
   const isMoodDriven   = moodProdCorr >= 0.55;
   const isLongSession  = avgHours >= 3;
 
-  // Productivity std deviation for variability
   const prodVariance = average(prods.map(p => (p - prodMean) ** 2));
   const prodStdDev   = Math.sqrt(prodVariance);
 
-  let patternName, patternIcon, patternDesc, patternRec, patternSignals;
+  // Minimal SVG icon used for all patterns (activity/waveform icon)
+  const patternIconSVG = `<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`;
+
+  let patternName, patternDesc, patternRec, patternSignals;
 
   if (isMoodDriven) {
     patternName    = 'Mood-Sensitive Productivity Pattern';
-    patternIcon    = '📊';
     patternDesc    = 'Productivity output shows a strong positive correlation with reported cognitive state. Performance is significantly influenced by pre-session mental readiness.';
     patternRec     = 'Prioritise mood stabilisation strategies before study sessions. Consider journaling, light exercise, or a brief mindfulness routine to establish a baseline cognitive state.';
     patternSignals = [`Mood–productivity correlation: ${(moodProdCorr * 100).toFixed(0)}%`, `Avg cognitive state: ${moodMean.toFixed(1)}/5`];
   } else if (isShortSession && isHighProd) {
     patternName    = 'High-Intensity Focus Pattern';
-    patternIcon    = '📊';
     patternDesc    = 'Productivity output is consistently high during shorter sessions. Performance data indicates peak cognitive efficiency within concentrated time blocks.';
     patternRec     = 'Maintain structured short sessions with defined goals. Use timed intervals (e.g. 50-minute blocks) to sustain this performance model without fatigue accumulation.';
     patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`];
   } else if (isLongSession && avgProd >= 3) {
     patternName    = 'Consistent Performance Pattern';
-    patternIcon    = '📊';
     patternDesc    = 'Data indicates sustained output across extended study durations. Performance remains within acceptable range throughout longer sessions.';
     patternRec     = 'Schedule structured recovery periods between extended sessions to prevent gradual efficiency loss. Weekly load distribution should remain balanced.';
     patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`];
   } else {
     patternName    = 'Variable Attention Pattern';
-    patternIcon    = '📊';
     patternDesc    = 'Session length and productivity output vary without a consistent trend. No dominant performance model has emerged from the current data set.';
     patternRec     = 'Introduce a consistent session structure to establish a baseline. Standardising start times, duration, and subject rotation may help identify a more stable performance pattern.';
     patternSignals = [`Avg session: ${avgHours.toFixed(1)}h`, `Avg productivity: ${avgProd.toFixed(1)}/5`, `${entries.length} sessions logged`];
   }
 
-  // ── 3. PRODUCTIVITY STABILITY ANALYSIS ───────────────────────────────────
   let stabilityLabel, stabilityClass, stabilityDesc;
   if (prodStdDev < 0.6) {
     stabilityLabel = 'Stable';
@@ -2832,7 +3491,6 @@ function renderAIBehaviorAnalysis(entries) {
     stabilityDesc  = 'Productivity varies significantly between sessions, suggesting inconsistent study conditions.';
   }
 
-  // ── 4. FOCUS EFFICIENCY ANALYSIS ─────────────────────────────────────────
   const shortSessions = entries.filter(e => e.hours <= 2);
   const longSessions  = entries.filter(e => e.hours > 2);
   let focusInsight = null;
@@ -2855,7 +3513,6 @@ function renderAIBehaviorAnalysis(entries) {
     focusInsight = { type: 'positive', text: 'Insufficient data for short sessions. Current pattern reflects primarily extended-session performance.' };
   }
 
-  // ── 5. SUMMARY ────────────────────────────────────────────────────────────
   let summaryText;
   if (burnoutDetected) {
     summaryText = `Recent study behaviour shows signs of performance strain. Session duration is increasing while output efficiency is declining — a structured reduction in load is recommended.`;
@@ -2869,16 +3526,15 @@ function renderAIBehaviorAnalysis(entries) {
     summaryText = `Recent study behaviour shows ${stabilityLabel.toLowerCase()} consistency with ${burnoutSignals.length === 0 ? 'no significant fatigue indicators' : 'mild fatigue signals'} across the most recent sessions.`;
   }
 
-  // ── 6. RENDER ─────────────────────────────────────────────────────────────
   const patternHTML = `
     <div class="aba-section-label">Performance Pattern</div>
     <div class="aba-style-box">
-      <div class="aba-style-icon">${patternIcon}</div>
+      <div class="aba-style-icon">${patternIconSVG}</div>
       <div class="aba-style-body">
         <div class="aba-style-label">Identified pattern</div>
         <div class="aba-style-name">${patternName}</div>
         <div class="aba-style-desc">${patternDesc}</div>
-        <div class="aba-style-desc" style="margin-top:0.5rem;font-style:italic;opacity:0.85"><strong>Recommendation:</strong> ${patternRec}</div>
+        <div class="aba-style-desc" style="margin-top:8px;opacity:0.85"><strong>Recommendation:</strong> ${patternRec}</div>
         <div class="aba-signals">
           ${patternSignals.map(s => `<span class="aba-signal-tag">${s}</span>`).join('')}
         </div>
@@ -2888,9 +3544,11 @@ function renderAIBehaviorAnalysis(entries) {
 
   const burnoutHTML = burnoutDetected
     ? `
-      <div class="aba-section-label">Fatigue & Load Analysis</div>
+      <div class="aba-section-label">Fatigue &amp; Load Analysis</div>
       <div class="aba-burnout-box">
-        <div class="aba-burnout-icon">⚠️</div>
+        <div class="aba-burnout-icon">
+          <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#9a3c28"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
         <div class="aba-burnout-body">
           <div class="aba-burnout-title">Performance decline indicators detected.</div>
           <div class="aba-burnout-desc">${burnoutInsightMessages.join(' ')}</div>
@@ -2901,37 +3559,330 @@ function renderAIBehaviorAnalysis(entries) {
       </div>
     `
     : `
-      <div class="aba-section-label">Fatigue & Load Analysis</div>
+      <div class="aba-section-label">Fatigue &amp; Load Analysis</div>
       <div class="aba-ok-box">
-        <span style="font-size:1.1rem">✓</span>
+        <span style="font-family:var(--mono);font-size:12px;font-weight:600;color:#3a7d52">✓</span>
         <span>No significant fatigue indicators detected. Hours, cognitive state, and productivity output remain within balanced ranges.</span>
       </div>
     `;
 
   const stabilityHTML = `
     <div class="aba-section-label">Productivity Stability</div>
-    <div class="insight ${stabilityClass}" style="margin-bottom:0.8rem">
-      <span class="emoji">📉</span>
+    <div class="insight ${stabilityClass}" style="margin-bottom:10px">
+      <span class="insight-dot"></span>
       <span><strong>${stabilityLabel}</strong> — ${stabilityDesc}</span>
     </div>
   `;
 
   const focusHTML = focusInsight ? `
     <div class="aba-section-label">Focus Efficiency</div>
-    <div class="insight ${focusInsight.type}" style="margin-bottom:0.8rem">
-      <span class="emoji">⏱</span>
+    <div class="insight ${focusInsight.type}" style="margin-bottom:10px">
+      <span class="insight-dot"></span>
       <span>${focusInsight.text}</span>
     </div>
   ` : '';
 
   const summaryHTML = `
     <div class="aba-section-label">Summary</div>
-    <div style="padding:0.9rem 1rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:0.88rem;line-height:1.6;color:var(--text)">
+    <div style="padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg);border:1px solid var(--border);font-size:13px;line-height:1.65;color:var(--text-2)">
       ${summaryText}
     </div>
   `;
 
   el.innerHTML = patternHTML + burnoutHTML + stabilityHTML + focusHTML + summaryHTML;
+}
+
+// ── Study Replay ─────────────────────────────────────────────────
+function renderReplay(entries) {
+
+  // ── Summary stats ─────────────────────────────────────────────
+  const summaryEl = document.getElementById('replaySummaryRow');
+  if (!summaryEl) return;
+
+  if (entries.length === 0) {
+    summaryEl.innerHTML = '';
+    document.getElementById('replayTrendBars').innerHTML = '';
+    document.getElementById('replayTimeline').innerHTML = '<p class="replay-no-data">No sessions to replay yet. Log your first session to begin.</p>';
+    document.getElementById('replayInsights').innerHTML = '<p class="no-insight">Add at least 3 sessions to generate replay insights.</p>';
+    return;
+  }
+
+  const totalHours = entries.reduce((s, e) => s + e.hours, 0);
+  const avgProd    = avg(entries.map(e => e.productivity));
+  const peakProd   = Math.max(...entries.map(e => e.productivity));
+  const subjects   = [...new Set(entries.map(e => e.subject).filter(s => s && s !== '—'))];
+
+  // Longest consecutive streak (prod >= 3)
+  let longestStreak = 0, curStreak = 0;
+  entries.forEach(e => {
+    if (e.productivity >= 3) { curStreak++; longestStreak = Math.max(longestStreak, curStreak); }
+    else curStreak = 0;
+  });
+
+  const avgProdColor = avgProd !== null ? (avgProd >= 4 ? 'rs-accent' : avgProd >= 3 ? 'rs-amber' : 'rs-neutral') : 'rs-neutral';
+  summaryEl.innerHTML = `
+    <div class="replay-stat rs-neutral">
+      <div class="rs-label">Total Hours</div>
+      <div class="rs-value">${totalHours.toFixed(1)}</div>
+      <div class="rs-sub">${entries.length} session${entries.length !== 1 ? 's' : ''} logged</div>
+    </div>
+    <div class="replay-stat ${avgProdColor}">
+      <div class="rs-label">Avg Productivity</div>
+      <div class="rs-value">${avgProd !== null ? avgProd.toFixed(1) : '—'}</div>
+      <div class="rs-sub">${avgProd !== null ? (avgProd >= 4 ? 'Strong output' : avgProd >= 3 ? 'On track' : 'Needs attention') : 'No data'}</div>
+    </div>
+    <div class="replay-stat rs-accent">
+      <div class="rs-label">Peak Score</div>
+      <div class="rs-value">${peakProd}</div>
+      <div class="rs-sub">highest session score</div>
+    </div>
+    <div class="replay-stat rs-indigo">
+      <div class="rs-label">Best Streak</div>
+      <div class="rs-value">${longestStreak}</div>
+      <div class="rs-sub">productive sessions in a row</div>
+    </div>
+  `;
+
+  // ── Trend bars ────────────────────────────────────────────────
+  const trendEl = document.getElementById('replayTrendBars');
+  const axisEndEl = document.getElementById('replayAxisEnd');
+  if (trendEl) {
+    if (entries.length === 0) {
+      trendEl.innerHTML = '';
+    } else {
+      const maxH = 50;
+      trendEl.innerHTML = entries.map((e, i) => {
+        const pct   = Math.max(4, (e.productivity / 5) * maxH);
+        const cls   = e.productivity >= 4 ? 'prod-' + e.productivity : e.productivity === 3 ? 'prod-3' : e.productivity === 2 ? 'prod-2' : 'prod-1';
+        const title = `${e.date}: ${e.subject || 'General'} — Productivity ${e.productivity}/5`;
+        return `<div class="replay-trend-bar-wrap" title="${title}">
+          <div class="replay-trend-bar ${cls}" style="height:${pct}px"></div>
+        </div>`;
+      }).join('');
+      if (axisEndEl) axisEndEl.textContent = 'Session ' + entries.length;
+    }
+  }
+
+  // ── Timeline ─────────────────────────────────────────────────
+  const timelineEl = document.getElementById('replayTimeline');
+  if (!timelineEl) return;
+
+  if (entries.length === 0) {
+    timelineEl.innerHTML = '<p class="replay-no-data">No sessions yet.</p>';
+  } else {
+    // Annotate events: streaks, breaks, peaks, drops
+    const annotated = entries.map((e, i) => {
+      const events = [];
+      const prev   = entries[i - 1];
+      const next   = entries[i + 1];
+
+      // Focus peak: prod = 5
+      if (e.productivity === 5) events.push({ tag: 't-peak', label: 'Peak' });
+
+      // Consecutive streak start (3+ in a row at prod >= 4)
+      if (e.productivity >= 4) {
+        let streak = 1;
+        let j = i - 1;
+        while (j >= 0 && entries[j].productivity >= 4) { streak++; j--; }
+        if (streak >= 3 && (!prev || prev.productivity < 4)) {
+          events.push({ tag: 't-streak', label: `${streak}-streak` });
+        }
+      }
+
+      // Productivity drop after high
+      if (prev && prev.productivity >= 4 && e.productivity <= 2) {
+        events.push({ tag: 't-drop', label: 'Drop' });
+      }
+
+      return { ...e, events };
+    });
+
+    // Detect subject switches for annotation
+    const switchSet = new Set();
+    for (let i = 1; i < entries.length; i++) {
+      const prevSubj = entries[i - 1].subject;
+      const currSubj = entries[i].subject;
+      if (prevSubj !== '—' && currSubj !== '—' && prevSubj !== currSubj) {
+        switchSet.add(i);
+      }
+    }
+
+    const timelineHTML = '<div class="replay-timeline">' +
+      annotated.map((e, i) => {
+        const prod       = e.productivity;
+        const blockCls   = prod >= 4 ? 'rb-high' : prod === 3 ? 'rb-mid' : 'rb-low';
+        const dotCls     = prod >= 4 ? 'dot-high' : prod === 3 ? 'dot-mid' : 'dot-low';
+        const prodTagCls = prod >= 4 ? 't-prod-high' : prod === 3 ? 't-prod-mid' : 't-prod-low';
+        const switchNote = switchSet.has(i) ? `<span class="rb-tag t-mood">Switch</span>` : '';
+        const eventTags  = e.events.map(ev => `<span class="rb-tag ${ev.tag}">${ev.label}</span>`).join('');
+        const isLong     = e.hours > 3.5;
+        const num        = String(i + 1).padStart(2, '0');
+
+        return `<div class="replay-event">
+          <div class="replay-event-dot ${dotCls}"></div>
+          <div class="replay-block ${blockCls}">
+            <span class="rb-index">${num}</span>
+            <span class="rb-date">${e.date}</span>
+            <span class="rb-divider"></span>
+            <span class="rb-subject">${e.subject !== '—' ? e.subject : 'General'}</span>
+            <span class="rb-meta">
+              ${eventTags}
+              ${switchNote}
+              ${isLong ? '<span class="rb-tag t-mood">Long</span>' : ''}
+              <span class="rb-tag t-hours">${e.hours}h</span>
+              <span class="rb-tag ${prodTagCls}">${prod}/5</span>
+            </span>
+            <span class="rb-event-label">
+              ${prod >= 4 ? 'High' : prod === 3 ? 'Mid' : 'Low'}
+            </span>
+          </div>
+        </div>`;
+      }).join('') +
+    '</div>';
+
+    timelineEl.innerHTML = timelineHTML;
+  }
+
+  // ── Replay insights ──────────────────────────────────────────
+  const insightEl = document.getElementById('replayInsights');
+  if (!insightEl) return;
+
+  if (entries.length < 3) {
+    insightEl.innerHTML = '<p class="no-insight">Add at least 3 sessions to generate replay insights.</p>';
+    return;
+  }
+
+  const insights = [];
+
+  // 1. Best subject by avg productivity
+  const subjectMap = {};
+  entries.forEach(e => {
+    const s = e.subject && e.subject !== '—' ? e.subject : null;
+    if (!s) return;
+    if (!subjectMap[s]) subjectMap[s] = [];
+    subjectMap[s].push(e.productivity);
+  });
+  const subjectAvgs = Object.entries(subjectMap)
+    .filter(([, arr]) => arr.length >= 2)
+    .map(([s, arr]) => ({ subject: s, avgP: avg(arr), count: arr.length }))
+    .sort((a, b) => b.avgP - a.avgP);
+
+  if (subjectAvgs.length >= 2) {
+    const best  = subjectAvgs[0];
+    const worst = subjectAvgs[subjectAvgs.length - 1];
+    insights.push({
+      type: 'ri-green',
+      icon: '→',
+      text: `Your longest focused streak happened during <strong>${best.subject}</strong> sessions (avg productivity ${best.avgP.toFixed(1)}/5 across ${best.count} sessions).`
+    });
+    if (worst.avgP < best.avgP - 0.8) {
+      insights.push({
+        type: 'ri-amber',
+        icon: '↓',
+        text: `<strong>${worst.subject}</strong> sessions show lower average productivity (${worst.avgP.toFixed(1)}/5). Consider shorter, more focused blocks for this subject.`
+      });
+    }
+  } else if (subjectAvgs.length === 1) {
+    insights.push({
+      type: 'ri-green',
+      icon: '→',
+      text: `Most sessions are in <strong>${subjectAvgs[0].subject}</strong> with avg productivity ${subjectAvgs[0].avgP.toFixed(1)}/5.`
+    });
+  }
+
+  // 2. Long session fatigue
+  const longSessions = entries.filter(e => e.hours > 3.5);
+  if (longSessions.length >= 2) {
+    const longProd  = avg(longSessions.map(e => e.productivity));
+    const shortProd = avg(entries.filter(e => e.hours <= 3.5).map(e => e.productivity));
+    if (shortProd !== null && longProd < shortProd - 0.5) {
+      insights.push({
+        type: 'ri-red',
+        icon: '!',
+        text: `Productivity dropped after consecutive long sessions (${longProd.toFixed(1)}/5 in sessions > 3.5h vs ${shortProd.toFixed(1)}/5 in shorter ones). Consider capping sessions at 3 hours.`
+      });
+    }
+  }
+
+  // 3. Streak insight
+  if (longestStreak >= 3) {
+    insights.push({
+      type: 'ri-indigo',
+      icon: '✦',
+      text: `You maintained a productive streak of <strong>${longestStreak} consecutive sessions</strong> with productivity ≥ 3. That's your behavioral peak — try to replicate the conditions around it.`
+    });
+  }
+
+  // 4. Productivity trend (last 5 vs first 5)
+  if (entries.length >= 6) {
+    const first5 = avg(entries.slice(0, 5).map(e => e.productivity));
+    const last5  = avg(entries.slice(-5).map(e => e.productivity));
+    const delta  = last5 - first5;
+    if (delta >= 0.5) {
+      insights.push({
+        type: 'ri-green',
+        icon: '↑',
+        text: `Your productivity has improved over time (+${delta.toFixed(1)} avg score comparing your first 5 to your last 5 sessions). Consistent logging is working.`
+      });
+    } else if (delta <= -0.5) {
+      insights.push({
+        type: 'ri-amber',
+        icon: '↓',
+        text: `Your recent sessions show a dip in productivity (${delta.toFixed(1)} vs earlier sessions). Review session length, mood, or schedule to find the cause.`
+      });
+    }
+  }
+
+  // 5. Mood-productivity link
+  const highMood = entries.filter(e => e.mood >= 4);
+  const lowMood  = entries.filter(e => e.mood <= 2);
+  if (highMood.length >= 2 && lowMood.length >= 2) {
+    const hmp = avg(highMood.map(e => e.productivity));
+    const lmp = avg(lowMood.map(e => e.productivity));
+    if (hmp - lmp > 0.7) {
+      insights.push({
+        type: 'ri-green',
+        icon: '→',
+        text: `You stayed more productive during high-mood sessions (${hmp.toFixed(1)}/5) than low-mood ones (${lmp.toFixed(1)}/5). Mood is a strong predictor of your output.`
+      });
+    }
+  }
+
+  // 6. Subject switches
+  const switches = [];
+  for (let i = 1; i < entries.length; i++) {
+    if (entries[i].subject !== entries[i - 1].subject && entries[i].subject !== '—' && entries[i - 1].subject !== '—') {
+      switches.push(i);
+    }
+  }
+  if (switches.length >= 3) {
+    const switchedEntryProds = switches.map(i => entries[i].productivity);
+    const switchAvg = avg(switchedEntryProds);
+    if (switchAvg !== null && switchAvg < (avgProd || 3) - 0.3) {
+      insights.push({
+        type: 'ri-amber',
+        icon: '↔',
+        text: `Sessions following a subject switch tend to be slightly less productive (avg ${switchAvg.toFixed(1)}/5 after switching). Grouping same-subject sessions may help.`
+      });
+    }
+  }
+
+  if (insights.length === 0) {
+    insights.push({
+      type: 'ri-green',
+      icon: '✓',
+      text: 'Study behavior looks consistent. Add more sessions to unlock deeper replay patterns.'
+    });
+  }
+
+  insightEl.innerHTML = '<div class="replay-insight-list">' +
+    insights.map(ins => `
+      <div class="replay-insight-item ${ins.type}">
+        <span class="replay-insight-icon">${ins.icon}</span>
+        <div class="replay-insight-body">${ins.text}</div>
+      </div>
+    `).join('') +
+  '</div>';
 }
 
 function render() {
@@ -2960,8 +3911,8 @@ function render() {
   const dht = document.getElementById('dashHoursTrend');
   const dpt = document.getElementById('dashProdTrend');
   const dst = document.getElementById('dashSessionsTrend');
-  if (dht) dht.textContent = avgH !== null ? (avgH <= 2 ? '⚡ Short sessions' : avgH <= 4 ? '✓ Balanced duration' : '⏳ Long sessions') : 'No data yet';
-  if (dpt) dpt.textContent = avgP !== null ? (avgP >= 4 ? '🚀 Excellent' : avgP >= 3 ? '✓ On track' : '⚠ Needs attention') : 'No data yet';
+  if (dht) dht.textContent = avgH !== null ? (avgH <= 2 ? 'Short sessions' : avgH <= 4 ? 'Balanced duration' : 'Long sessions') : 'No data yet';
+  if (dpt) dpt.textContent = avgP !== null ? (avgP >= 4 ? 'Excellent' : avgP >= 3 ? 'On track' : 'Needs attention') : 'No data yet';
   if (dst) dst.textContent = entries.length > 0 ? (entries.length === 1 ? '1 session logged' : `${entries.length} sessions logged`) : 'Start logging';
 
   // Dashboard quick widgets (mirror the full ones)
@@ -2984,7 +3935,7 @@ function render() {
         <td>${e.hours}h</td>
         <td><span class="badge badge-mood">${e.mood}/5</span></td>
         <td><span class="badge badge-prod">${e.productivity}/5</span></td>
-        <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
+        <td><button class="delete-btn" onclick="deleteEntry(${e.id})">Remove</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -3007,12 +3958,13 @@ function render() {
   // Cognitive Performance Analysis
   renderAIBehaviorAnalysis(entries);
 
+  // Study Replay
+  renderReplay(entries);
+
   // Charts
   const labels = entries.map(e => e.date);
   const data   = entries.map(e => e.productivity);
 
-  // Shared chart configuration — used for both dashboard and analytics charts.
-  // One definition keeps the two charts perfectly in sync.
   const chartCfg = {
     type: 'line',
     data: {
@@ -3020,54 +3972,51 @@ function render() {
       datasets: [{
         label: 'Productivity',
         data,
-        borderColor: '#c2622f',
+        borderColor: '#b45309',
         backgroundColor: (ctx) => {
-          // Gradient fill — stronger at the line, fades to transparent at the bottom
           const chart = ctx.chart;
           const { ctx: c, chartArea } = chart;
-          if (!chartArea) return 'rgba(194,98,47,0.08)';
+          if (!chartArea) return 'rgba(180,83,9,0.06)';
           const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0,   'rgba(194,98,47,0.18)');
-          gradient.addColorStop(0.5, 'rgba(194,98,47,0.06)');
-          gradient.addColorStop(1,   'rgba(194,98,47,0)');
+          gradient.addColorStop(0,   'rgba(180,83,9,0.12)');
+          gradient.addColorStop(0.6, 'rgba(180,83,9,0.03)');
+          gradient.addColorStop(1,   'rgba(180,83,9,0)');
           return gradient;
         },
         pointBackgroundColor: '#fff',
-        pointBorderColor: '#c2622f',
+        pointBorderColor: '#b45309',
         pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        pointHoverBackgroundColor: '#c2622f',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: '#b45309',
         pointHoverBorderColor: '#fff',
         pointHoverBorderWidth: 2,
         fill: true,
         tension: 0.4,
-        borderWidth: 2.5
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: true,
-      aspectRatio: window.innerWidth < 700 ? 1.6 : 2.8,    // narrower on mobile
+      aspectRatio: window.innerWidth < 700 ? 1.6 : 2.8,
       layout: {
-        padding: { top: 8, right: 8, bottom: 4, left: 4 }
+        padding: { top: 6, right: 6, bottom: 2, left: 2 }
       },
       interaction: {
         mode: 'index',
-        intersect: false    // tooltip fires on hover anywhere in the column
+        intersect: false
       },
       plugins: {
-        legend: {
-          display: false    // we render our own legend below each chart
-        },
+        legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(26,23,20,0.88)',
-          titleColor: '#f5f2eb',
-          bodyColor: '#ccc7bc',
-          titleFont: { family: 'DM Sans', size: 12, weight: '600' },
-          bodyFont:  { family: 'DM Sans', size: 12 },
+          backgroundColor: 'rgba(28,25,23,0.92)',
+          titleColor: '#f5f5f4',
+          bodyColor: '#a8a29e',
+          titleFont: { family: "'IBM Plex Sans', sans-serif", size: 12, weight: '600' },
+          bodyFont:  { family: "'IBM Plex Sans', sans-serif", size: 12 },
           padding: 10,
-          cornerRadius: 8,
+          cornerRadius: 5,
           displayColors: false,
           callbacks: {
             title: (items) => items[0].label,
@@ -3081,39 +4030,34 @@ function render() {
           max: 5,
           ticks: {
             stepSize: 1,
-            font: { family: 'DM Sans', size: 11 },
-            color: '#7a7368',
+            font: { family: "'IBM Plex Mono', monospace", size: 11 },
+            color: '#a8a29e',
             padding: 8,
-            // Show numeric label only; the chart-subtitle explains the unit
             callback: (v) => v === 0 ? '' : v
           },
           grid: {
-            color: 'rgba(0,0,0,0.06)',
+            color: 'rgba(0,0,0,0.05)',
             drawTicks: false
           },
-          border: { dash: [4, 4], color: 'transparent' }
+          border: { dash: [3, 3], color: 'transparent' }
         },
         x: {
           ticks: {
-            font: { family: 'DM Sans', size: 11 },
-            color: '#7a7368',
+            font: { family: "'IBM Plex Sans', sans-serif", size: 11 },
+            color: '#a8a29e',
             maxRotation: 45,
             minRotation: 0,
             autoSkip: true,
-            maxTicksLimit: 10,   // avoid crowding on large datasets
+            maxTicksLimit: 10,
             padding: 6
           },
           grid: { display: false },
-          border: { color: 'rgba(0,0,0,0.08)' }
+          border: { color: 'rgba(0,0,0,0.07)' }
         }
       }
     }
   };
 
-  // Instantiate both charts from the same config object.
-  // We build separate data objects so each canvas gets its own Chart instance,
-  // but share the options. Note: JSON deep-clone would break the gradient
-  // function in backgroundColor, so we construct each chart individually.
   if (chart) chart.destroy();
   chart = new Chart(
     document.getElementById('chart').getContext('2d'),
@@ -3121,8 +4065,6 @@ function render() {
   );
 
   if (chartAnalytics) chartAnalytics.destroy();
-  // Build a structurally identical config for the analytics canvas.
-  // Only the canvas context differs; data and options are the same shape.
   chartAnalytics = new Chart(
     document.getElementById('chartAnalytics').getContext('2d'),
     {
@@ -3131,7 +4073,6 @@ function render() {
         labels: [...labels],
         datasets: [{
           ...chartCfg.data.datasets[0],
-          // Re-bind the gradient so it references the new canvas context
           backgroundColor: chartCfg.data.datasets[0].backgroundColor
         }]
       },
