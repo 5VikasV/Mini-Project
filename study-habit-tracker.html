@@ -612,25 +612,68 @@ tbody td {
 /* ── CHART ──────────────────────────────────────────────── */
 .chart-wrap {
   position: relative;
-  margin-top: 4px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  /* Reserve breathing room so points never clip */
+  padding: 2px 0;
 }
 
-.chart-wrap canvas { display: block; max-width: 100%; }
+.chart-wrap canvas {
+  display: block;
+  max-width: 100%;
+  /* Prevent canvas from ever clipping its own content */
+  overflow: visible;
+}
 
 .chart-subtitle {
   font-size: 12px;
   color: var(--muted);
+  margin-bottom: 16px;
+  line-height: 1.55;
+}
+
+.chart-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chart-meta-desc {
+  font-size: 12px;
+  color: var(--muted);
   line-height: 1.5;
+}
+
+.chart-meta-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  flex-shrink: 0;
+}
+
+.chart-meta-stat strong {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
 }
 
 .chart-legend {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   flex-wrap: wrap;
   padding-top: 12px;
-  margin-top: 10px;
+  margin-top: 12px;
   border-top: 1px solid var(--border);
 }
 
@@ -2226,16 +2269,23 @@ tbody td {
           <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
           Productivity Over Time
         </div>
-        <div class="chart-subtitle">Session-by-session productivity score (1–5). Each point is one logged session.</div>
+        <div class="chart-meta-row">
+          <span class="chart-meta-desc">Session-by-session productivity score (1–5), labelled by subject.</span>
+          <span class="chart-meta-stat" id="chartAvgStat"><strong>—</strong>&nbsp;avg score</span>
+        </div>
         <div class="chart-wrap"><canvas id="chartAnalytics"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item">
             <div class="chart-legend-line" style="background:#b45309"></div>
-            Productivity trend
+            Trend line
           </div>
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background:#b45309"></div>
-            Individual session
+            <div class="chart-legend-dot" style="background:#b45309;border:2px solid #fff;box-shadow:0 0 0 1.5px #b45309"></div>
+            Session point
+          </div>
+          <div class="chart-legend-item" style="margin-left:auto">
+            <div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(to bottom,rgba(180,83,9,0.18),rgba(180,83,9,0));flex-shrink:0"></div>
+            Area fill
           </div>
         </div>
       </div>
@@ -3961,101 +4011,144 @@ function render() {
   // Study Replay
   renderReplay(entries);
 
-  // Charts
-  const labels = entries.map(e => e.date);
-  const data   = entries.map(e => e.productivity);
+  // Charts — build subject-based labels with dedup numbering
+  const subjectCountMap = {};
+  const chartLabels = entries.map(e => {
+    const raw = (e.subject && e.subject !== '—') ? e.subject.trim() : e.date;
+    subjectCountMap[raw] = (subjectCountMap[raw] || 0) + 1;
+    return { raw, idx: subjectCountMap[raw] };
+  });
+  // Second pass: append #N only when a subject appears more than once
+  const totalOccurrences = {};
+  entries.forEach(e => {
+    const raw = (e.subject && e.subject !== '—') ? e.subject.trim() : e.date;
+    totalOccurrences[raw] = (totalOccurrences[raw] || 0) + 1;
+  });
+  const occurrenceSeen = {};
+  const labels = entries.map(e => {
+    const raw = (e.subject && e.subject !== '—') ? e.subject.trim() : e.date;
+    occurrenceSeen[raw] = (occurrenceSeen[raw] || 0) + 1;
+    return totalOccurrences[raw] > 1 ? `${raw} #${occurrenceSeen[raw]}` : raw;
+  });
+
+  const data = entries.map(e => e.productivity);
+
+  // Update avg stat badge
+  const avgStatEl = document.getElementById('chartAvgStat');
+  if (avgStatEl) {
+    const avgVal = avg(data);
+    avgStatEl.innerHTML = `<strong>${avgVal !== null ? avgVal.toFixed(1) : '—'}</strong>&nbsp;avg score`;
+  }
+
+  function buildGradient(ctx) {
+    const chart = ctx.chart;
+    const { ctx: c, chartArea } = chart;
+    if (!chartArea) return 'rgba(180,83,9,0.08)';
+    const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+    gradient.addColorStop(0,   'rgba(180,83,9,0.18)');
+    gradient.addColorStop(0.5, 'rgba(180,83,9,0.06)');
+    gradient.addColorStop(1,   'rgba(180,83,9,0)');
+    return gradient;
+  }
+
+  const sharedDataset = {
+    label: 'Productivity',
+    data,
+    borderColor: '#b45309',
+    backgroundColor: buildGradient,
+    pointBackgroundColor: '#ffffff',
+    pointBorderColor: '#b45309',
+    pointBorderWidth: 2,
+    pointRadius: 4.5,
+    pointHoverRadius: 7,
+    pointHoverBackgroundColor: '#b45309',
+    pointHoverBorderColor: '#ffffff',
+    pointHoverBorderWidth: 2.5,
+    fill: true,
+    tension: 0.42,
+    borderWidth: 2,
+    borderCapStyle: 'round',
+    borderJoinStyle: 'round',
+    clip: false
+  };
+
+  const sharedOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: window.innerWidth < 700 ? 1.5 : 2.6,
+    layout: {
+      padding: { top: 20, right: 16, bottom: 4, left: 4 }
+    },
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    animation: {
+      duration: 600,
+      easing: 'easeInOutQuart'
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1c1917',
+        titleColor: '#f5f5f4',
+        bodyColor: '#d6d3d1',
+        borderColor: 'rgba(255,255,255,0.08)',
+        borderWidth: 1,
+        titleFont: { family: "'IBM Plex Sans', sans-serif", size: 12, weight: '600' },
+        bodyFont:  { family: "'IBM Plex Sans', sans-serif", size: 12 },
+        padding: { x: 14, y: 10 },
+        cornerRadius: 6,
+        caretSize: 5,
+        displayColors: false,
+        callbacks: {
+          title: (items) => items[0].label,
+          label: (ctx) => {
+            const v = ctx.parsed.y;
+            const label = v >= 4 ? 'High' : v >= 3 ? 'Moderate' : v >= 2 ? 'Low' : 'Very low';
+            return `  Score: ${v} / 5  (${label})`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: 5.4,   // extra headroom so score-5 points never touch the top edge
+        ticks: {
+          stepSize: 1,
+          font: { family: "'IBM Plex Mono', monospace", size: 10.5 },
+          color: '#b8b0a8',
+          padding: 10,
+          callback: (v) => (v === 0 || v > 5) ? '' : v
+        },
+        grid: {
+          color: (ctx) => ctx.tick.value === 0 ? 'transparent' : 'rgba(0,0,0,0.045)',
+          drawTicks: false,
+          lineWidth: 1
+        },
+        border: { dash: [4, 4], color: 'transparent' }
+      },
+      x: {
+        ticks: {
+          font: { family: "'IBM Plex Sans', sans-serif", size: 11 },
+          color: '#a8a29e',
+          maxRotation: 40,
+          minRotation: 0,
+          autoSkip: true,
+          maxTicksLimit: 12,
+          padding: 8
+        },
+        grid: { display: false },
+        border: { color: 'rgba(0,0,0,0.06)' }
+      }
+    }
+  };
 
   const chartCfg = {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Productivity',
-        data,
-        borderColor: '#b45309',
-        backgroundColor: (ctx) => {
-          const chart = ctx.chart;
-          const { ctx: c, chartArea } = chart;
-          if (!chartArea) return 'rgba(180,83,9,0.06)';
-          const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0,   'rgba(180,83,9,0.12)');
-          gradient.addColorStop(0.6, 'rgba(180,83,9,0.03)');
-          gradient.addColorStop(1,   'rgba(180,83,9,0)');
-          return gradient;
-        },
-        pointBackgroundColor: '#fff',
-        pointBorderColor: '#b45309',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointHoverBackgroundColor: '#b45309',
-        pointHoverBorderColor: '#fff',
-        pointHoverBorderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      aspectRatio: window.innerWidth < 700 ? 1.6 : 2.8,
-      layout: {
-        padding: { top: 6, right: 6, bottom: 2, left: 2 }
-      },
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(28,25,23,0.92)',
-          titleColor: '#f5f5f4',
-          bodyColor: '#a8a29e',
-          titleFont: { family: "'IBM Plex Sans', sans-serif", size: 12, weight: '600' },
-          bodyFont:  { family: "'IBM Plex Sans', sans-serif", size: 12 },
-          padding: 10,
-          cornerRadius: 5,
-          displayColors: false,
-          callbacks: {
-            title: (items) => items[0].label,
-            label: (ctx) => ` Productivity: ${ctx.parsed.y} / 5`
-          }
-        }
-      },
-      scales: {
-        y: {
-          min: 0,
-          max: 5,
-          ticks: {
-            stepSize: 1,
-            font: { family: "'IBM Plex Mono', monospace", size: 11 },
-            color: '#a8a29e',
-            padding: 8,
-            callback: (v) => v === 0 ? '' : v
-          },
-          grid: {
-            color: 'rgba(0,0,0,0.05)',
-            drawTicks: false
-          },
-          border: { dash: [3, 3], color: 'transparent' }
-        },
-        x: {
-          ticks: {
-            font: { family: "'IBM Plex Sans', sans-serif", size: 11 },
-            color: '#a8a29e',
-            maxRotation: 45,
-            minRotation: 0,
-            autoSkip: true,
-            maxTicksLimit: 10,
-            padding: 6
-          },
-          grid: { display: false },
-          border: { color: 'rgba(0,0,0,0.07)' }
-        }
-      }
-    }
+    data: { labels, datasets: [{ ...sharedDataset }] },
+    options: sharedOptions
   };
 
   if (chart) chart.destroy();
@@ -4068,15 +4161,9 @@ function render() {
   chartAnalytics = new Chart(
     document.getElementById('chartAnalytics').getContext('2d'),
     {
-      type: chartCfg.type,
-      data: {
-        labels: [...labels],
-        datasets: [{
-          ...chartCfg.data.datasets[0],
-          backgroundColor: chartCfg.data.datasets[0].backgroundColor
-        }]
-      },
-      options: chartCfg.options
+      type: 'line',
+      data: { labels: [...labels], datasets: [{ ...sharedDataset }] },
+      options: { ...sharedOptions }
     }
   );
 }
