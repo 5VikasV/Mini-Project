@@ -7312,9 +7312,20 @@ function epGeneratePlan() {
     s.completedMods    = s.completedInput;
     s.remainingModules = s.totalModules - s.completedMods;
     s.progressPct      = Math.round((s.completedMods / s.totalModules) * 100);
+    s.isCompleted      = s.remainingModules <= 0; // flag fully-done subjects
   });
 
-  // ── 3. Sort: nearest exam first, break ties by lowest completion % ──
+  // Separate active and completed subjects
+  const activeSubjects    = subjects.filter(s => !s.isCompleted);
+  const completedSubjects = subjects.filter(s =>  s.isCompleted);
+
+  // ── 3. Sort active subjects: nearest exam first, break ties by lowest completion % ──
+  activeSubjects.sort((a, b) => {
+    if (a.daysLeft !== b.daysLeft) return a.daysLeft - b.daysLeft;
+    return a.progressPct - b.progressPct;
+  });
+
+  // If all subjects are complete, still sort for display
   subjects.sort((a, b) => {
     if (a.daysLeft !== b.daysLeft) return a.daysLeft - b.daysLeft;
     return a.progressPct - b.progressPct;
@@ -7329,12 +7340,13 @@ function epGeneratePlan() {
   // ── 5. Allocate study days per subject ─────────────────────
   // Each subject gets days proportional to its remaining modules,
   // capped at its own exam date.
-  const overallDays    = subjects[0].daysLeft; // anchor = nearest exam
-  const totalRemaining = subjects.reduce((s, x) => s + x.remainingModules, 0);
+  const subjectsForPlan = activeSubjects.length > 0 ? activeSubjects : subjects; // fallback: all done
+  const overallDays    = subjectsForPlan[0].daysLeft; // anchor = nearest active exam
+  const totalRemaining = subjectsForPlan.reduce((s, x) => s + x.remainingModules, 0);
 
   let cursor = new Date(today); // rolling start date
 
-  // ── 6. Build phases (3 phases per subject) ─────────────────
+  // ── 6. Build phases (3 phases per subject) — active subjects only ──
   function makeDailyTarget(mods, days) {
     return days > 0 ? parseFloat((mods / days).toFixed(2)) : mods;
   }
@@ -7342,7 +7354,7 @@ function epGeneratePlan() {
   const allPhases = [];
   let phaseNumGlobal = 0;
 
-  subjects.forEach((s, si) => {
+  subjectsForPlan.forEach((s, si) => {
     // Days available for this subject = from cursor to its exam date
     const subjectStart = new Date(cursor);
     const availDays    = Math.max(3, epDaysBetween(subjectStart, s.examDate));
@@ -7361,10 +7373,15 @@ function epGeneratePlan() {
 
     const subjectLabel = subjects.length > 1 ? ` — ${s.name}` : '';
 
+    // moduleOffset = number of modules already completed for this subject.
+    // Phase module counts are relative (phase1Mods covers modules offset+1 … offset+phase1Mods).
+    const moduleOffset = s.completedMods;
+
     allPhases.push({
       num: ++phaseNumGlobal, name: 'Syllabus Completion' + subjectLabel, badge: 'phase-1',
       subjectName: s.name, subjectIndex: si,
       days: phase1Days, modules: phase1Mods,
+      moduleOffset,
       dailyTarget: makeDailyTarget(phase1Mods, phase1Days),
       dailyHours: effectiveDailyHours,
       start: epFmtDate(ph1Start),
@@ -7383,6 +7400,7 @@ function epGeneratePlan() {
       num: ++phaseNumGlobal, name: 'Revision' + subjectLabel, badge: 'phase-2',
       subjectName: s.name, subjectIndex: si,
       days: phase2Days, modules: phase2Mods,
+      moduleOffset: moduleOffset + phase1Mods,
       dailyTarget: makeDailyTarget(phase2Mods, phase2Days),
       dailyHours: Math.max(0.5, effectiveDailyHours * 0.9),
       start: epFmtDate(ph2Start),
@@ -7401,6 +7419,7 @@ function epGeneratePlan() {
       num: ++phaseNumGlobal, name: 'Final Revision' + subjectLabel, badge: 'phase-3',
       subjectName: s.name, subjectIndex: si,
       days: phase3Days, modules: Math.max(0, phase3Mods),
+      moduleOffset: moduleOffset + phase1Mods + phase2Mods,
       dailyTarget: makeDailyTarget(Math.max(1, phase3Mods), phase3Days),
       dailyHours: Math.max(0.5, effectiveDailyHours * 0.75),
       start: epFmtDate(ph3Start),
@@ -7419,7 +7438,8 @@ function epGeneratePlan() {
   });
 
   // ── 7. Aggregate plan totals ────────────────────────────────
-  const nearestSubject    = subjects[0];
+  const nearestSubject    = subjects[0]; // sorted by daysLeft; used for exam anchor
+  const nearestActive     = subjectsForPlan[0]; // nearest with remaining work
   const totalModulesAll2  = subjects.reduce((s, x) => s + x.totalModules, 0);
   const completedMods2    = subjects.reduce((s, x) => s + x.completedMods, 0);
   const remainingMods2    = subjects.reduce((s, x) => s + x.remainingModules, 0);
@@ -7439,14 +7459,16 @@ function epGeneratePlan() {
     remainingModules: remainingMods2,
     dailyHours:       dailyHoursIn,
     effectiveDailyHours,
-    totalDays:        nearestSubject.daysLeft,
+    totalDays:        nearestActive.daysLeft,
     progressPct:      Math.round((completedMods2 / totalModulesAll2) * 100),
     generatedAt:      Date.now(),
     sessionContext:   ctx,
     // Multi-subject data
-    subjects,          // sorted array of subject objects
-    multiSubject:      subjects.length > 1,
-    phases:            allPhases
+    subjects,              // ALL subjects (sorted), including completed ones
+    activeSubjects,        // only subjects with remaining modules
+    completedSubjects,     // subjects where all modules are done
+    multiSubject:          subjects.length > 1,
+    phases:                allPhases
   };
 
   epSavePlan(plan);
@@ -7580,7 +7602,7 @@ function epRenderPlan(plan) {
     const phaseLocalNum = phaseWithinSubject + 1; // 1,2,3
 
     // Progress shown for the syllabus phase of each subject
-    const subjData  = plan.subjects ? plan.subjects[ph.subjectIndex] : null;
+    const subjData  = plan.subjects ? plan.subjects.find(s => s.name === ph.subjectName) : null;
     const phPct     = phaseWithinSubject === 0 && subjData ? subjData.progressPct : 0;
     const phCompleted = phaseWithinSubject === 0 && subjData ? subjData.completedMods : 0;
     const phFilled  = Math.round(phPct / 10);
@@ -8653,10 +8675,16 @@ function renderTodaysTarget() {
     targetSubject   = top.name;
     avgProdForSubj  = top.avgProd;
 
-    // Derive recommended module number from completed modules + 1
-    const modsCompleted = plan.completedModules || 0;
-    const nextMod       = modsCompleted + 1;
-    moduleName  = 'Module ' + nextMod;
+    // Find this subject in the plan to get its per-subject next module
+    const planSubj = plan.subjects
+      ? plan.subjects.find(s => s.name === top.name)
+      : null;
+    const subjCompleted = planSubj ? planSubj.completedMods : (plan.completedModules || 0);
+    const subjTotal     = planSubj ? planSubj.totalModules  : (plan.totalModules || 0);
+    const nextMod       = Math.min(subjCompleted + 1, subjTotal);
+    moduleName  = planSubj && planSubj.isCompleted
+      ? 'All modules complete ✓'
+      : 'Module ' + nextMod;
     moduleHint  = top.avgProd <= 2
       ? 'Needs most attention — low productivity history'
       : top.avgProd <= 3.5
@@ -8672,8 +8700,16 @@ function renderTodaysTarget() {
     // Fall back to plan name when no sessions with subjects
     targetSubject  = plan.examName;
     avgProdForSubj = plan.sessionContext ? plan.sessionContext.avgProductivity : 3;
-    const nextMod  = (plan.completedModules || 0) + 1;
-    moduleName     = 'Module ' + nextMod;
+    // Use the nearest active subject's per-subject next module
+    const fallbackSubj = plan.activeSubjects && plan.activeSubjects.length > 0
+      ? plan.activeSubjects[0]
+      : (plan.subjects && plan.subjects.length > 0 ? plan.subjects[0] : null);
+    const fallbackNext = fallbackSubj
+      ? Math.min(fallbackSubj.completedMods + 1, fallbackSubj.totalModules)
+      : (plan.completedModules || 0) + 1;
+    moduleName     = fallbackSubj && fallbackSubj.isCompleted
+      ? 'All modules complete ✓'
+      : 'Module ' + fallbackNext;
     moduleHint     = 'No session data yet — log sessions to personalise';
     reasonText     = 'Prioritised: nearest exam (' + daysLeft + ' days remaining)';
   }
@@ -9169,8 +9205,8 @@ function epRenderDailyTimeline(plan) {
       date.setDate(phaseStartDate.getDate() + d);
       date.setHours(0, 0, 0, 0);
 
-      const modStart = Math.floor(d * modsPerDay) + 1;
-      const modEnd   = Math.min(ph.modules, Math.floor((d + 1) * modsPerDay));
+      const modStart = ph.moduleOffset + Math.floor(d * modsPerDay) + 1;
+      const modEnd   = ph.moduleOffset + Math.min(ph.modules, Math.floor((d + 1) * modsPerDay));
       let moduleLabel;
       if (modEnd > modStart)        moduleLabel = 'M' + modStart + '–M' + modEnd;
       else if (modEnd === modStart)  moduleLabel = 'M' + modStart;
