@@ -5117,7 +5117,8 @@ tbody td {
               <tr>
                 <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 8px 9px 0;border-bottom:1px solid var(--border);white-space:nowrap">Subject</th>
                 <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 8px 9px;border-bottom:1px solid var(--border);white-space:nowrap">Exam Date</th>
-                <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 0 9px 8px;border-bottom:1px solid var(--border);white-space:nowrap">Modules</th>
+                <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 8px 9px;border-bottom:1px solid var(--border);white-space:nowrap">Total Modules</th>
+                <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 0 9px 8px;border-bottom:1px solid var(--border);white-space:nowrap">Completed</th>
                 <th style="border-bottom:1px solid var(--border);padding:0 0 9px 8px;width:32px"></th>
               </tr>
             </thead>
@@ -5138,12 +5139,8 @@ tbody td {
           </div>
         </div>
 
-        <!-- Bottom row: completed modules, daily hours, generate -->
-        <div class="form-row ep-form-row" style="grid-template-columns:1fr 1fr 1fr">
-          <div class="field">
-            <label for="epCompletedModules">Modules Completed</label>
-            <input type="number" id="epCompletedModules" placeholder="e.g. 3" min="0"/>
-          </div>
+        <!-- Bottom row: daily hours, generate -->
+        <div class="form-row ep-form-row" style="grid-template-columns:1fr 1fr">
           <div class="field">
             <label for="epDailyHours">Available Hours/Day</label>
             <input type="number" id="epDailyHours" placeholder="e.g. 4" min="0.5" step="0.5"/>
@@ -5157,6 +5154,7 @@ tbody td {
         <input type="hidden" id="epExamName"/>
         <input type="hidden" id="epExamDate"/>
         <input type="hidden" id="epTotalModules"/>
+        <input type="hidden" id="epCompletedModules"/>
       </div>
 
       <!-- Plan output -->
@@ -7086,9 +7084,10 @@ function epSaveTableRows() {
   const tbody = document.getElementById('epExamTableBody');
   if (!tbody) return;
   const rows = Array.from(tbody.rows).map(tr => ({
-    subject:  tr.querySelector('.ep-row-subject')?.value || '',
-    examDate: tr.querySelector('.ep-row-date')?.value    || '',
-    modules:  tr.querySelector('.ep-row-modules')?.value || ''
+    subject:   tr.querySelector('.ep-row-subject')?.value   || '',
+    examDate:  tr.querySelector('.ep-row-date')?.value      || '',
+    modules:   tr.querySelector('.ep-row-modules')?.value   || '',
+    completed: tr.querySelector('.ep-row-completed')?.value || ''
   }));
   try { localStorage.setItem(EP_TABLE_ROWS_KEY, JSON.stringify(rows)); } catch (e) {}
 }
@@ -7099,16 +7098,17 @@ function epLoadTableRows() {
 
 // ── Row mutations ──────────────────────────────────────────────
 
-function epAddExamRow(subject, examDate, modules) {
+function epAddExamRow(subject, examDate, modules, completed) {
   const tbody = document.getElementById('epExamTableBody');
   if (!tbody) return;
   const id = ++epRowCounter;
   const tr = document.createElement('tr');
   tr.dataset.rowId = id;
   tr.innerHTML = `
-    <td><input type="text"   class="ep-row-subject" placeholder="e.g. Physics Final" value="${subject  || ''}"/></td>
-    <td><input type="date"   class="ep-row-date"    value="${examDate || ''}"/></td>
-    <td><input type="number" class="ep-row-modules" placeholder="e.g. 12" min="1" value="${modules  || ''}"/></td>
+    <td><input type="text"   class="ep-row-subject"   placeholder="e.g. Physics Final" value="${subject   || ''}"/></td>
+    <td><input type="date"   class="ep-row-date"      value="${examDate  || ''}"/></td>
+    <td><input type="number" class="ep-row-modules"   placeholder="e.g. 12" min="1"  value="${modules   || ''}"/></td>
+    <td><input type="number" class="ep-row-completed" placeholder="0"       min="0"  value="${completed || ''}"/></td>
     <td>
       <button class="ep-row-del" onclick="epDeleteExamRow(this)" title="Remove row">
         <svg width="13" height="13" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -7150,9 +7150,10 @@ function epDeleteLastExamRow() {
     const tbody = document.getElementById('epExamTableBody');
     if (!tbody) return;
     tbody.addEventListener('input', function(e) {
-      if (e.target.classList.contains('ep-row-subject') ||
-          e.target.classList.contains('ep-row-date')    ||
-          e.target.classList.contains('ep-row-modules')) {
+      if (e.target.classList.contains('ep-row-subject')   ||
+          e.target.classList.contains('ep-row-date')      ||
+          e.target.classList.contains('ep-row-modules')   ||
+          e.target.classList.contains('ep-row-completed')) {
         epSaveTableRows();
       }
     });
@@ -7178,7 +7179,7 @@ function epSyncLegacyFields() {
   if (savedRows && savedRows.length > 0) {
     // Restore all persisted rows
     savedRows.forEach(function(row) {
-      epAddExamRow(row.subject, row.examDate, row.modules);
+      epAddExamRow(row.subject, row.examDate, row.modules, row.completed);
     });
   } else {
     // Legacy fallback: seed first row from existing plan key
@@ -7249,33 +7250,37 @@ function epGetSessionContext() {
 
 // ── Plan generation ────────────────────────────────────────────
 
-function epGeneratePlan() {
-  // ── 1. Read all table rows ──────────────────────────────────
+// ── Internal plan builder — returns error string or null ──────
+function epBuildPlanData(showAlerts) {
   const tbody = document.getElementById('epExamTableBody');
-  const completedModsGlobal = parseInt(document.getElementById('epCompletedModules').value) || 0;
-  const dailyHoursIn        = parseFloat(document.getElementById('epDailyHours').value);
+  const dailyHoursIn = parseFloat(document.getElementById('epDailyHours').value);
 
   if (isNaN(dailyHoursIn) || dailyHoursIn < 0.5) {
-    alert('Please enter valid daily available hours (min 0.5).'); return;
+    if (showAlerts) alert('Please enter valid daily available hours (min 0.5).');
+    return null;
   }
 
   // Parse & validate every row
   const subjects = [];
   if (tbody) {
     for (let i = 0; i < tbody.rows.length; i++) {
-      const row     = tbody.rows[i];
-      const name    = (row.querySelector('.ep-row-subject')?.value || '').trim();
-      const dateStr = (row.querySelector('.ep-row-date')?.value    || '').trim();
-      const mods    = parseInt(row.querySelector('.ep-row-modules')?.value || '');
+      const row       = tbody.rows[i];
+      const name      = (row.querySelector('.ep-row-subject')?.value || '').trim();
+      const dateStr   = (row.querySelector('.ep-row-date')?.value    || '').trim();
+      const mods      = parseInt(row.querySelector('.ep-row-modules')?.value   || '');
+      const completed = parseInt(row.querySelector('.ep-row-completed')?.value || '') || 0;
       if (!name && !dateStr && isNaN(mods)) continue; // skip fully blank rows
-      if (!name)                             { alert(`Row ${i + 1}: please enter a subject name.`);  return; }
-      if (!dateStr)                          { alert(`Row ${i + 1}: please select an exam date.`);   return; }
-      if (isNaN(mods) || mods < 1)           { alert(`Row ${i + 1}: please enter total modules ≥ 1.`); return; }
-      subjects.push({ name, dateStr, totalModules: mods });
+      if (!name)                   { if (showAlerts) alert(`Row ${i + 1}: please enter a subject name.`);  return null; }
+      if (!dateStr)                { if (showAlerts) alert(`Row ${i + 1}: please select an exam date.`);   return null; }
+      if (isNaN(mods) || mods < 1) { if (showAlerts) alert(`Row ${i + 1}: please enter total modules ≥ 1.`); return null; }
+      subjects.push({ name, dateStr, totalModules: mods, completedInput: Math.max(0, Math.min(mods - 1, completed)) });
     }
   }
 
-  if (subjects.length === 0) { alert('Please add at least one subject.'); return; }
+  if (subjects.length === 0) {
+    if (showAlerts) alert('Please add at least one subject.');
+    return null;
+  }
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
 
@@ -7284,23 +7289,27 @@ function epGeneratePlan() {
     const d = new Date(s.dateStr); d.setHours(0, 0, 0, 0);
     const daysLeft = epDaysBetween(today, d);
     if (daysLeft < 3) {
-      alert(`"${s.name}": exam date must be at least 3 days away.`); return;
+      if (showAlerts) alert(`"${s.name}": exam date must be at least 3 days away.`);
+      return null;
     }
     s.examDate = d;
     s.daysLeft = daysLeft;
   }
 
-  // ── 2. Distribute completedModules across subjects proportionally ──
-  const totalModulesAll = subjects.reduce((sum, s) => sum + s.totalModules, 0);
-  let completedLeft = completedModsGlobal;
-  subjects.forEach((s, i) => {
-    if (i === subjects.length - 1) {
-      s.completedMods = Math.max(0, Math.min(s.totalModules - 1, completedLeft));
-    } else {
-      const share = Math.round((s.totalModules / totalModulesAll) * completedModsGlobal);
-      s.completedMods = Math.max(0, Math.min(s.totalModules - 1, share));
-      completedLeft -= s.completedMods;
-    }
+  return { subjects, dailyHoursIn };
+}
+
+function epGeneratePlan() {
+  // ── 1. Read all table rows ──────────────────────────────────
+  const parsed = epBuildPlanData(true); // show alerts on explicit Generate
+  if (!parsed) return;
+
+  const { subjects, dailyHoursIn } = parsed;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  // ── 2. Apply per-subject completed modules directly ────────
+  subjects.forEach((s) => {
+    s.completedMods    = s.completedInput;
     s.remainingModules = s.totalModules - s.completedMods;
     s.progressPct      = Math.round((s.completedMods / s.totalModules) * 100);
   });
@@ -7416,9 +7425,10 @@ function epGeneratePlan() {
   const remainingMods2    = subjects.reduce((s, x) => s + x.remainingModules, 0);
 
   // Sync legacy hidden fields to nearest subject (for downstream compat)
-  document.getElementById('epExamName').value     = nearestSubject.name;
-  document.getElementById('epExamDate').value     = nearestSubject.dateStr;
-  document.getElementById('epTotalModules').value = String(nearestSubject.totalModules);
+  document.getElementById('epExamName').value        = nearestSubject.name;
+  document.getElementById('epExamDate').value        = nearestSubject.dateStr;
+  document.getElementById('epTotalModules').value    = String(nearestSubject.totalModules);
+  document.getElementById('epCompletedModules').value = String(completedMods2);
 
   const plan = {
     // Primary fields (nearest subject — used by timeline anchor, ueGetAllExams, etc.)
@@ -7852,7 +7862,7 @@ function epRenderPlan(plan) {
 
 // ── Auto-regenerate when exam date or module count changes ─────
 (function epAutoRegen() {
-  const triggerIds = ['epCompletedModules', 'epDailyHours'];
+  const triggerIds = ['epDailyHours'];
   let regenTimer = null;
 
   function tryRegen() {
@@ -7872,8 +7882,9 @@ function epRenderPlan(plan) {
         if (n && d && m) { hasRow = true; break; }
       }
       if (hasRow) {
-        epGeneratePlan();
-        setTimeout(spRender, 150);
+        // Use silent mode: only regenerate if data is valid, never show alerts
+        const parsed = epBuildPlanData(false);
+        if (parsed) { epGeneratePlan(); setTimeout(spRender, 150); }
       }
     }, 400);
   }
@@ -7888,8 +7899,9 @@ function epRenderPlan(plan) {
   const tbody = document.getElementById('epExamTableBody');
   if (tbody) {
     tbody.addEventListener('change', function(e) {
-      if (e.target.classList.contains('ep-row-date') ||
-          e.target.classList.contains('ep-row-modules') ||
+      if (e.target.classList.contains('ep-row-date')      ||
+          e.target.classList.contains('ep-row-modules')   ||
+          e.target.classList.contains('ep-row-completed') ||
           e.target.classList.contains('ep-row-subject')) {
         tryRegen();
       }
