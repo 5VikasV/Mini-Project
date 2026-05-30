@@ -7125,23 +7125,106 @@ function epDeleteExamRow(btn) {
   const tbody = document.getElementById('epExamTableBody');
   if (!tbody) return;
   const tr = btn.closest('tr');
+
+  // Capture the subject name being removed so we can check plan validity after
+  const deletedSubject = (tr.querySelector('.ep-row-subject')?.value || '').trim();
+
   if (tbody.rows.length <= 1) {
+    // Last row: clear inputs instead of removing the row
     tr.querySelectorAll('input').forEach(i => i.value = '');
   } else {
     tr.remove();
   }
+
   epSaveTableRows();
+
+  // ── Determine whether the saved plan is still valid ──────────
+  // A plan is stale when a deleted exam was part of it, or when no
+  // filled rows remain at all.
+  epAfterRowDelete(deletedSubject);
+}
+
+/**
+ * Called after any row deletion.
+ * – Checks whether the persisted plan still matches the current table.
+ * – Clears the plan (and all dependent widgets) when rows are empty or
+ *   the deleted subject was the only / last exam in the plan.
+ * – Re-runs spRender, renderTodaysTarget, renderUpcomingExams so the
+ *   dashboard reflects the new state immediately.
+ */
+function epAfterRowDelete(deletedSubject) {
+  const tbody = document.getElementById('epExamTableBody');
+
+  // Count how many rows still have at least a subject name filled in
+  const filledRows = tbody
+    ? Array.from(tbody.rows).filter(function(r) {
+        return (r.querySelector('.ep-row-subject')?.value || '').trim() !== '';
+      })
+    : [];
+
+  const plan = epLoadPlan();
+
+  // Decide whether the current plan must be invalidated
+  let planInvalid = false;
+
+  if (filledRows.length === 0) {
+    // No rows left with data → definitely clear
+    planInvalid = true;
+  } else if (plan && deletedSubject) {
+    // Check if the deleted subject was part of the stored plan
+    if (plan.subjects && plan.subjects.length > 0) {
+      const wasInPlan = plan.subjects.some(function(s) {
+        return s.name === deletedSubject;
+      });
+      if (wasInPlan) planInvalid = true;
+    } else if (plan.examName && plan.examName === deletedSubject) {
+      // Legacy single-subject plan
+      planInvalid = true;
+    }
+  }
+
+  if (planInvalid && plan) {
+    // Remove the stored plan
+    localStorage.removeItem(EP_STORAGE_KEY);
+
+    // Hide the plan output and show the empty state in Smart Planner
+    const planOutput = document.getElementById('epPlanOutput');
+    const emptyState = document.getElementById('epEmptyState');
+    if (planOutput) planOutput.style.display = 'none';
+    if (emptyState) emptyState.style.display = 'block';
+
+    // Clear the planner summary strip
+    const summaryEl = document.getElementById('epPlannerSummary');
+    if (summaryEl) summaryEl.innerHTML = '';
+
+    // Clear the daily timeline
+    epRenderDailyTimeline(null);
+  }
+
+  // Always refresh all dashboard-facing widgets so they stay in sync
+  setTimeout(function() {
+    spRender();
+    renderTodaysTarget();
+    renderUpcomingExams();
+  }, 30);
 }
 
 function epDeleteLastExamRow() {
   const tbody = document.getElementById('epExamTableBody');
   if (!tbody || tbody.rows.length === 0) return;
+
+  let deletedSubject = '';
   if (tbody.rows.length === 1) {
+    deletedSubject = (tbody.rows[0].querySelector('.ep-row-subject')?.value || '').trim();
     tbody.rows[0].querySelectorAll('input').forEach(i => i.value = '');
   } else {
-    tbody.rows[tbody.rows.length - 1].remove();
+    const lastRow = tbody.rows[tbody.rows.length - 1];
+    deletedSubject = (lastRow.querySelector('.ep-row-subject')?.value || '').trim();
+    lastRow.remove();
   }
+
   epSaveTableRows();
+  epAfterRowDelete(deletedSubject);
 }
 
 // ── Auto-save on input change (delegated to tbody) ─────────────
@@ -9415,6 +9498,12 @@ function epParsePlanDate(str) {
   epClearPlan = function() {
     _orig();
     epRenderDailyTimeline(null);
+    // Refresh every dashboard widget that depends on the plan
+    setTimeout(function() {
+      spRender();
+      renderTodaysTarget();
+      renderUpcomingExams();
+    }, 30);
   };
 })();
 
