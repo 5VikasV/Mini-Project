@@ -609,6 +609,76 @@ tbody td {
 }
 .delete-btn:hover { color: var(--red); border-color: var(--red-border); background: var(--red-dim); }
 
+/* ── EXAM INPUT TABLE ──────────────────────────────────── */
+.ep-exam-table tbody tr { border-bottom: 1px solid var(--border); }
+.ep-exam-table tbody tr:last-child { border-bottom: none; }
+.ep-exam-table td { padding: 7px 0; vertical-align: middle; }
+
+.ep-exam-table input[type="text"],
+.ep-exam-table input[type="date"],
+.ep-exam-table input[type="number"] {
+  width: 100%;
+  padding: 6px 9px;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ep-exam-table input:focus {
+  border-color: var(--text-2);
+  box-shadow: 0 0 0 3px rgba(28,25,23,0.07);
+  background: var(--surface);
+}
+.ep-exam-table td:nth-child(1) { padding-right: 8px; }
+.ep-exam-table td:nth-child(2) { padding: 7px 8px; }
+.ep-exam-table td:nth-child(3) { padding-left: 8px; }
+.ep-exam-table td:nth-child(4) { width: 32px; padding-left: 8px; text-align: center; }
+
+.ep-row-del {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--muted-2);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ep-row-del:hover { color: var(--red); border-color: var(--red-border); background: var(--red-dim); }
+.ep-row-del svg { stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.ep-tbl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.14s, border-color 0.14s, color 0.14s;
+}
+.ep-tbl-btn svg { flex-shrink: 0; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.ep-tbl-btn-add {
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  color: var(--text-2);
+}
+.ep-tbl-btn-add:hover { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
+.ep-tbl-btn-del {
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  color: var(--muted);
+}
+.ep-tbl-btn-del:hover { background: var(--red-dim); border-color: var(--red-border); color: var(--red); }
+
 /* ── CHART ──────────────────────────────────────────────── */
 .chart-wrap {
   position: relative;
@@ -3975,6 +4045,8 @@ tbody td {
   min-width: 180px;
 }
 
+.tt-meta-item {}
+
 .tt-meta-label {
   font-size: 10px;
   font-weight: 700;
@@ -5037,20 +5109,36 @@ tbody td {
           <span class="card-title-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           Exam Details
         </div>
-        <div class="form-row ep-form-row">
-          <div class="field">
-            <label for="epExamName">Exam Name</label>
-            <input type="text" id="epExamName" placeholder="e.g. Physics Final"/>
-          </div>
-          <div class="field">
-            <label for="epExamDate">Exam Date</label>
-            <input type="date" id="epExamDate"/>
-          </div>
-          <div class="field">
-            <label for="epTotalModules">Total Modules</label>
-            <input type="number" id="epTotalModules" placeholder="e.g. 12" min="1"/>
+
+        <!-- Exam rows table -->
+        <div class="ep-exam-table-wrap" style="margin-bottom:14px">
+          <table class="ep-exam-table" id="epExamTable" style="width:100%;border-collapse:collapse;font-size:13.5px">
+            <thead>
+              <tr>
+                <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 8px 9px 0;border-bottom:1px solid var(--border);white-space:nowrap">Subject</th>
+                <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 8px 9px;border-bottom:1px solid var(--border);white-space:nowrap">Exam Date</th>
+                <th style="text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:0 0 9px 8px;border-bottom:1px solid var(--border);white-space:nowrap">Modules</th>
+                <th style="border-bottom:1px solid var(--border);padding:0 0 9px 8px;width:32px"></th>
+              </tr>
+            </thead>
+            <tbody id="epExamTableBody">
+              <!-- rows injected by JS -->
+            </tbody>
+          </table>
+          <!-- Table action buttons -->
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="ep-tbl-btn ep-tbl-btn-add" onclick="epAddExamRow()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Row
+            </button>
+            <button class="ep-tbl-btn ep-tbl-btn-del" onclick="epDeleteLastExamRow()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+              Delete Row
+            </button>
           </div>
         </div>
+
+        <!-- Bottom row: completed modules, daily hours, generate -->
         <div class="form-row ep-form-row" style="grid-template-columns:1fr 1fr 1fr">
           <div class="field">
             <label for="epCompletedModules">Modules Completed</label>
@@ -5064,6 +5152,11 @@ tbody td {
             <button class="btn" onclick="epGeneratePlan(); setTimeout(spRender, 100);">Generate Study Plan</button>
           </div>
         </div>
+
+        <!-- Hidden legacy fields read by epGeneratePlan JS (kept for compatibility) -->
+        <input type="hidden" id="epExamName"/>
+        <input type="hidden" id="epExamDate"/>
+        <input type="hidden" id="epTotalModules"/>
       </div>
 
       <!-- Plan output -->
@@ -6981,6 +7074,125 @@ render();
    - Stores plan in localStorage under EP_STORAGE_KEY
 ══════════════════════════════════════════════════════════════ */
 
+/* ══════════════════════════════════════════════════════════════
+   EXAM INPUT TABLE — Add / Delete rows + localStorage persistence
+══════════════════════════════════════════════════════════════ */
+let epRowCounter = 0;
+const EP_TABLE_ROWS_KEY = 'ep_exam_table_rows';
+
+// ── Persist / restore table rows ──────────────────────────────
+
+function epSaveTableRows() {
+  const tbody = document.getElementById('epExamTableBody');
+  if (!tbody) return;
+  const rows = Array.from(tbody.rows).map(tr => ({
+    subject:  tr.querySelector('.ep-row-subject')?.value || '',
+    examDate: tr.querySelector('.ep-row-date')?.value    || '',
+    modules:  tr.querySelector('.ep-row-modules')?.value || ''
+  }));
+  try { localStorage.setItem(EP_TABLE_ROWS_KEY, JSON.stringify(rows)); } catch (e) {}
+}
+
+function epLoadTableRows() {
+  try { return JSON.parse(localStorage.getItem(EP_TABLE_ROWS_KEY)); } catch { return null; }
+}
+
+// ── Row mutations ──────────────────────────────────────────────
+
+function epAddExamRow(subject, examDate, modules) {
+  const tbody = document.getElementById('epExamTableBody');
+  if (!tbody) return;
+  const id = ++epRowCounter;
+  const tr = document.createElement('tr');
+  tr.dataset.rowId = id;
+  tr.innerHTML = `
+    <td><input type="text"   class="ep-row-subject" placeholder="e.g. Physics Final" value="${subject  || ''}"/></td>
+    <td><input type="date"   class="ep-row-date"    value="${examDate || ''}"/></td>
+    <td><input type="number" class="ep-row-modules" placeholder="e.g. 12" min="1" value="${modules  || ''}"/></td>
+    <td>
+      <button class="ep-row-del" onclick="epDeleteExamRow(this)" title="Remove row">
+        <svg width="13" height="13" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+  epSaveTableRows();
+  // Only focus if this was a user-initiated add (no pre-filled subject)
+  if (!subject) tr.querySelector('.ep-row-subject').focus();
+}
+
+function epDeleteExamRow(btn) {
+  const tbody = document.getElementById('epExamTableBody');
+  if (!tbody) return;
+  const tr = btn.closest('tr');
+  if (tbody.rows.length <= 1) {
+    tr.querySelectorAll('input').forEach(i => i.value = '');
+  } else {
+    tr.remove();
+  }
+  epSaveTableRows();
+}
+
+function epDeleteLastExamRow() {
+  const tbody = document.getElementById('epExamTableBody');
+  if (!tbody || tbody.rows.length === 0) return;
+  if (tbody.rows.length === 1) {
+    tbody.rows[0].querySelectorAll('input').forEach(i => i.value = '');
+  } else {
+    tbody.rows[tbody.rows.length - 1].remove();
+  }
+  epSaveTableRows();
+}
+
+// ── Auto-save on input change (delegated to tbody) ─────────────
+(function epTableInputSave() {
+  document.addEventListener('DOMContentLoaded', function() {
+    const tbody = document.getElementById('epExamTableBody');
+    if (!tbody) return;
+    tbody.addEventListener('input', function(e) {
+      if (e.target.classList.contains('ep-row-subject') ||
+          e.target.classList.contains('ep-row-date')    ||
+          e.target.classList.contains('ep-row-modules')) {
+        epSaveTableRows();
+      }
+    });
+  });
+})();
+
+// Sync hidden legacy fields from the FIRST table row before plan generation
+function epSyncLegacyFields() {
+  const tbody = document.getElementById('epExamTableBody');
+  if (!tbody || tbody.rows.length === 0) return;
+  const firstRow = tbody.rows[0];
+  const subjectVal = firstRow.querySelector('.ep-row-subject')?.value.trim() || '';
+  const dateVal    = firstRow.querySelector('.ep-row-date')?.value    || '';
+  const modsVal    = firstRow.querySelector('.ep-row-modules')?.value || '';
+  document.getElementById('epExamName').value     = subjectVal;
+  document.getElementById('epExamDate').value     = dateVal;
+  document.getElementById('epTotalModules').value = modsVal;
+}
+
+// Initialise table on load — prefer EP_TABLE_ROWS_KEY, fall back to ep_exam_plan
+(function epTableInit() {
+  const savedRows = epLoadTableRows();
+  if (savedRows && savedRows.length > 0) {
+    // Restore all persisted rows
+    savedRows.forEach(function(row) {
+      epAddExamRow(row.subject, row.examDate, row.modules);
+    });
+  } else {
+    // Legacy fallback: seed first row from existing plan key
+    const savedPlan = (function() {
+      try { return JSON.parse(localStorage.getItem('ep_exam_plan')); } catch { return null; }
+    })();
+    if (savedPlan && savedPlan.examName) {
+      epAddExamRow(savedPlan.examName, savedPlan.examDate, savedPlan.totalModules);
+    } else {
+      epAddExamRow();
+    }
+  }
+})();
+
 const EP_STORAGE_KEY = 'ep_exam_plan';
 
 // ── Utilities ──────────────────────────────────────────────────
@@ -7009,6 +7221,7 @@ function epLoadPlan() {
 
 function epClearPlan() {
   localStorage.removeItem(EP_STORAGE_KEY);
+  localStorage.removeItem(EP_TABLE_ROWS_KEY);
   document.getElementById('epPlanOutput').style.display = 'none';
   document.getElementById('epEmptyState').style.display = 'block';
   const summaryEl = document.getElementById('epPlannerSummary');
@@ -7016,6 +7229,9 @@ function epClearPlan() {
   ['epExamName', 'epExamDate', 'epTotalModules', 'epCompletedModules', 'epDailyHours'].forEach(id => {
     document.getElementById(id).value = '';
   });
+  // Reset exam table to one blank row
+  const tbody = document.getElementById('epExamTableBody');
+  if (tbody) { tbody.innerHTML = ''; epRowCounter = 0; epAddExamRow(); epSaveTableRows(); }
 }
 
 // ── Session data integration ───────────────────────────────────
@@ -7034,112 +7250,193 @@ function epGetSessionContext() {
 // ── Plan generation ────────────────────────────────────────────
 
 function epGeneratePlan() {
-  const examName      = document.getElementById('epExamName').value.trim();
-  const examDateStr   = document.getElementById('epExamDate').value;
-  const totalModules  = parseInt(document.getElementById('epTotalModules').value);
-  const completedMods = parseInt(document.getElementById('epCompletedModules').value) || 0;
-  const dailyHoursIn  = parseFloat(document.getElementById('epDailyHours').value);
+  // ── 1. Read all table rows ──────────────────────────────────
+  const tbody = document.getElementById('epExamTableBody');
+  const completedModsGlobal = parseInt(document.getElementById('epCompletedModules').value) || 0;
+  const dailyHoursIn        = parseFloat(document.getElementById('epDailyHours').value);
 
-  if (!examName)                                       { alert('Please enter an exam name.'); return; }
-  if (!examDateStr)                                    { alert('Please select your exam date.'); return; }
-  if (isNaN(totalModules) || totalModules < 1)         { alert('Please enter the total number of modules.'); return; }
-  if (isNaN(dailyHoursIn) || dailyHoursIn < 0.5)      { alert('Please enter valid daily available hours (min 0.5).'); return; }
-  if (completedMods >= totalModules)                   { alert('Modules completed must be less than total modules.'); return; }
+  if (isNaN(dailyHoursIn) || dailyHoursIn < 0.5) {
+    alert('Please enter valid daily available hours (min 0.5).'); return;
+  }
 
-  const today    = new Date(); today.setHours(0, 0, 0, 0);
-  const examDate = new Date(examDateStr); examDate.setHours(0, 0, 0, 0);
-  const totalDays = epDaysBetween(today, examDate);
+  // Parse & validate every row
+  const subjects = [];
+  if (tbody) {
+    for (let i = 0; i < tbody.rows.length; i++) {
+      const row     = tbody.rows[i];
+      const name    = (row.querySelector('.ep-row-subject')?.value || '').trim();
+      const dateStr = (row.querySelector('.ep-row-date')?.value    || '').trim();
+      const mods    = parseInt(row.querySelector('.ep-row-modules')?.value || '');
+      if (!name && !dateStr && isNaN(mods)) continue; // skip fully blank rows
+      if (!name)                             { alert(`Row ${i + 1}: please enter a subject name.`);  return; }
+      if (!dateStr)                          { alert(`Row ${i + 1}: please select an exam date.`);   return; }
+      if (isNaN(mods) || mods < 1)           { alert(`Row ${i + 1}: please enter total modules ≥ 1.`); return; }
+      subjects.push({ name, dateStr, totalModules: mods });
+    }
+  }
 
-  if (totalDays < 3) { alert('Please select an exam date at least 3 days away.'); return; }
+  if (subjects.length === 0) { alert('Please add at least one subject.'); return; }
 
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  // Validate all dates are ≥ 3 days away
+  for (const s of subjects) {
+    const d = new Date(s.dateStr); d.setHours(0, 0, 0, 0);
+    const daysLeft = epDaysBetween(today, d);
+    if (daysLeft < 3) {
+      alert(`"${s.name}": exam date must be at least 3 days away.`); return;
+    }
+    s.examDate = d;
+    s.daysLeft = daysLeft;
+  }
+
+  // ── 2. Distribute completedModules across subjects proportionally ──
+  const totalModulesAll = subjects.reduce((sum, s) => sum + s.totalModules, 0);
+  let completedLeft = completedModsGlobal;
+  subjects.forEach((s, i) => {
+    if (i === subjects.length - 1) {
+      s.completedMods = Math.max(0, Math.min(s.totalModules - 1, completedLeft));
+    } else {
+      const share = Math.round((s.totalModules / totalModulesAll) * completedModsGlobal);
+      s.completedMods = Math.max(0, Math.min(s.totalModules - 1, share));
+      completedLeft -= s.completedMods;
+    }
+    s.remainingModules = s.totalModules - s.completedMods;
+    s.progressPct      = Math.round((s.completedMods / s.totalModules) * 100);
+  });
+
+  // ── 3. Sort: nearest exam first, break ties by lowest completion % ──
+  subjects.sort((a, b) => {
+    if (a.daysLeft !== b.daysLeft) return a.daysLeft - b.daysLeft;
+    return a.progressPct - b.progressPct;
+  });
+
+  // ── 4. Adjust daily hours from session context ─────────────
   const ctx = epGetSessionContext();
   let effectiveDailyHours = dailyHoursIn;
-  if (ctx && ctx.avgProductivity < 2.5)      effectiveDailyHours = Math.max(0.5, dailyHoursIn * 0.85);
-  else if (ctx && ctx.avgProductivity >= 4)  effectiveDailyHours = dailyHoursIn * 1.05;
+  if (ctx && ctx.avgProductivity < 2.5)     effectiveDailyHours = Math.max(0.5, dailyHoursIn * 0.85);
+  else if (ctx && ctx.avgProductivity >= 4) effectiveDailyHours = dailyHoursIn * 1.05;
 
-  const remainingModules = totalModules - completedMods;
+  // ── 5. Allocate study days per subject ─────────────────────
+  // Each subject gets days proportional to its remaining modules,
+  // capped at its own exam date.
+  const overallDays    = subjects[0].daysLeft; // anchor = nearest exam
+  const totalRemaining = subjects.reduce((s, x) => s + x.remainingModules, 0);
 
-  // Phase split: 50% syllabus, 35% revision, 15% final revision
-  const phase1Days = Math.max(1, Math.round(totalDays * 0.50));
-  const phase3Days = Math.max(1, Math.round(totalDays * 0.15));
-  const phase2Days = Math.max(1, totalDays - phase1Days - phase3Days);
+  let cursor = new Date(today); // rolling start date
 
-  // Module allocation: 60% / 30% / remainder
-  const phase1Mods = Math.max(1, Math.round(remainingModules * 0.60));
-  const phase2Mods = Math.max(1, Math.round(remainingModules * 0.30));
-  const phase3Mods = Math.max(0, remainingModules - phase1Mods - phase2Mods);
-
-  function dailyTarget(mods, days) {
+  // ── 6. Build phases (3 phases per subject) ─────────────────
+  function makeDailyTarget(mods, days) {
     return days > 0 ? parseFloat((mods / days).toFixed(2)) : mods;
   }
 
-  const phase1Start = today;
-  const phase2Start = epAddDays(today, phase1Days);
-  const phase3Start = epAddDays(today, phase1Days + phase2Days);
+  const allPhases = [];
+  let phaseNumGlobal = 0;
+
+  subjects.forEach((s, si) => {
+    // Days available for this subject = from cursor to its exam date
+    const subjectStart = new Date(cursor);
+    const availDays    = Math.max(3, epDaysBetween(subjectStart, s.examDate));
+
+    const phase1Days = Math.max(1, Math.round(availDays * 0.50));
+    const phase3Days = Math.max(1, Math.round(availDays * 0.15));
+    const phase2Days = Math.max(1, availDays - phase1Days - phase3Days);
+
+    const phase1Mods = Math.max(1, Math.round(s.remainingModules * 0.60));
+    const phase2Mods = Math.max(1, Math.round(s.remainingModules * 0.30));
+    const phase3Mods = Math.max(0, s.remainingModules - phase1Mods - phase2Mods);
+
+    const ph1Start = new Date(subjectStart);
+    const ph2Start = epAddDays(ph1Start, phase1Days);
+    const ph3Start = epAddDays(ph1Start, phase1Days + phase2Days);
+
+    const subjectLabel = subjects.length > 1 ? ` — ${s.name}` : '';
+
+    allPhases.push({
+      num: ++phaseNumGlobal, name: 'Syllabus Completion' + subjectLabel, badge: 'phase-1',
+      subjectName: s.name, subjectIndex: si,
+      days: phase1Days, modules: phase1Mods,
+      dailyTarget: makeDailyTarget(phase1Mods, phase1Days),
+      dailyHours: effectiveDailyHours,
+      start: epFmtDate(ph1Start),
+      end:   epFmtDate(epAddDays(ph1Start, phase1Days - 1)),
+      focus: `Cover all remaining topics for ${s.name}`,
+      tips: [
+        'Work through modules in order — avoid skipping ahead.',
+        'Log each session to track momentum and stay accountable.',
+        ctx && ctx.subjects.length > 0
+          ? `Cross-reference with your tracked sessions for ${s.name}.`
+          : 'Break larger modules into sub-topics for better retention.',
+        'Aim to finish slightly ahead of schedule as buffer for delays.'
+      ]
+    });
+    allPhases.push({
+      num: ++phaseNumGlobal, name: 'Revision' + subjectLabel, badge: 'phase-2',
+      subjectName: s.name, subjectIndex: si,
+      days: phase2Days, modules: phase2Mods,
+      dailyTarget: makeDailyTarget(phase2Mods, phase2Days),
+      dailyHours: Math.max(0.5, effectiveDailyHours * 0.9),
+      start: epFmtDate(ph2Start),
+      end:   epFmtDate(epAddDays(ph2Start, phase2Days - 1)),
+      focus: `Consolidate ${s.name} through active recall`,
+      tips: [
+        'Use spaced repetition — revisit topics you found hardest in Phase 1.',
+        'Solve past papers or practice questions per module.',
+        ctx && ctx.avgProductivity >= 3
+          ? 'Your session data shows solid consistency — maintain daily hours.'
+          : 'If focus dips, shorten sessions and take more frequent breaks.',
+        'Create summary notes or mind maps for quick review in Phase 3.'
+      ]
+    });
+    allPhases.push({
+      num: ++phaseNumGlobal, name: 'Final Revision' + subjectLabel, badge: 'phase-3',
+      subjectName: s.name, subjectIndex: si,
+      days: phase3Days, modules: Math.max(0, phase3Mods),
+      dailyTarget: makeDailyTarget(Math.max(1, phase3Mods), phase3Days),
+      dailyHours: Math.max(0.5, effectiveDailyHours * 0.75),
+      start: epFmtDate(ph3Start),
+      end:   epFmtDate(epAddDays(ph3Start, phase3Days - 1)),
+      focus: `High-yield review and exam confidence for ${s.name}`,
+      tips: [
+        'Focus on key concepts, formulas, and high-priority areas only.',
+        'Avoid learning new material — consolidation only.',
+        'Simulate exam conditions with timed practice sessions.',
+        'Rest well the night before — sleep is critical for recall.'
+      ]
+    });
+
+    // Advance cursor to end of this subject's final phase
+    cursor = epAddDays(ph3Start, phase3Days);
+  });
+
+  // ── 7. Aggregate plan totals ────────────────────────────────
+  const nearestSubject    = subjects[0];
+  const totalModulesAll2  = subjects.reduce((s, x) => s + x.totalModules, 0);
+  const completedMods2    = subjects.reduce((s, x) => s + x.completedMods, 0);
+  const remainingMods2    = subjects.reduce((s, x) => s + x.remainingModules, 0);
+
+  // Sync legacy hidden fields to nearest subject (for downstream compat)
+  document.getElementById('epExamName').value     = nearestSubject.name;
+  document.getElementById('epExamDate').value     = nearestSubject.dateStr;
+  document.getElementById('epTotalModules').value = String(nearestSubject.totalModules);
 
   const plan = {
-    examName,
-    examDate: examDateStr,
-    totalModules,
-    completedModules: completedMods,
-    remainingModules,
-    dailyHours: dailyHoursIn,
+    // Primary fields (nearest subject — used by timeline anchor, ueGetAllExams, etc.)
+    examName:         nearestSubject.name,
+    examDate:         nearestSubject.dateStr,
+    totalModules:     totalModulesAll2,
+    completedModules: completedMods2,
+    remainingModules: remainingMods2,
+    dailyHours:       dailyHoursIn,
     effectiveDailyHours,
-    totalDays,
-    progressPct: Math.round((completedMods / totalModules) * 100),
-    generatedAt: Date.now(),
-    sessionContext: ctx,
-    phases: [
-      {
-        num: 1, name: 'Syllabus Completion', badge: 'phase-1',
-        days: phase1Days, modules: phase1Mods,
-        dailyTarget: dailyTarget(phase1Mods, phase1Days),
-        dailyHours: effectiveDailyHours,
-        start: epFmtDate(phase1Start),
-        end:   epFmtDate(epAddDays(phase1Start, phase1Days - 1)),
-        focus: 'Cover all remaining topics methodically',
-        tips: [
-          'Work through modules in order — avoid skipping ahead.',
-          'Log each session to track momentum and stay accountable.',
-          ctx && ctx.subjects.length > 0
-            ? `Incorporate your tracked subjects (${ctx.subjects.slice(0, 2).join(', ')}) into your schedule.`
-            : 'Break larger modules into sub-topics for better retention.',
-          'Aim to finish slightly ahead of schedule as buffer for delays.'
-        ]
-      },
-      {
-        num: 2, name: 'Revision', badge: 'phase-2',
-        days: phase2Days, modules: phase2Mods,
-        dailyTarget: dailyTarget(phase2Mods, phase2Days),
-        dailyHours: Math.max(0.5, effectiveDailyHours * 0.9),
-        start: epFmtDate(phase2Start),
-        end:   epFmtDate(epAddDays(phase2Start, phase2Days - 1)),
-        focus: 'Consolidate learning through active recall',
-        tips: [
-          'Use spaced repetition — revisit topics you found hardest in Phase 1.',
-          'Solve past papers or practice questions per module.',
-          ctx && ctx.avgProductivity >= 3
-            ? 'Your session data shows solid consistency — maintain daily hours.'
-            : 'If focus dips, shorten sessions and take more frequent breaks.',
-          'Create summary notes or mind maps for quick review in Phase 3.'
-        ]
-      },
-      {
-        num: 3, name: 'Final Revision', badge: 'phase-3',
-        days: phase3Days, modules: phase3Mods,
-        dailyTarget: dailyTarget(Math.max(1, phase3Mods), phase3Days),
-        dailyHours: Math.max(0.5, effectiveDailyHours * 0.75),
-        start: epFmtDate(phase3Start),
-        end:   epFmtDate(epAddDays(phase3Start, phase3Days - 1)),
-        focus: 'High-yield review and exam confidence building',
-        tips: [
-          'Focus on key concepts, formulas, and high-priority areas only.',
-          'Avoid learning new material — consolidation only.',
-          'Simulate exam conditions with timed practice sessions.',
-          'Rest well the night before — sleep is critical for recall.'
-        ]
-      }
-    ]
+    totalDays:        nearestSubject.daysLeft,
+    progressPct:      Math.round((completedMods2 / totalModulesAll2) * 100),
+    generatedAt:      Date.now(),
+    sessionContext:   ctx,
+    // Multi-subject data
+    subjects,          // sorted array of subject objects
+    multiSubject:      subjects.length > 1,
+    phases:            allPhases
   };
 
   epSavePlan(plan);
@@ -7161,11 +7458,11 @@ function epRenderPlan(plan) {
     <div class="stat-card">
       <div class="stat-header">
         <div class="stat-label">Days to Exam</div>
-        <span class="stat-badge amber">Countdown</span>
+        <span class="stat-badge amber">Nearest</span>
       </div>
       <div class="stat-value">${plan.totalDays}</div>
       <div class="stat-sub">${plan.examName}</div>
-      <div class="stat-trend">${new Date(plan.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+      <div class="stat-trend">${new Date(plan.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}${plan.multiSubject ? ` · ${plan.subjects.length} exams` : ''}</div>
     </div>
     <div class="stat-card">
       <div class="stat-header">
@@ -7264,17 +7561,30 @@ function epRenderPlan(plan) {
   }
 
   // Phase cards — with enhanced progress bars
-  const phaseColors = { 'phase-1': 'badge-subject', 'phase-2': 'badge-mood', 'phase-3': 'badge-prod' };
+  // badge cycles per subject (3 phases each), progress shown for phase-1 of each subject
+  const subjectBadgeSets = ['phase-1','phase-2','phase-3'];
   document.getElementById('epPhaseCards').innerHTML = '<div class="ep-phase-list">' + plan.phases.map((ph, idx) => {
-    const phPct       = ph.num === 1 ? plan.progressPct : 0;
-    const phCompleted = ph.num === 1 ? plan.completedModules : 0;
-    const phFilled    = Math.round(phPct / 10);
+    // Determine which phase within the subject (0,1,2 = syllabus,revision,final)
+    const phaseWithinSubject = idx % 3; // 0,1,2
+    const badge = subjectBadgeSets[phaseWithinSubject];
+    const phaseLocalNum = phaseWithinSubject + 1; // 1,2,3
+
+    // Progress shown for the syllabus phase of each subject
+    const subjData  = plan.subjects ? plan.subjects[ph.subjectIndex] : null;
+    const phPct     = phaseWithinSubject === 0 && subjData ? subjData.progressPct : 0;
+    const phCompleted = phaseWithinSubject === 0 && subjData ? subjData.completedMods : 0;
+    const phFilled  = Math.round(phPct / 10);
+
+    const subjectChip = plan.multiSubject
+      ? `<span style="font-size:10.5px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;color:var(--muted-2);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:3px;margin-left:6px">${ph.subjectName}</span>`
+      : '';
+
     return `
     <div class="ep-phase-card">
       <div class="ep-phase-header">
         <div class="ep-phase-title-row">
-          <span class="ep-phase-badge ${ph.badge}">Phase ${ph.num}</span>
-          <span class="ep-phase-name">${ph.name}</span>
+          <span class="ep-phase-badge ${badge}">Phase ${phaseLocalNum}</span>
+          <span class="ep-phase-name">${phaseWithinSubject === 0 ? 'Syllabus Completion' : phaseWithinSubject === 1 ? 'Revision' : 'Final Revision'}${subjectChip}</span>
         </div>
         <div class="ep-phase-dates">${ph.start} → ${ph.end}</div>
       </div>
@@ -7308,10 +7618,10 @@ function epRenderPlan(plan) {
             <span class="ep-phase-prog-pct" id="epPhPct_${idx}">${phPct}%</span>
           </div>
           <div class="ep-phase-prog-track">
-            <div class="ep-phase-prog-bar ${ph.badge}" id="epPhBar_${idx}" style="width:0%"></div>
+            <div class="ep-phase-prog-bar ${badge}" id="epPhBar_${idx}" style="width:0%"></div>
           </div>
           <div class="ep-phase-prog-counts">
-            <span><strong>${phCompleted}</strong> / ${ph.modules} modules${ph.num === 1 ? ' completed' : ' planned'}</span>
+            <span><strong>${phCompleted}</strong> / ${ph.modules} modules${phaseWithinSubject === 0 ? ' completed' : ' planned'}</span>
             <span style="display:flex;align-items:center;gap:5px">
               <span class="ep-prog-blocks" style="font-size:11px;letter-spacing:0.5px">
                 <span style="color:#22c55e">${'█'.repeat(phFilled)}</span><span style="color:var(--border-2)">${'░'.repeat(10 - phFilled)}</span>
@@ -7328,15 +7638,19 @@ function epRenderPlan(plan) {
   `}).join('') + '</div>';
 
   // Schedule table
-  document.getElementById('epScheduleBody').innerHTML = plan.phases.map(ph => `
+  const phaseColorMap = { 'phase-1': 'badge-subject', 'phase-2': 'badge-mood', 'phase-3': 'badge-prod' };
+  document.getElementById('epScheduleBody').innerHTML = plan.phases.map((ph, idx) => {
+    const badge = ['phase-1','phase-2','phase-3'][idx % 3];
+    const localNum = (idx % 3) + 1;
+    return `
     <tr>
-      <td><span class="badge ${phaseColors[ph.badge]}">Phase ${ph.num} — ${ph.name}</span></td>
+      <td><span class="badge ${phaseColorMap[badge]}">Phase ${localNum}${plan.multiSubject ? ' — ' + ph.subjectName : ''}</span></td>
       <td>${ph.days} days</td>
       <td>${ph.modules}</td>
       <td>${ph.dailyTarget} / day</td>
       <td style="color:var(--muted);font-size:12px">${ph.focus}</td>
     </tr>
-  `).join('');
+  `}).join('');
 
   // Overall Progress Panel + Subject Progress (replaces plain saved info)
   const pct      = plan.progressPct;
@@ -7455,7 +7769,7 @@ function epRenderPlan(plan) {
       ${subjectHTML}
 
       <div style="padding-top:12px;border-top:1px solid var(--border);margin-top:4px;font-size:11.5px;color:var(--muted-2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-        <span>Plan: <strong style="color:var(--text-2)">${plan.examName}</strong> · ${new Date(plan.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+        <span>Plan: <strong style="color:var(--text-2)">${plan.multiSubject ? plan.subjects.map(s => s.name).join(', ') : plan.examName}</strong> · ${new Date(plan.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
         <span style="font-family:var(--mono);font-size:10.5px">Generated ${new Date(plan.generatedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
       </div>
     </div>
@@ -7467,7 +7781,9 @@ function epRenderPlan(plan) {
 
     // Animate phase bars
     plan.phases.forEach((ph, idx) => {
-      const phPct = ph.num === 1 ? plan.progressPct : 0;
+      const phaseWithinSubject = idx % 3;
+      const subjData = plan.subjects ? plan.subjects[ph.subjectIndex] : null;
+      const phPct = phaseWithinSubject === 0 && subjData ? subjData.progressPct : 0;
       const bar = document.getElementById('epPhBar_' + idx);
       if (bar) {
         requestAnimationFrame(() => { bar.style.width = phPct + '%'; });
@@ -7524,36 +7840,61 @@ function epRenderPlan(plan) {
 (function epInit() {
   const saved = epLoadPlan();
   if (saved) {
+    document.getElementById('epCompletedModules').value = saved.completedModules || '';
+    document.getElementById('epDailyHours').value       = saved.dailyHours || '';
+    // Legacy single-subject: sync hidden fields (table already restored by epTableInit)
     document.getElementById('epExamName').value         = saved.examName || '';
     document.getElementById('epExamDate').value         = saved.examDate || '';
     document.getElementById('epTotalModules').value     = saved.totalModules || '';
-    document.getElementById('epCompletedModules').value = saved.completedModules || '';
-    document.getElementById('epDailyHours').value       = saved.dailyHours || '';
     epRenderPlan(saved);
   }
 })();
 
 // ── Auto-regenerate when exam date or module count changes ─────
 (function epAutoRegen() {
-  const triggerIds = ['epExamDate', 'epTotalModules', 'epCompletedModules', 'epDailyHours'];
+  const triggerIds = ['epCompletedModules', 'epDailyHours'];
   let regenTimer = null;
+
+  function tryRegen() {
+    clearTimeout(regenTimer);
+    regenTimer = setTimeout(() => {
+      const hrs  = document.getElementById('epDailyHours').value;
+      if (!hrs) return;
+      // Check at least one complete row exists
+      const tbody2 = document.getElementById('epExamTableBody');
+      if (!tbody2) return;
+      let hasRow = false;
+      for (let i = 0; i < tbody2.rows.length; i++) {
+        const r = tbody2.rows[i];
+        const n = (r.querySelector('.ep-row-subject')?.value || '').trim();
+        const d = (r.querySelector('.ep-row-date')?.value    || '').trim();
+        const m = r.querySelector('.ep-row-modules')?.value;
+        if (n && d && m) { hasRow = true; break; }
+      }
+      if (hasRow) {
+        epGeneratePlan();
+        setTimeout(spRender, 150);
+      }
+    }, 400);
+  }
+
   triggerIds.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener('change', () => {
-      clearTimeout(regenTimer);
-      regenTimer = setTimeout(() => {
-        const name = document.getElementById('epExamName').value.trim();
-        const date = document.getElementById('epExamDate').value;
-        const mods = document.getElementById('epTotalModules').value;
-        const hrs  = document.getElementById('epDailyHours').value;
-        if (name && date && mods && hrs) {
-          epGeneratePlan();
-          setTimeout(spRender, 150);
-        }
-      }, 400);
-    });
+    el.addEventListener('change', tryRegen);
   });
+
+  // Delegate change events on the exam table rows
+  const tbody = document.getElementById('epExamTableBody');
+  if (tbody) {
+    tbody.addEventListener('change', function(e) {
+      if (e.target.classList.contains('ep-row-date') ||
+          e.target.classList.contains('ep-row-modules') ||
+          e.target.classList.contains('ep-row-subject')) {
+        tryRegen();
+      }
+    });
+  }
 })();
 
 // ══════════════════════════════════════════════════════════════
@@ -8493,19 +8834,30 @@ function ueGetAllExams() {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const exams = [];
 
-  // 1. Pull single exam from Smart Planner
+  // 1. Pull exams from Smart Planner (one per subject)
   const plan = epLoadPlan();
-  if (plan && plan.examDate && plan.examName) {
-    const d = new Date(plan.examDate); d.setHours(0, 0, 0, 0);
-    const daysLeft = Math.round((d - today) / 86400000);
-    if (daysLeft >= 0) {
-      exams.push({
-        id: '__planner__',
-        name: plan.examName,
-        date: plan.examDate,
-        daysLeft,
-        fromPlanner: true
+  if (plan) {
+    if (plan.subjects && plan.subjects.length > 0) {
+      plan.subjects.forEach(function(s, i) {
+        const d = new Date(s.dateStr); d.setHours(0, 0, 0, 0);
+        const daysLeft = Math.round((d - today) / 86400000);
+        if (daysLeft >= 0) {
+          exams.push({
+            id: '__planner__' + i,
+            name: s.name,
+            date: s.dateStr,
+            daysLeft,
+            fromPlanner: true
+          });
+        }
       });
+    } else if (plan.examDate && plan.examName) {
+      // Legacy single-subject plan
+      const d = new Date(plan.examDate); d.setHours(0, 0, 0, 0);
+      const daysLeft = Math.round((d - today) / 86400000);
+      if (daysLeft >= 0) {
+        exams.push({ id: '__planner__', name: plan.examName, date: plan.examDate, daysLeft, fromPlanner: true });
+      }
     }
   }
 
@@ -8718,8 +9070,8 @@ function epRenderPlannerSummary(plan) {
 
   if (!plan) { el.innerHTML = ''; return; }
 
-  // Total exams is always 1 per plan (one exam per plan object)
-  const totalExams    = 1;
+  // Total exams = number of subjects in plan
+  const totalExams    = plan.subjects ? plan.subjects.length : 1;
   const totalModules  = plan.totalModules;
   const completed     = plan.completedModules;
   const remaining     = plan.remainingModules;
@@ -8732,7 +9084,7 @@ function epRenderPlannerSummary(plan) {
       <div class="ep-summary-card sc-exams">
         <div class="ep-summary-label">Exams</div>
         <div class="ep-summary-value">${totalExams}</div>
-        <div class="ep-summary-sub">${plan.examName}</div>
+        <div class="ep-summary-sub">${plan.subjects && plan.subjects.length > 1 ? plan.subjects.map(s => s.name).join(', ') : plan.examName}</div>
       </div>
       <div class="ep-summary-card sc-modules">
         <div class="ep-summary-label">Modules</div>
@@ -8781,6 +9133,7 @@ function epRenderDailyTimeline(plan) {
   }
 
   const today      = new Date(); today.setHours(0, 0, 0, 0);
+  // For multi-subject plans use nearest exam date as the primary anchor for display
   const examDate   = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
   const examName   = plan.examName || 'Exam';
 
@@ -8789,46 +9142,33 @@ function epRenderDailyTimeline(plan) {
   const days = [];
 
   plan.phases.forEach(function(ph) {
-    const phaseStart = new Date(ph.start.replace(/(\d{2}) (\w{3}) (\d{2})/, function(m, d, mon, y) {
-      // Reconstruct ISO from "01 Jun 25" style from epFmtDate()
-      const months = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
-      return new Date(2000 + parseInt(y), months[mon], parseInt(d));
-    }));
-
-    // Re-derive start date from plan.phases using the plan generation logic
-    // ph.start is a formatted string; we need the actual Date.
-    // Safer: recompute start dates from plan data
     const phaseStartDate = epParsePlanDate(ph.start);
     if (!phaseStartDate) return;
 
-    let moduleCounter = 1; // per-phase module counter
-    const modsPerDay = ph.dailyTarget; // fractional e.g. 1.33
+    const phaseWithinSubject = typeof ph.subjectIndex !== 'undefined' ? (plan.phases.indexOf(ph) % 3) : (ph.num - 1) % 3;
+    const modsPerDay = ph.dailyTarget;
+    const subjectLabel = ph.subjectName || examName;
+
+    // Map phase-within-subject (0,1,2) to a phase number (1,2,3) for styling
+    const stylePhase = phaseWithinSubject + 1;
 
     for (let d = 0; d < ph.days; d++) {
       const date = new Date(phaseStartDate);
       date.setDate(phaseStartDate.getDate() + d);
       date.setHours(0, 0, 0, 0);
 
-      // Skip days past exam date
-      if (date > examDate) break;
-
-      // Calculate module range for this day
       const modStart = Math.floor(d * modsPerDay) + 1;
       const modEnd   = Math.min(ph.modules, Math.floor((d + 1) * modsPerDay));
       let moduleLabel;
-      if (modEnd > modStart) {
-        moduleLabel = 'Module ' + modStart + '–' + modEnd;
-      } else if (modEnd === modStart) {
-        moduleLabel = 'Module ' + modStart;
-      } else {
-        moduleLabel = 'Review / Buffer';
-      }
+      if (modEnd > modStart)        moduleLabel = 'M' + modStart + '–M' + modEnd;
+      else if (modEnd === modStart)  moduleLabel = 'M' + modStart;
+      else                           moduleLabel = 'Review / Buffer';
 
       days.push({
         date,
-        subject: examName,
+        subject: subjectLabel,
         moduleLabel,
-        phase: ph.num,
+        phase: stylePhase,
         phaseName: ph.name,
         isToday: date.getTime() === today.getTime(),
         isExam:  false,
@@ -8837,17 +9177,33 @@ function epRenderDailyTimeline(plan) {
     }
   });
 
-  // Add exam day entry
-  days.push({
-    date: examDate,
-    subject: examName,
-    moduleLabel: 'Exam Day',
-    phase: 0,
-    phaseName: 'Exam',
-    isToday: examDate.getTime() === today.getTime(),
-    isExam: true,
-    isPast: examDate < today
-  });
+  // Add an exam-day marker for every subject
+  if (plan.subjects && plan.subjects.length > 0) {
+    plan.subjects.forEach(function(s) {
+      const d = new Date(s.dateStr); d.setHours(0, 0, 0, 0);
+      days.push({
+        date: d,
+        subject: s.name,
+        moduleLabel: 'Exam Day',
+        phase: 0,
+        phaseName: 'Exam',
+        isToday: d.getTime() === today.getTime(),
+        isExam: true,
+        isPast: d < today
+      });
+    });
+  } else {
+    days.push({
+      date: examDate,
+      subject: examName,
+      moduleLabel: 'Exam Day',
+      phase: 0,
+      phaseName: 'Exam',
+      isToday: examDate.getTime() === today.getTime(),
+      isExam: true,
+      isPast: examDate < today
+    });
+  }
 
   // Sort by date
   days.sort(function(a, b) { return a.date - b.date; });
@@ -8901,13 +9257,20 @@ function epRenderDailyTimeline(plan) {
 
   const rowsHTML = filteredDays.map(function(item, idx) {
     const d    = item.date;
-    const dow  = d.toLocaleDateString('en-IN', { weekday: 'short' });
-    const dayN = d.toLocaleDateString('en-IN', { day: '2-digit' });
+    const dayN = d.toLocaleDateString('en-IN', { day: 'numeric' });
     const mon  = d.toLocaleDateString('en-IN', { month: 'short' });
+    const dow  = d.toLocaleDateString('en-IN', { weekday: 'short' });
 
     const phaseClass = item.isExam   ? 'tl-exam'
                      : item.isToday  ? 'tl-today tl-phase-' + item.phase
                      : 'tl-phase-' + item.phase;
+
+    // Combined label: "Maths M1" / "Maths M1–M3" / "Exam Day"
+    const combinedLabel = item.isExam
+      ? item.subject + ' \u2014 Exam Day'
+      : (item.moduleLabel === 'Review / Buffer'
+          ? item.subject + ' \u2014 Review'
+          : item.subject + ' ' + item.moduleLabel);
 
     const badge = item.isToday && !item.isExam
       ? '<span class="ep-tl-badge tl-b-today">Today</span>'
@@ -8922,7 +9285,7 @@ function epRenderDailyTimeline(plan) {
         <div class="ep-tl-spine">
           <div class="ep-tl-dot"></div>
         </div>
-        <div style="width:46px;flex-shrink:0;text-align:center;padding-top:9px">
+        <div style="width:52px;flex-shrink:0;text-align:center;padding-top:9px">
           <div class="ep-tl-date-day">${dow}</div>
           <div class="ep-tl-date-num">${dayN} ${mon}</div>
         </div>
@@ -8930,8 +9293,7 @@ function epRenderDailyTimeline(plan) {
           <div class="ep-tl-row">
             <div class="ep-tl-phase-pip"></div>
             <div class="ep-tl-text">
-              <div class="ep-tl-subject">${item.subject}</div>
-              <div class="ep-tl-module">${item.moduleLabel}</div>
+              <div class="ep-tl-subject">${combinedLabel}</div>
             </div>
             ${badge || (!item.isExam ? `<span class="ep-tl-badge ${badgeCls}">Ph ${item.phase}</span>` : '')}
           </div>
