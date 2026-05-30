@@ -2008,6 +2008,2509 @@ tbody td {
 @media (max-width: 480px) {
   .dash-grid-3 .stat-card:nth-child(3) { grid-column: 1; }
 }
+
+/* ══ EXAM PLANNER CSS ══════════════════════════════════════════ */
+
+.ep-form-row {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 700px) {
+  .ep-form-row { grid-template-columns: 1fr !important; }
+}
+
+/* Context banner */
+.ep-context-banner {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius);
+  border: 1px solid var(--indigo-border);
+  background: var(--indigo-dim);
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.ep-context-stripe {
+  width: 4px;
+  background: var(--indigo);
+  flex-shrink: 0;
+}
+
+.ep-context-body {
+  flex: 1;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ep-context-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--indigo);
+  margin-bottom: 3px;
+}
+
+.ep-context-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.ep-context-chip {
+  display: flex;
+  flex-direction: column;
+  padding-right: 16px;
+  border-right: 1px solid var(--indigo-border);
+}
+
+.ep-context-chip:last-child { border-right: none; }
+
+/* Phase cards */
+.ep-phase-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ep-phase-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.ep-phase-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ep-phase-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ep-phase-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 3px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.ep-phase-badge.phase-1 { background: var(--indigo-dim); color: var(--indigo); border: 1px solid var(--indigo-border); }
+.ep-phase-badge.phase-2 { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+.ep-phase-badge.phase-3 { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
+
+.ep-phase-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ep-phase-dates {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.ep-phase-body {
+  padding: 14px 18px;
+}
+
+.ep-phase-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 700px) {
+  .ep-phase-stats { grid-template-columns: 1fr 1fr; }
+}
+
+.ep-phase-stat {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.ep-phase-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-2);
+  margin-bottom: 3px;
+}
+
+.ep-phase-stat-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ep-phase-stat-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Progress bar */
+.ep-progress-wrap {
+  margin-bottom: 12px;
+}
+
+.ep-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.ep-progress-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.ep-progress-pct {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.ep-progress-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ep-progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.ep-progress-bar.phase-1 { background: var(--indigo); }
+.ep-progress-bar.phase-2 { background: var(--accent-border); }
+.ep-progress-bar.phase-3 { background: var(--green); }
+
+/* Phase tips */
+.ep-phase-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ep-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+.ep-tip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--muted-2);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* Empty state */
+.ep-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.ep-empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted-2);
+}
+
+.ep-empty-icon svg {
+  width: 22px; height: 22px;
+}
+
+.ep-empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.ep-empty-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* ── Enhanced Progress Visualization ──────────────────────── */
+
+/* Overall progress block used inside the stat card */
+.ep-prog-block {
+  margin-top: 10px;
+}
+
+.ep-prog-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  gap: 8px;
+}
+
+.ep-prog-label-left {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.ep-prog-pct-label {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+/* Bar track */
+.ep-prog-track {
+  position: relative;
+  height: 8px;
+  background: var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.ep-prog-bar {
+  height: 100%;
+  border-radius: 6px;
+  width: 0;                        /* starts at 0 — JS animates via transition */
+  transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ep-prog-bar.epb-green  {
+  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+}
+.ep-prog-bar.epb-indigo {
+  background: linear-gradient(90deg, #4338ca 0%, #818cf8 100%);
+}
+.ep-prog-bar.epb-amber  {
+  background: linear-gradient(90deg, #b45309 0%, #f59e0b 100%);
+}
+.ep-prog-bar.epb-muted  {
+  background: linear-gradient(90deg, var(--border-2) 0%, var(--muted-2) 100%);
+}
+
+/* Shimmer sweep animation on the bar fill */
+@keyframes ep-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.ep-prog-bar.shimmer {
+  background-size: 200% 100%;
+  animation: ep-shimmer 2.2s linear infinite;
+}
+
+.ep-prog-bar.epb-green.shimmer {
+  background-image: linear-gradient(90deg, #15803d 0%, #22c55e 40%, #4ade80 50%, #22c55e 60%, #15803d 100%);
+}
+
+/* Module counter strip */
+.ep-prog-counts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.ep-prog-count-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.ep-prog-count-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ep-prog-count-dot.dot-done      { background: #22c55e; }
+.ep-prog-count-dot.dot-remaining { background: var(--border-2); }
+
+.ep-prog-count-num {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.ep-prog-count-sep {
+  color: var(--border-2);
+  font-size: 10px;
+}
+
+/* Block-style braille-ish bar (████░░ style) */
+.ep-prog-blocks {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-prog-blocks-fill   { color: #15803d; }
+.ep-prog-blocks-empty  { color: var(--border-2); }
+.ep-prog-blocks-pct    {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0;
+}
+
+/* ── Overall progress card (full-width panel below stat cards) ── */
+.ep-overall-progress {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.ep-overall-progress::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, #4338ca, #22c55e);
+  border-radius: 0;
+}
+
+.ep-op-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+
+.ep-op-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ep-op-title-icon {
+  width: 18px; height: 18px;
+  opacity: 0.55;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.ep-op-title-icon svg {
+  width: 15px; height: 15px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+.ep-op-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.ep-op-badge.badge-on-track  { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
+.ep-op-badge.badge-in-prog   { background: var(--indigo-dim); color: var(--indigo); border: 1px solid var(--indigo-border); }
+.ep-op-badge.badge-not-start { background: var(--bg);         color: var(--muted);  border: 1px solid var(--border-2); }
+
+/* Main big bar */
+.ep-op-main-bar-wrap {
+  margin-bottom: 14px;
+}
+
+.ep-op-bar-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  gap: 8px;
+}
+
+.ep-op-pct-large {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.ep-op-pct-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.ep-op-track {
+  position: relative;
+  height: 12px;
+  background: var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.ep-op-track-fill {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #4338ca 0%, #22c55e 100%);
+  width: 0;
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ep-op-track-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: ep-shimmer 2.5s linear infinite;
+}
+
+/* Block display (████░░ 84%) */
+.ep-op-blocks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ep-op-blocks-text {
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.ep-op-blocks-fill  { color: #22c55e; }
+.ep-op-blocks-empty { color: var(--border-2); }
+
+.ep-op-blocks-label {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+/* Module count breakdown */
+.ep-op-counts {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.ep-op-count-cell {
+  flex: 1;
+  padding: 12px 14px;
+  border-right: 1px solid var(--border);
+  text-align: left;
+}
+
+.ep-op-count-cell:last-child { border-right: none; }
+
+.ep-op-count-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ep-op-count-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ep-op-count-val {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.ep-op-count-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Per-subject progress rows */
+.ep-subject-progress {
+  margin-top: 4px;
+}
+
+.ep-subj-header {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ep-subj-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.ep-subj-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.ep-subj-name {
+  width: 96px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ep-subj-track-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.ep-subj-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.ep-subj-bar {
+  height: 100%;
+  border-radius: 4px;
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ep-subj-sessions {
+  font-size: 10.5px;
+  color: var(--muted-2);
+  font-family: var(--mono);
+}
+
+.ep-subj-pct {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  width: 38px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Phase progress (inside each phase card) */
+.ep-phase-prog {
+  margin-bottom: 14px;
+}
+
+.ep-phase-prog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.ep-phase-prog-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+}
+
+.ep-phase-prog-pct {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.ep-phase-prog-track {
+  height: 7px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 7px;
+}
+
+.ep-phase-prog-bar {
+  height: 100%;
+  border-radius: 5px;
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ep-phase-prog-bar.phase-1 {
+  background: linear-gradient(90deg, #4338ca 0%, #818cf8 100%);
+}
+.ep-phase-prog-bar.phase-2 {
+  background: linear-gradient(90deg, #b45309 0%, #f59e0b 100%);
+}
+.ep-phase-prog-bar.phase-3 {
+  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+}
+
+.ep-phase-prog-counts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.ep-phase-prog-counts strong {
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+/* ── END Enhanced Progress Visualization CSS ── */
+
+/* Saved info */
+.ep-saved-info {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.ep-saved-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.ep-saved-row:last-child { border-bottom: none; }
+
+.ep-saved-key {
+  font-weight: 600;
+  color: var(--muted);
+  width: 140px;
+  flex-shrink: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Clear button */
+.ep-clear-btn {
+  background: none;
+  border: 1px solid var(--border-2);
+  color: var(--muted);
+  font-size: 11.5px;
+  font-family: var(--font);
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+
+.ep-clear-btn:hover {
+  color: var(--red);
+  border-color: var(--red-border);
+  background: var(--red-dim);
+}
+
+/* ── Daily Study Timeline ─────────────────────────────────── */
+.ep-daily-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ep-tl-day {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+
+/* Vertical connector line */
+.ep-tl-day:not(:last-child) .ep-tl-spine::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 28px;
+  bottom: -1px;
+  width: 1px;
+  background: var(--border);
+  transform: translateX(-50%);
+}
+
+.ep-tl-spine {
+  width: 52px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  position: relative;
+}
+
+.ep-tl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-2);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--border-2);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.ep-tl-day.tl-phase-1 .ep-tl-dot { background: #818cf8; box-shadow: 0 0 0 1px #818cf8; }
+.ep-tl-day.tl-phase-2 .ep-tl-dot { background: #d97706; box-shadow: 0 0 0 1px #d97706; }
+.ep-tl-day.tl-phase-3 .ep-tl-dot { background: #16a34a; box-shadow: 0 0 0 1px #16a34a; }
+
+.ep-tl-day.tl-today .ep-tl-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--text);
+  box-shadow: 0 0 0 3px rgba(28,25,23,0.15);
+  border: 2px solid var(--surface);
+}
+
+.ep-tl-day.tl-exam .ep-tl-dot {
+  width: 12px;
+  height: 12px;
+  background: #b91c1c;
+  box-shadow: 0 0 0 3px rgba(185,28,28,0.15);
+  border: 2px solid var(--surface);
+}
+
+.ep-tl-date-col {
+  width: 52px;
+  text-align: center;
+  font-size: 10.5px;
+  font-family: var(--mono);
+  color: var(--muted-2);
+  padding-top: 8px;
+  flex-shrink: 0;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.ep-tl-date-day {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-2);
+}
+
+.ep-tl-date-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+}
+
+.ep-tl-day.tl-today .ep-tl-date-num {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.ep-tl-date-mon {
+  font-size: 9px;
+  color: var(--muted-2);
+}
+
+.ep-tl-content {
+  flex: 1;
+  padding: 7px 0 7px 4px;
+  min-width: 0;
+}
+
+.ep-tl-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.12s, background 0.12s;
+  margin-bottom: 1px;
+}
+
+.ep-tl-row:hover {
+  border-color: var(--border-2);
+  background: var(--bg);
+}
+
+/* Today highlight */
+.ep-tl-day.tl-today .ep-tl-row {
+  border-color: var(--indigo-border);
+  background: #f5f6ff;
+}
+
+/* Exam day */
+.ep-tl-day.tl-exam .ep-tl-row {
+  border-color: #fca5a5;
+  background: #fff5f5;
+}
+
+.ep-tl-phase-pip {
+  width: 4px;
+  height: 26px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.tl-phase-1 .ep-tl-phase-pip { background: #818cf8; }
+.tl-phase-2 .ep-tl-phase-pip { background: #d97706; }
+.tl-phase-3 .ep-tl-phase-pip { background: #16a34a; }
+.tl-exam .ep-tl-phase-pip    { background: #b91c1c; }
+
+.ep-tl-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ep-tl-subject {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.ep-tl-module {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ep-tl-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.ep-tl-badge.tl-b-today {
+  background: var(--indigo-dim);
+  color: var(--indigo);
+  border: 1px solid var(--indigo-border);
+}
+
+.ep-tl-badge.tl-b-exam {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  animation: ep-tl-pulse 2.5s ease-in-out infinite;
+}
+
+.ep-tl-badge.tl-b-p1 {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+.ep-tl-badge.tl-b-p2 {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+}
+.ep-tl-badge.tl-b-p3 {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+}
+
+@keyframes ep-tl-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+/* Empty state */
+.ep-tl-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-2);
+}
+
+/* Exam day row */
+.ep-tl-exam-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #fca5a5;
+  background: #fff5f5;
+}
+
+/* Summary bar above timeline */
+.ep-tl-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.ep-tl-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ep-tl-summary-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Collapsed state — only show top N rows */
+.ep-daily-timeline.collapsed .ep-tl-day:nth-child(n+15) {
+  display: none;
+}
+
+.ep-tl-show-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-sm);
+  width: 100%;
+  font-family: var(--font);
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  margin-top: 4px;
+  gap: 6px;
+}
+
+.ep-tl-show-more:hover {
+  color: var(--text);
+  border-color: var(--border-2);
+  background: var(--bg);
+}
+
+/* ── Planner Summary Strip ────────────────────────────────── */
+.ep-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .ep-summary-strip { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .ep-summary-strip { grid-template-columns: repeat(2, 1fr); }
+}
+
+.ep-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px 13px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ep-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.ep-summary-card.sc-exams::before    { background: var(--indigo); }
+.ep-summary-card.sc-modules::before  { background: var(--muted-2); }
+.ep-summary-card.sc-done::before     { background: var(--green); }
+.ep-summary-card.sc-left::before     { background: var(--accent-border); }
+.ep-summary-card.sc-target::before   { background: #b91c1c; }
+
+.ep-summary-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+  line-height: 1;
+}
+
+.ep-summary-value {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.ep-summary-card.sc-done  .ep-summary-value { color: var(--green); }
+.ep-summary-card.sc-left  .ep-summary-value { color: var(--accent); }
+.ep-summary-card.sc-target .ep-summary-value { color: #b91c1c; }
+
+.ep-summary-sub {
+  font-size: 10.5px;
+  color: var(--muted-2);
+  line-height: 1.35;
+}
+
+/* ══ END EXAM PLANNER CSS ══════════════════════════════════════ */
+
+/* ── Feasibility Card ─────────────────────────────────────── */
+
+/* Verdict bar */
+.ep-verdict-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 36px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+
+.ep-verdict-stripe {
+  width: 5px;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+.ep-verdict-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.ep-verdict-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+  font-family: var(--mono);
+}
+
+.ep-verdict-bar.ep-on-track   { border-color: var(--green-border); background: #f6faf7; }
+.ep-verdict-bar.ep-on-track   .ep-verdict-stripe { background: var(--green); }
+.ep-verdict-bar.ep-on-track   .ep-verdict-body { color: #1e3a2a; }
+
+.ep-verdict-bar.ep-behind     { border-color: #fde68a; background: #fffbeb; }
+.ep-verdict-bar.ep-behind     .ep-verdict-stripe { background: #d97706; }
+.ep-verdict-bar.ep-behind     .ep-verdict-body { color: #78350f; }
+
+.ep-verdict-bar.ep-high-risk  { border-color: var(--red-border); background: var(--red-dim); }
+.ep-verdict-bar.ep-high-risk  .ep-verdict-stripe { background: var(--red); }
+.ep-verdict-bar.ep-high-risk  .ep-verdict-body { color: #7f1d1d; }
+
+/* Feasibility status badge */
+.ep-feas-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 3px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.ep-feas-badge-pill.ep-on-track  { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
+.ep-feas-badge-pill.ep-behind    { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+.ep-feas-badge-pill.ep-high-risk { background: var(--red-dim);    color: var(--red);    border: 1px solid var(--red-border); }
+
+/* Metric tiles */
+.ep-feas-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 700px) {
+  .ep-feas-metrics { grid-template-columns: 1fr 1fr; }
+}
+
+.ep-feas-metric {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+}
+
+.ep-feas-metric-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-2);
+  margin-bottom: 4px;
+}
+
+.ep-feas-metric-value {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ep-feas-metric-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.ep-feas-metric-value.ep-good  { color: var(--green); }
+.ep-feas-metric-value.ep-warn  { color: var(--accent); }
+.ep-feas-metric-value.ep-risk  { color: var(--red); }
+
+/* Pace visual bar */
+.ep-pace-visual {
+  margin-bottom: 4px;
+}
+
+.ep-pace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.ep-pace-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.ep-pace-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ep-pace-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.ep-pace-legend-swatch {
+  width: 10px; height: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.ep-pace-track {
+  position: relative;
+  height: 10px;
+  background: var(--border);
+  border-radius: 6px;
+  overflow: visible;
+  margin-bottom: 5px;
+}
+
+.ep-pace-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  border-radius: 6px;
+  transition: width 0.7s cubic-bezier(.4,0,.2,1);
+  max-width: 100%;
+}
+
+.ep-pace-marker {
+  position: absolute;
+  top: -4px;
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--text);
+  transform: translateX(-50%);
+  transition: left 0.7s cubic-bezier(.4,0,.2,1);
+}
+
+.ep-pace-tick-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted-2);
+  font-family: var(--mono);
+  margin-top: 2px;
+}
+
+/* Confidence row */
+.ep-confidence-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  margin-bottom: 10px;
+}
+
+.ep-confidence-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  flex-shrink: 0;
+}
+
+.ep-confidence-dots {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.ep-confidence-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s;
+}
+
+.ep-confidence-dot.filled.high   { background: var(--green); }
+.ep-confidence-dot.filled.medium { background: #d97706; }
+.ep-confidence-dot.filled.low    { background: var(--red); }
+
+.ep-confidence-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.ep-confidence-basis {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-left: auto;
+  text-align: right;
+}
+
+/* Recommendations */
+.ep-recs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ep-rec-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: flex-start;
+  gap: 0;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  line-height: 1.6;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.ep-rec-icon {
+  width: 28px;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 11px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ep-rec-body {
+  padding: 11px 13px;
+  color: var(--text-2);
+}
+
+.ep-rec-body strong { color: var(--text); }
+
+.ep-rec-item.rec-green  { border-color: #c8dece; }
+.ep-rec-item.rec-green  .ep-rec-icon { background: #f0fdf4; color: #3a7d52; }
+.ep-rec-item.rec-green  .ep-rec-body { color: #1e3a2a; }
+
+.ep-rec-item.rec-amber  { border-color: #e8d5b0; }
+.ep-rec-item.rec-amber  .ep-rec-icon { background: #fffbeb; color: #b07a2e; }
+.ep-rec-item.rec-amber  .ep-rec-body { color: #5a3d18; }
+
+.ep-rec-item.rec-indigo { border-color: #c7d2fe; }
+.ep-rec-item.rec-indigo .ep-rec-icon { background: #eef2ff; color: #4338ca; }
+.ep-rec-item.rec-indigo .ep-rec-body { color: #2e2777; }
+
+.ep-rec-item.rec-red    { border-color: var(--red-border); }
+.ep-rec-item.rec-red    .ep-rec-icon { background: var(--red-dim); color: var(--red); }
+.ep-rec-item.rec-red    .ep-rec-body { color: #7f1d1d; }
+
+/* ── END Feasibility CSS ─────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════
+   SMART PLANNER — additional CSS
+══════════════════════════════════════════════════════════════ */
+
+/* ── Today's Target / This Week / Workload banner ─────────── */
+.sp-target-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.sp-target-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px 16px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.sp-target-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 18px; right: 18px;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+}
+
+.sp-target-card.tc-today::after   { background: var(--indigo); }
+.sp-target-card.tc-week::after    { background: var(--accent-border); }
+.sp-target-card.tc-workload::after{ background: var(--green); }
+
+.sp-tc-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  margin-bottom: 8px;
+}
+
+.sp-tc-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.sp-tc-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.sp-tc-detail {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ── Priority ranking list ─────────────────────────────────── */
+.sp-priority-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sp-priority-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.sp-priority-row.rank-1 { border-color: #fecaca; background: #fff8f8; }
+.sp-priority-row.rank-2 { border-color: #fde68a; background: #fffdf0; }
+.sp-priority-row.rank-3 { border-color: var(--indigo-border); background: #f8f9ff; }
+.sp-priority-row.rank-4 { border-color: var(--border-2); background: var(--surface); }
+
+.sp-rank-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rank-1 .sp-rank-badge { background: #fee2e2; color: #b91c1c; }
+.rank-2 .sp-rank-badge { background: #fef3c7; color: var(--accent); }
+.rank-3 .sp-rank-badge { background: var(--indigo-dim); color: var(--indigo); }
+.rank-4 .sp-rank-badge { background: var(--bg); color: var(--muted); }
+
+.sp-priority-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-priority-tags {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.sp-ptag {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--mono);
+  padding: 2px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.sp-ptag.pt-exam  { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.sp-ptag.pt-prod  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+.sp-ptag.pt-mods  { background: var(--indigo-dim); color: var(--indigo); border: 1px solid var(--indigo-border); }
+.sp-ptag.pt-ok    { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+
+.sp-priority-bar-wrap {
+  width: 60px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sp-priority-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.rank-1 .sp-priority-bar { background: #b91c1c; }
+.rank-2 .sp-priority-bar { background: var(--accent-border); }
+.rank-3 .sp-priority-bar { background: var(--indigo); }
+.rank-4 .sp-priority-bar { background: var(--muted-2); }
+
+/* ── Visual timeline ───────────────────────────────────────── */
+.sp-timeline-wrap {
+  margin: 4px 0 0;
+  overflow-x: auto;
+}
+
+.sp-timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sp-timeline-track {
+  position: relative;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--border);
+  display: flex;
+  min-width: 300px;
+}
+
+.sp-tl-phase {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.2s;
+  cursor: default;
+}
+
+.sp-tl-phase:hover { opacity: 0.85; }
+
+.sp-tl-phase.tl-p1 { background: #818cf8; color: #fff; }
+.sp-tl-phase.tl-p2 { background: #d97706; color: #fff; }
+.sp-tl-phase.tl-p3 { background: #16a34a; color: #fff; }
+
+.sp-tl-phase.tl-today-marker::after {
+  content: 'TODAY';
+  position: absolute;
+  bottom: -1px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  background: var(--text);
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 2px 2px 0 0;
+}
+
+.sp-tl-phase-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+}
+
+.sp-timeline-labels {
+  display: flex;
+  margin-top: 6px;
+}
+
+.sp-tl-label-item {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.sp-timeline-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.sp-tl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.sp-tl-legend-swatch {
+  width: 12px; height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Daily schedule by subject ─────────────────────────────── */
+.sp-daily-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sp-day-slot {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12.5px;
+}
+
+.sp-day-slot.ds-today {
+  border-color: var(--indigo-border);
+  background: var(--indigo-dim);
+}
+
+.sp-day-slot.ds-past {
+  opacity: 0.45;
+}
+
+.sp-day-date {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  min-width: 52px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.sp-day-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--indigo);
+  min-width: 36px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.sp-day-items {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sp-day-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sp-day-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--muted-2);
+}
+
+.sp-day-dot.prio-1 { background: #b91c1c; }
+.sp-day-dot.prio-2 { background: var(--accent-border); }
+.sp-day-dot.prio-3 { background: var(--indigo); }
+.sp-day-dot.prio-n { background: var(--muted-2); }
+
+.sp-day-text {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
+.sp-day-hours {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted-2);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── Priority Engine panel nav ─────────────────────────────── */
+/* (panel-smartplanner) reuses ep-* and sp-* classes above */
+
+@media (max-width: 700px) {
+  .sp-target-grid { grid-template-columns: 1fr 1fr; }
+  .sp-target-grid .sp-target-card:last-child { grid-column: 1 / -1; }
+}
+
+/* ══ END SMART PLANNER CSS ══════════════════════════════════ */
+/* ══ TODAY'S TARGET CARD ══════════════════════════════════════ */
+.tt-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* accent strip on left edge — colour changes with priority */
+.tt-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 0;
+  background: var(--tt-accent, var(--muted-2));
+  transition: background 0.3s;
+}
+
+.tt-card.tt-high   { --tt-accent: #b91c1c; }
+.tt-card.tt-medium { --tt-accent: #d97706; }
+.tt-card.tt-low    { --tt-accent: #15803d; }
+.tt-card.tt-none   { --tt-accent: var(--muted-2); }
+
+/* header row */
+.tt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 12px 22px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+
+.tt-header-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.tt-header-left .card-title-icon {
+  opacity: 0.55;
+}
+
+.tt-heading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+.tt-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+
+.tt-badge.tt-b-high   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.tt-badge.tt-b-medium { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+.tt-badge.tt-b-low    { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+.tt-badge.tt-b-none   { background: var(--bg); color: var(--muted); border: 1px solid var(--border-2); }
+
+/* main body */
+.tt-body {
+  padding: 18px 20px 18px 22px;
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+/* subject block */
+.tt-subject-block {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--border);
+  padding-right: 20px;
+}
+
+.tt-subject-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted-2);
+  margin-bottom: 5px;
+}
+
+.tt-subject-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.tt-module-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  font-family: var(--mono);
+  margin-bottom: 2px;
+}
+
+.tt-module-hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* meta grid */
+.tt-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  align-content: center;
+  flex: 1;
+  min-width: 180px;
+}
+
+.tt-meta-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  margin-bottom: 3px;
+}
+
+.tt-meta-value {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.tt-meta-value.tv-high   { color: #b91c1c; }
+.tt-meta-value.tv-medium { color: #b45309; }
+.tt-meta-value.tv-low    { color: #15803d; }
+
+.tt-meta-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* countdown ring area */
+.tt-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding-left: 18px;
+  border-left: 1px solid var(--border);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.tt-countdown-num {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.tt-countdown-num.urgent { color: #b91c1c; }
+
+.tt-countdown-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+  text-align: center;
+}
+
+.tt-countdown-exam {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  max-width: 90px;
+  line-height: 1.4;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* footer row */
+.tt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 20px 9px 22px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--muted);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tt-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tt-footer-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--muted-2);
+  flex-shrink: 0;
+}
+
+.tt-footer-dot.fd-high   { background: #b91c1c; }
+.tt-footer-dot.fd-medium { background: #d97706; }
+.tt-footer-dot.fd-low    { background: #15803d; }
+
+.tt-footer-reason {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.tt-footer-updated {
+  font-size: 10.5px;
+  color: var(--muted-2);
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+
+/* empty state inside card */
+.tt-empty {
+  padding: 28px 22px;
+  text-align: center;
+}
+
+.tt-empty-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+  color: var(--muted-2);
+}
+
+.tt-empty-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+
+.tt-empty-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.tt-empty-desc a {
+  color: var(--text-2);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font: inherit;
+  padding: 0;
+}
+
+@media (max-width: 700px) {
+  .tt-subject-block { border-right: none; padding-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 2px; }
+  .tt-countdown { border-left: none; padding-left: 0; flex-direction: row; gap: 10px; width: 100%; justify-content: flex-start; }
+  .tt-meta-grid { grid-template-columns: 1fr 1fr; }
+}
+/* ══ END TODAY'S TARGET CSS ══ */
+
+/* ══════════════════════════════════════════════════════════════
+   UPCOMING EXAMS WIDGET CSS
+══════════════════════════════════════════════════════════════ */
+
+.ue-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 12px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+
+.ue-header-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.ue-heading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+.ue-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ue-count-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--indigo-dim);
+  color: var(--indigo);
+  border: 1px solid var(--indigo-border);
+  letter-spacing: 0.04em;
+}
+
+.ue-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  line-height: 1;
+}
+
+.ue-add-btn:hover {
+  color: var(--text);
+  border-color: var(--border-2);
+  background: var(--surface);
+}
+
+.ue-add-btn svg {
+  width: 11px; height: 11px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Add exam inline form */
+.ue-add-form {
+  display: none;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.ue-add-form.open { display: flex; }
+
+.ue-add-form .field { flex: 1; min-width: 130px; }
+
+.ue-add-form .field label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.ue-add-form .field input {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ue-add-form .field input:focus {
+  border-color: var(--text-2);
+  box-shadow: 0 0 0 3px rgba(28,25,23,0.07);
+}
+
+.ue-form-actions {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  padding-bottom: 0;
+  flex-shrink: 0;
+}
+
+.ue-form-save {
+  padding: 7px 14px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.ue-form-save:hover { opacity: 0.85; }
+
+.ue-form-cancel {
+  padding: 7px 10px;
+  background: none;
+  color: var(--muted);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s;
+  white-space: nowrap;
+}
+
+.ue-form-cancel:hover { color: var(--text); background: var(--surface); }
+
+/* Exam list */
+.ue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ue-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+  position: relative;
+}
+
+.ue-item:last-child { border-bottom: none; }
+.ue-item:hover { background: var(--bg); }
+
+/* Urgency left strip */
+.ue-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+
+.ue-item.ue-high::before   { background: #b91c1c; }
+.ue-item.ue-medium::before { background: #d97706; }
+.ue-item.ue-normal::before { background: #15803d; }
+
+/* Countdown bubble */
+.ue-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  border: 1px solid;
+  gap: 0;
+}
+
+.ue-item.ue-high   .ue-bubble { background: #fee2e2; border-color: #fecaca; }
+.ue-item.ue-medium .ue-bubble { background: var(--accent-dim); border-color: #fde68a; }
+.ue-item.ue-normal .ue-bubble { background: var(--green-dim);  border-color: var(--green-border); }
+
+.ue-bubble-num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.ue-item.ue-high   .ue-bubble-num { color: #b91c1c; }
+.ue-item.ue-medium .ue-bubble-num { color: #b45309; }
+.ue-item.ue-normal .ue-bubble-num { color: #15803d; }
+
+.ue-bubble-unit {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.ue-item.ue-high   .ue-bubble-unit { color: #991b1b; }
+.ue-item.ue-medium .ue-bubble-unit { color: #92400e; }
+.ue-item.ue-normal .ue-bubble-unit { color: #166534; }
+
+/* Exam info */
+.ue-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ue-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.ue-date {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+/* Urgency pill */
+.ue-pill {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.ue-item.ue-high   .ue-pill { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.ue-item.ue-medium .ue-pill { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+.ue-item.ue-normal .ue-pill { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+
+/* Delete button */
+.ue-del-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--muted-2);
+  cursor: pointer;
+  font-size: 10.5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  font-family: var(--font);
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.ue-del-btn:hover {
+  color: var(--red);
+  border-color: var(--red-border);
+  background: var(--red-dim);
+}
+
+/* Empty state */
+.ue-empty {
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.ue-empty-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+  color: var(--muted-2);
+}
+
+.ue-empty-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.ue-empty-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Footer */
+.ue-footer {
+  padding: 9px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+.ue-footer-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--muted-2);
+  flex-shrink: 0;
+}
+
+/* Countdown pulse on high-priority bubble */
+@keyframes ue-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(185,28,28,0); }
+  50% { box-shadow: 0 0 0 4px rgba(185,28,28,0.15); }
+}
+
+.ue-item.ue-high .ue-bubble {
+  animation: ue-pulse 2.4s ease-in-out infinite;
+}
+
+@media (max-width: 700px) {
+  .ue-item { padding: 12px 14px; gap: 10px; }
+  .ue-header { padding: 12px 14px 10px; }
+  .ue-add-form { padding: 12px 14px; }
+  .ue-bubble { width: 46px; height: 46px; border-radius: 8px; }
+  .ue-bubble-num { font-size: 18px; }
+  .ue-footer { padding: 8px 14px; }
+  .ue-empty { padding: 24px 14px; }
+}
+
+/* ══ END UPCOMING EXAMS WIDGET CSS ══ */
+
 </style>
 </head>
 <body>
@@ -2053,6 +4556,18 @@ tbody td {
     <button class="nav-item" onclick="showPanel('replay', this)">
       <span class="nav-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
       Study Replay
+    </button>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Planning</div>
+    <button class="nav-item" onclick="showPanel('examplanner', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      Smart Planner
+    </button>
+    <button class="nav-item" onclick="showPanel('smartplanner', this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></span>
+      Priority Engine
     </button>
   </div>
 
@@ -2129,6 +4644,68 @@ tbody td {
           <div class="stat-trend" id="dashSessionsTrend">Start logging</div>
         </div>
       </div>
+
+
+      <!-- ══ TODAY'S TARGET CARD ══════════════════════════════════ -->
+      <div class="tt-card tt-none" id="ttCard">
+        <div id="ttInner">
+          <!-- populated by renderTodaysTarget() -->
+        </div>
+      </div>
+
+      <!-- ══ UPCOMING EXAMS WIDGET ══════════════════════════════ -->
+      <div class="ue-card" id="ueCard">
+
+        <!-- Header -->
+        <div class="ue-header">
+          <div class="ue-header-left">
+            <span class="card-title-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <span class="ue-heading">Upcoming Exams</span>
+          </div>
+          <div class="ue-header-right">
+            <span class="ue-count-badge" id="ueCountBadge">0 exams</span>
+            <button class="ue-add-btn" onclick="ueToggleForm()" id="ueAddBtn" aria-label="Add exam">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Exam
+            </button>
+          </div>
+        </div>
+
+        <!-- Inline add form -->
+        <div class="ue-add-form" id="ueAddForm">
+          <div class="field">
+            <label for="ueNewName">Exam Name</label>
+            <input type="text" id="ueNewName" placeholder="e.g. Mathematics" maxlength="60"/>
+          </div>
+          <div class="field">
+            <label for="ueNewDate">Exam Date</label>
+            <input type="date" id="ueNewDate"/>
+          </div>
+          <div class="ue-form-actions">
+            <button class="ue-form-save" onclick="ueSaveExam()">Save</button>
+            <button class="ue-form-cancel" onclick="ueToggleForm()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Exam list -->
+        <div class="ue-list" id="ueList">
+          <!-- populated by renderUpcomingExams() -->
+        </div>
+
+        <!-- Footer -->
+        <div class="ue-footer" id="ueFooter" style="display:none">
+          <div class="ue-footer-dot"></div>
+          <span id="ueFooterText"></span>
+        </div>
+
+      </div><!-- /ueCard -->
 
       <div class="dash-grid">
         <div class="card">
@@ -2447,6 +5024,225 @@ tbody td {
       </div>
     </div>
 
+    <!-- ══ EXAM PLANNER ═══════════════════════════════════════════ -->
+    <div class="panel" id="panel-examplanner">
+      <div class="panel-header">
+        <div class="panel-title">Smart Planner</div>
+        <div class="panel-subtitle">Auto-prioritised phases, daily targets, and visual timeline — driven by your data</div>
+      </div>
+
+      <!-- Input card -->
+      <div class="card ep-input-card" id="epInputCard">
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          Exam Details
+        </div>
+        <div class="form-row ep-form-row">
+          <div class="field">
+            <label for="epExamName">Exam Name</label>
+            <input type="text" id="epExamName" placeholder="e.g. Physics Final"/>
+          </div>
+          <div class="field">
+            <label for="epExamDate">Exam Date</label>
+            <input type="date" id="epExamDate"/>
+          </div>
+          <div class="field">
+            <label for="epTotalModules">Total Modules</label>
+            <input type="number" id="epTotalModules" placeholder="e.g. 12" min="1"/>
+          </div>
+        </div>
+        <div class="form-row ep-form-row" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="field">
+            <label for="epCompletedModules">Modules Completed</label>
+            <input type="number" id="epCompletedModules" placeholder="e.g. 3" min="0"/>
+          </div>
+          <div class="field">
+            <label for="epDailyHours">Available Hours/Day</label>
+            <input type="number" id="epDailyHours" placeholder="e.g. 4" min="0.5" step="0.5"/>
+          </div>
+          <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end">
+            <button class="btn" onclick="epGeneratePlan(); setTimeout(spRender, 100);">Generate Study Plan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan output -->
+      <div id="epPlanOutput" style="display:none">
+
+        <!-- Overview stat cards -->
+        <div class="dash-grid-3" id="epStatCards" style="margin-bottom:14px"></div>
+
+        <!-- Planner Summary Strip -->
+        <div id="epPlannerSummary" style="margin-bottom:14px"></div>
+
+        <!-- Context banner (session data summary) -->
+        <div id="epContextBanner" class="ep-context-banner"></div>
+
+        <!-- ── Can I Finish On Time? ── -->
+        <div class="card ep-feasibility-card" style="margin-bottom:14px">
+          <div class="card-header" style="margin-bottom:14px;padding-bottom:13px">
+            <div class="card-title" style="margin-bottom:0">
+              <span class="card-title-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              Can I Finish On Time?
+            </div>
+            <div id="epFeasBadge"></div>
+          </div>
+          <div id="epVerdictBar" class="ep-verdict-bar"></div>
+          <div id="epFeasMetrics" class="ep-feas-metrics"></div>
+          <div id="epPaceVisual" class="ep-pace-visual"></div>
+          <div id="epConfidenceRow" class="ep-confidence-row"></div>
+          <div id="epRecommendations" class="ep-recs-list"></div>
+        </div>
+
+        <!-- Phase cards -->
+        <div id="epPhaseCards"></div>
+
+        <!-- Daily schedule table -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+            Phase Schedule Overview
+          </div>
+          <div class="table-wrap">
+            <table id="epScheduleTable">
+              <thead>
+                <tr>
+                  <th>Phase</th>
+                  <th>Duration</th>
+                  <th>Modules</th>
+                  <th>Daily Target</th>
+                  <th>Focus</th>
+                </tr>
+              </thead>
+              <tbody id="epScheduleBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Daily Study Timeline -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-header" style="margin-bottom:14px;padding-bottom:12px">
+            <div class="card-title" style="margin-bottom:0">
+              <span class="card-title-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
+              Daily Study Timeline
+            </div>
+            <span id="epTlCountBadge" style="font-size:11px;color:var(--muted);font-family:var(--mono)"></span>
+          </div>
+          <div id="epDailyTimeline"></div>
+        </div>
+
+        <!-- Saved plans -->
+        <div class="card">
+          <div class="card-header" style="margin-bottom:12px;padding-bottom:10px">
+            <div class="card-title" style="margin-bottom:0">
+              <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></span>
+              Saved Plans
+            </div>
+            <button class="ep-clear-btn" onclick="epClearPlan()">Clear Plan</button>
+          </div>
+          <div id="epSavedInfo" class="ep-saved-info"></div>
+        </div>
+
+      </div><!-- /epPlanOutput -->
+
+      <!-- Empty state -->
+      <div id="epEmptyState" class="ep-empty-state">
+        <div class="ep-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg>
+        </div>
+        <div class="ep-empty-title">No plan yet</div>
+        <div class="ep-empty-desc">Fill in your exam details above and click <strong>Generate Study Plan</strong> to create a personalised phased study schedule.</div>
+      </div>
+
+    </div><!-- /panel-examplanner -->
+
+    <!-- ══ SMART PLANNER (Priority Engine) ════════════════════ -->
+    <div class="panel" id="panel-smartplanner">
+      <div class="panel-header">
+        <div class="panel-title">Priority Engine</div>
+        <div class="panel-subtitle">Auto-ranks subjects by urgency, productivity, and remaining workload</div>
+      </div>
+
+      <!-- Today / Week / Workload cards -->
+      <div class="sp-target-grid">
+        <div class="sp-target-card tc-today">
+          <div class="sp-tc-label">Today's Target</div>
+          <div class="sp-tc-value" id="spTodayTarget">—</div>
+          <div class="sp-tc-sub" id="spTodaySub">Generate a plan first</div>
+          <div class="sp-tc-detail" id="spTodayDetail"></div>
+        </div>
+        <div class="sp-target-card tc-week">
+          <div class="sp-tc-label">This Week's Goal</div>
+          <div class="sp-tc-value" id="spWeekTarget">—</div>
+          <div class="sp-tc-sub" id="spWeekSub">modules this week</div>
+          <div class="sp-tc-detail" id="spWeekDetail"></div>
+        </div>
+        <div class="sp-target-card tc-workload">
+          <div class="sp-tc-label">Remaining Workload</div>
+          <div class="sp-tc-value" id="spWorkload">—</div>
+          <div class="sp-tc-sub" id="spWorkloadSub">modules left</div>
+          <div class="sp-tc-detail" id="spWorkloadDetail"></div>
+        </div>
+      </div>
+
+      <!-- Priority + Today's schedule -->
+      <div class="dash-grid" style="margin-bottom:14px">
+        <div class="card">
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
+            Subject Priority Ranking
+          </div>
+          <div id="spPriorityList"><p class="no-insight">Generate a plan to see priority ranking.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            Today's Study Schedule
+          </div>
+          <div id="spTodaySchedule"><p class="no-insight">Generate a plan to see today's schedule.</p></div>
+        </div>
+      </div>
+
+      <!-- Visual Timeline -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
+          Visual Timeline
+        </div>
+        <div id="spTimeline"><p class="no-insight" style="padding:20px 0">Generate a plan to see the visual timeline.</p></div>
+      </div>
+
+      <!-- Three phase section -->
+      <div id="spPhaseSection" style="display:none">
+        <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted-2);margin-bottom:10px">Study Phases</div>
+        <div id="spPhaseCards" class="ep-phase-list"></div>
+      </div>
+
+      <!-- 7-day schedule table -->
+      <div class="card" id="spWeekCard" style="display:none;margin-bottom:14px">
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+          7-Day Schedule
+        </div>
+        <div id="spWeekSchedule" class="sp-daily-schedule"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="spEmptyState">
+        <div class="ep-empty-state">
+          <div class="ep-empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <div class="ep-empty-title">No plan found</div>
+          <div class="ep-empty-desc">Generate an exam plan in the <strong>Smart Planner</strong> tab first. The Priority Engine reads that plan and your session data to auto-rank subjects and generate daily targets.</div>
+          <div style="margin-top:16px">
+            <button class="btn" style="max-width:220px;margin:0 auto;display:block" onclick="showPanel('examplanner', null)">Open Smart Planner &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-smartplanner -->
+
   </div><!-- /content -->
 </div><!-- /main -->
 
@@ -2475,6 +5271,14 @@ tbody td {
   <button class="mobile-nav-item" onclick="showPanel('replay', this); syncMobileNav(this)">
     <span class="mn-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
     Replay
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('examplanner', this); syncMobileNav(this)">
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+    Planner
+  </button>
+  <button class="mobile-nav-item" onclick="showPanel('smartplanner', this); syncMobileNav(this)">
+    <span class="mn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></span>
+    Priority
   </button>
 </nav>
 
@@ -4169,6 +6973,2050 @@ function render() {
 }
 
 render();
+
+/* ══════════════════════════════════════════════════════════════
+   EXAM PLANNER MODULE
+   - Completely separate from dashboard logic
+   - Reads existing session data via getEntries()
+   - Stores plan in localStorage under EP_STORAGE_KEY
+══════════════════════════════════════════════════════════════ */
+
+const EP_STORAGE_KEY = 'ep_exam_plan';
+
+// ── Utilities ──────────────────────────────────────────────────
+
+function epFmtDate(d) {
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' });
+}
+
+function epAddDays(date, n) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+function epDaysBetween(a, b) {
+  return Math.max(0, Math.round((b - a) / (1000 * 60 * 60 * 24)));
+}
+
+function epSavePlan(plan) {
+  localStorage.setItem(EP_STORAGE_KEY, JSON.stringify(plan));
+}
+
+function epLoadPlan() {
+  try { return JSON.parse(localStorage.getItem(EP_STORAGE_KEY)); } catch { return null; }
+}
+
+function epClearPlan() {
+  localStorage.removeItem(EP_STORAGE_KEY);
+  document.getElementById('epPlanOutput').style.display = 'none';
+  document.getElementById('epEmptyState').style.display = 'block';
+  const summaryEl = document.getElementById('epPlannerSummary');
+  if (summaryEl) summaryEl.innerHTML = '';
+  ['epExamName', 'epExamDate', 'epTotalModules', 'epCompletedModules', 'epDailyHours'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ── Session data integration ───────────────────────────────────
+
+function epGetSessionContext() {
+  const entries = getEntries();
+  if (!entries.length) return null;
+  const hours = entries.map(e => e.hours);
+  const prods = entries.map(e => e.productivity);
+  const avgH = hours.reduce((a, b) => a + b, 0) / hours.length;
+  const avgP = prods.reduce((a, b) => a + b, 0) / prods.length;
+  const subjects = [...new Set(entries.map(e => e.subject).filter(s => s && s !== '—'))];
+  return { avgHours: avgH, avgProductivity: avgP, totalSessions: entries.length, subjects };
+}
+
+// ── Plan generation ────────────────────────────────────────────
+
+function epGeneratePlan() {
+  const examName      = document.getElementById('epExamName').value.trim();
+  const examDateStr   = document.getElementById('epExamDate').value;
+  const totalModules  = parseInt(document.getElementById('epTotalModules').value);
+  const completedMods = parseInt(document.getElementById('epCompletedModules').value) || 0;
+  const dailyHoursIn  = parseFloat(document.getElementById('epDailyHours').value);
+
+  if (!examName)                                       { alert('Please enter an exam name.'); return; }
+  if (!examDateStr)                                    { alert('Please select your exam date.'); return; }
+  if (isNaN(totalModules) || totalModules < 1)         { alert('Please enter the total number of modules.'); return; }
+  if (isNaN(dailyHoursIn) || dailyHoursIn < 0.5)      { alert('Please enter valid daily available hours (min 0.5).'); return; }
+  if (completedMods >= totalModules)                   { alert('Modules completed must be less than total modules.'); return; }
+
+  const today    = new Date(); today.setHours(0, 0, 0, 0);
+  const examDate = new Date(examDateStr); examDate.setHours(0, 0, 0, 0);
+  const totalDays = epDaysBetween(today, examDate);
+
+  if (totalDays < 3) { alert('Please select an exam date at least 3 days away.'); return; }
+
+  const ctx = epGetSessionContext();
+  let effectiveDailyHours = dailyHoursIn;
+  if (ctx && ctx.avgProductivity < 2.5)      effectiveDailyHours = Math.max(0.5, dailyHoursIn * 0.85);
+  else if (ctx && ctx.avgProductivity >= 4)  effectiveDailyHours = dailyHoursIn * 1.05;
+
+  const remainingModules = totalModules - completedMods;
+
+  // Phase split: 50% syllabus, 35% revision, 15% final revision
+  const phase1Days = Math.max(1, Math.round(totalDays * 0.50));
+  const phase3Days = Math.max(1, Math.round(totalDays * 0.15));
+  const phase2Days = Math.max(1, totalDays - phase1Days - phase3Days);
+
+  // Module allocation: 60% / 30% / remainder
+  const phase1Mods = Math.max(1, Math.round(remainingModules * 0.60));
+  const phase2Mods = Math.max(1, Math.round(remainingModules * 0.30));
+  const phase3Mods = Math.max(0, remainingModules - phase1Mods - phase2Mods);
+
+  function dailyTarget(mods, days) {
+    return days > 0 ? parseFloat((mods / days).toFixed(2)) : mods;
+  }
+
+  const phase1Start = today;
+  const phase2Start = epAddDays(today, phase1Days);
+  const phase3Start = epAddDays(today, phase1Days + phase2Days);
+
+  const plan = {
+    examName,
+    examDate: examDateStr,
+    totalModules,
+    completedModules: completedMods,
+    remainingModules,
+    dailyHours: dailyHoursIn,
+    effectiveDailyHours,
+    totalDays,
+    progressPct: Math.round((completedMods / totalModules) * 100),
+    generatedAt: Date.now(),
+    sessionContext: ctx,
+    phases: [
+      {
+        num: 1, name: 'Syllabus Completion', badge: 'phase-1',
+        days: phase1Days, modules: phase1Mods,
+        dailyTarget: dailyTarget(phase1Mods, phase1Days),
+        dailyHours: effectiveDailyHours,
+        start: epFmtDate(phase1Start),
+        end:   epFmtDate(epAddDays(phase1Start, phase1Days - 1)),
+        focus: 'Cover all remaining topics methodically',
+        tips: [
+          'Work through modules in order — avoid skipping ahead.',
+          'Log each session to track momentum and stay accountable.',
+          ctx && ctx.subjects.length > 0
+            ? `Incorporate your tracked subjects (${ctx.subjects.slice(0, 2).join(', ')}) into your schedule.`
+            : 'Break larger modules into sub-topics for better retention.',
+          'Aim to finish slightly ahead of schedule as buffer for delays.'
+        ]
+      },
+      {
+        num: 2, name: 'Revision', badge: 'phase-2',
+        days: phase2Days, modules: phase2Mods,
+        dailyTarget: dailyTarget(phase2Mods, phase2Days),
+        dailyHours: Math.max(0.5, effectiveDailyHours * 0.9),
+        start: epFmtDate(phase2Start),
+        end:   epFmtDate(epAddDays(phase2Start, phase2Days - 1)),
+        focus: 'Consolidate learning through active recall',
+        tips: [
+          'Use spaced repetition — revisit topics you found hardest in Phase 1.',
+          'Solve past papers or practice questions per module.',
+          ctx && ctx.avgProductivity >= 3
+            ? 'Your session data shows solid consistency — maintain daily hours.'
+            : 'If focus dips, shorten sessions and take more frequent breaks.',
+          'Create summary notes or mind maps for quick review in Phase 3.'
+        ]
+      },
+      {
+        num: 3, name: 'Final Revision', badge: 'phase-3',
+        days: phase3Days, modules: phase3Mods,
+        dailyTarget: dailyTarget(Math.max(1, phase3Mods), phase3Days),
+        dailyHours: Math.max(0.5, effectiveDailyHours * 0.75),
+        start: epFmtDate(phase3Start),
+        end:   epFmtDate(epAddDays(phase3Start, phase3Days - 1)),
+        focus: 'High-yield review and exam confidence building',
+        tips: [
+          'Focus on key concepts, formulas, and high-priority areas only.',
+          'Avoid learning new material — consolidation only.',
+          'Simulate exam conditions with timed practice sessions.',
+          'Rest well the night before — sleep is critical for recall.'
+        ]
+      }
+    ]
+  };
+
+  epSavePlan(plan);
+  epRenderPlan(plan);
+}
+
+// ── Rendering ─────────────────────────────────────────────────
+
+function epRenderPlan(plan) {
+  document.getElementById('epEmptyState').style.display = 'none';
+  document.getElementById('epPlanOutput').style.display = 'block';
+
+  // Stat cards — Progress card now has live bar
+  const _pct    = plan.progressPct;
+  const _filled = Math.round(_pct / 10);
+  const _blocks = '█'.repeat(_filled) + '░'.repeat(10 - _filled);
+
+  document.getElementById('epStatCards').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-label">Days to Exam</div>
+        <span class="stat-badge amber">Countdown</span>
+      </div>
+      <div class="stat-value">${plan.totalDays}</div>
+      <div class="stat-sub">${plan.examName}</div>
+      <div class="stat-trend">${new Date(plan.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-label">Overall Progress</div>
+        <span class="stat-badge green">Modules</span>
+      </div>
+      <div class="stat-value">${_pct}%</div>
+      <div class="ep-prog-block">
+        <div class="ep-prog-row">
+          <span class="ep-prog-blocks">
+            <span class="ep-prog-blocks-fill">${'█'.repeat(_filled)}</span><span class="ep-prog-blocks-empty">${'░'.repeat(10 - _filled)}</span>
+          </span>
+        </div>
+        <div class="ep-prog-track" style="height:6px;margin-bottom:6px">
+          <div class="ep-prog-bar epb-green" id="epStatProgressBar" style="width:0%"></div>
+        </div>
+        <div class="ep-prog-counts">
+          <span class="ep-prog-count-item">
+            <span class="ep-prog-count-dot dot-done"></span>
+            <span class="ep-prog-count-num">${plan.completedModules}</span> done
+          </span>
+          <span class="ep-prog-count-sep">·</span>
+          <span class="ep-prog-count-item">
+            <span class="ep-prog-count-dot dot-remaining"></span>
+            <span class="ep-prog-count-num">${plan.remainingModules}</span> left
+          </span>
+          <span class="ep-prog-count-sep">·</span>
+          <span class="ep-prog-count-item"><span class="ep-prog-count-num">${plan.totalModules}</span> total</span>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-label">Daily Target</div>
+        <span class="stat-badge indigo">Avg</span>
+      </div>
+      <div class="stat-value">${parseFloat((plan.remainingModules / plan.totalDays).toFixed(1))}</div>
+      <div class="stat-sub">modules per day</div>
+      <div class="stat-trend">${plan.effectiveDailyHours.toFixed(1)}h study time/day</div>
+    </div>
+  `;
+
+  // Animate the stat-card progress bar after a short frame delay
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const sb = document.getElementById('epStatProgressBar');
+      if (sb) sb.style.width = _pct + '%';
+    });
+  });
+
+  // Planner Summary Strip
+  epRenderPlannerSummary(plan);
+
+  // Context banner
+  const ctx = plan.sessionContext;
+  const banner = document.getElementById('epContextBanner');
+  if (ctx) {
+    banner.innerHTML = `
+      <div class="ep-context-stripe"></div>
+      <div class="ep-context-body">
+        <div class="ep-context-chip">
+          <div class="ep-context-label">From your sessions</div>
+          <div class="ep-context-value">${ctx.totalSessions} sessions logged</div>
+        </div>
+        <div class="ep-context-chip">
+          <div class="ep-context-label">Avg Study Hours</div>
+          <div class="ep-context-value">${ctx.avgHours.toFixed(1)}h / session</div>
+        </div>
+        <div class="ep-context-chip">
+          <div class="ep-context-label">Avg Productivity</div>
+          <div class="ep-context-value">${ctx.avgProductivity.toFixed(1)} / 5</div>
+        </div>
+        ${ctx.subjects.length > 0 ? `
+        <div class="ep-context-chip">
+          <div class="ep-context-label">Subjects Tracked</div>
+          <div class="ep-context-value">${ctx.subjects.slice(0, 3).join(', ')}${ctx.subjects.length > 3 ? '…' : ''}</div>
+        </div>` : ''}
+        <div class="ep-context-chip" style="border:none">
+          <div class="ep-context-label">Pacing adjusted for</div>
+          <div class="ep-context-value" style="font-size:12px;color:var(--muted)">${ctx.avgProductivity >= 4 ? 'High-performer pacing' : ctx.avgProductivity < 2.5 ? 'Conservative (low productivity)' : 'Standard pacing'}</div>
+        </div>
+      </div>
+    `;
+    banner.style.display = 'flex';
+  } else {
+    banner.innerHTML = `
+      <div class="ep-context-stripe"></div>
+      <div class="ep-context-body">
+        <div class="ep-context-chip" style="border:none">
+          <div class="ep-context-label">Session context</div>
+          <div class="ep-context-value" style="font-size:12px;color:var(--muted)">No sessions logged yet — log study sessions on the Sessions page to personalise your plan.</div>
+        </div>
+      </div>
+    `;
+    banner.style.display = 'flex';
+  }
+
+  // Phase cards — with enhanced progress bars
+  const phaseColors = { 'phase-1': 'badge-subject', 'phase-2': 'badge-mood', 'phase-3': 'badge-prod' };
+  document.getElementById('epPhaseCards').innerHTML = '<div class="ep-phase-list">' + plan.phases.map((ph, idx) => {
+    const phPct       = ph.num === 1 ? plan.progressPct : 0;
+    const phCompleted = ph.num === 1 ? plan.completedModules : 0;
+    const phFilled    = Math.round(phPct / 10);
+    return `
+    <div class="ep-phase-card">
+      <div class="ep-phase-header">
+        <div class="ep-phase-title-row">
+          <span class="ep-phase-badge ${ph.badge}">Phase ${ph.num}</span>
+          <span class="ep-phase-name">${ph.name}</span>
+        </div>
+        <div class="ep-phase-dates">${ph.start} → ${ph.end}</div>
+      </div>
+      <div class="ep-phase-body">
+        <div class="ep-phase-stats">
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Duration</div>
+            <div class="ep-phase-stat-value">${ph.days}</div>
+            <div class="ep-phase-stat-sub">days</div>
+          </div>
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Modules</div>
+            <div class="ep-phase-stat-value">${ph.modules}</div>
+            <div class="ep-phase-stat-sub">to cover</div>
+          </div>
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Daily Target</div>
+            <div class="ep-phase-stat-value">${ph.dailyTarget}</div>
+            <div class="ep-phase-stat-sub">modules/day</div>
+          </div>
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Study Hours</div>
+            <div class="ep-phase-stat-value">${ph.dailyHours.toFixed(1)}</div>
+            <div class="ep-phase-stat-sub">hrs/day</div>
+          </div>
+        </div>
+
+        <div class="ep-phase-prog">
+          <div class="ep-phase-prog-header">
+            <span class="ep-phase-prog-label">Module Progress</span>
+            <span class="ep-phase-prog-pct" id="epPhPct_${idx}">${phPct}%</span>
+          </div>
+          <div class="ep-phase-prog-track">
+            <div class="ep-phase-prog-bar ${ph.badge}" id="epPhBar_${idx}" style="width:0%"></div>
+          </div>
+          <div class="ep-phase-prog-counts">
+            <span><strong>${phCompleted}</strong> / ${ph.modules} modules${ph.num === 1 ? ' completed' : ' planned'}</span>
+            <span style="display:flex;align-items:center;gap:5px">
+              <span class="ep-prog-blocks" style="font-size:11px;letter-spacing:0.5px">
+                <span style="color:#22c55e">${'█'.repeat(phFilled)}</span><span style="color:var(--border-2)">${'░'.repeat(10 - phFilled)}</span>
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <div class="ep-phase-tips">
+          ${ph.tips.map(t => `<div class="ep-tip"><span class="ep-tip-dot"></span><span>${t}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `}).join('') + '</div>';
+
+  // Schedule table
+  document.getElementById('epScheduleBody').innerHTML = plan.phases.map(ph => `
+    <tr>
+      <td><span class="badge ${phaseColors[ph.badge]}">Phase ${ph.num} — ${ph.name}</span></td>
+      <td>${ph.days} days</td>
+      <td>${ph.modules}</td>
+      <td>${ph.dailyTarget} / day</td>
+      <td style="color:var(--muted);font-size:12px">${ph.focus}</td>
+    </tr>
+  `).join('');
+
+  // Overall Progress Panel + Subject Progress (replaces plain saved info)
+  const pct      = plan.progressPct;
+  const filled   = Math.round(pct / 10);
+  const entries  = getEntries();
+
+  // Subject progress — derive from session data relative to total modules
+  const subjectMap = {};
+  entries.forEach(e => {
+    const s = (e.subject && e.subject !== '—') ? e.subject : null;
+    if (!s) return;
+    if (!subjectMap[s]) subjectMap[s] = { sessions: 0, hours: 0, avgProd: 0, prods: [] };
+    subjectMap[s].sessions++;
+    subjectMap[s].hours += e.hours;
+    subjectMap[s].prods.push(e.productivity);
+  });
+
+  const subjectRows = Object.entries(subjectMap).map(([name, d]) => {
+    const avgProd = d.prods.reduce((a, b) => a + b, 0) / d.prods.length;
+    // Estimate subject progress: sessions as fraction of total sessions, mapped to module space
+    const sessionFraction = entries.length > 0 ? d.sessions / entries.length : 0;
+    const subjectPct = Math.min(100, Math.round(sessionFraction * pct * 1.4));
+    return { name, sessions: d.sessions, hours: d.hours, avgProd, subjectPct };
+  }).sort((a, b) => b.subjectPct - a.subjectPct);
+
+  const statusBadgeClass = pct >= 80 ? 'badge-on-track' : pct > 0 ? 'badge-in-prog' : 'badge-not-start';
+  const statusLabel      = pct >= 80 ? 'On Track' : pct > 0 ? 'In Progress' : 'Not Started';
+
+  const subjectHTML = subjectRows.length > 0 ? `
+    <div class="ep-subject-progress">
+      <div class="ep-subj-header">Subject Breakdown</div>
+      ${subjectRows.map((s, si) => {
+        const barColors = ['#4338ca','#15803d','#b45309','#0e7490','#7c3aed'];
+        const barColor  = barColors[si % barColors.length];
+        return `
+        <div class="ep-subj-row">
+          <span class="ep-subj-name" title="${s.name}">${s.name}</span>
+          <span class="ep-subj-track-wrap">
+            <div class="ep-subj-track">
+              <div class="ep-subj-bar" id="epSubjBar_${si}" style="width:0%;background:${barColor}"></div>
+            </div>
+            <div class="ep-subj-sessions">${s.sessions} session${s.sessions !== 1 ? 's' : ''} · ${s.hours.toFixed(1)}h · avg ${s.avgProd.toFixed(1)}/5</div>
+          </span>
+          <span class="ep-subj-pct" id="epSubjPct_${si}">${s.subjectPct}%</span>
+        </div>`;
+      }).join('')}
+    </div>` : `
+    <div class="ep-subject-progress">
+      <div class="ep-subj-header">Subject Breakdown</div>
+      <p style="font-size:12px;color:var(--muted);padding:8px 0">Log sessions with subjects on the Sessions page to see per-subject progress here.</p>
+    </div>`;
+
+  document.getElementById('epSavedInfo').innerHTML = `
+    <div class="ep-overall-progress">
+      <div class="ep-op-header">
+        <div class="ep-op-title">
+          <span class="ep-op-title-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </span>
+          Overall Completion
+        </div>
+        <span class="ep-op-badge ${statusBadgeClass}">${statusLabel}</span>
+      </div>
+
+      <div class="ep-op-main-bar-wrap">
+        <div class="ep-op-bar-meta">
+          <span class="ep-op-pct-large" id="epOpPctLarge">0%</span>
+          <span class="ep-op-pct-sub">${plan.completedModules} of ${plan.totalModules} modules · ${plan.remainingModules} remaining</span>
+        </div>
+        <div class="ep-op-track">
+          <div class="ep-op-track-fill" id="epOpTrackFill" style="width:0%"></div>
+        </div>
+        <div class="ep-op-blocks">
+          <span class="ep-op-blocks-text">
+            <span class="ep-op-blocks-fill">${'█'.repeat(filled)}</span><span class="ep-op-blocks-empty">${'░'.repeat(10 - filled)}</span>
+          </span>
+          <span class="ep-op-blocks-label">${pct}%</span>
+        </div>
+      </div>
+
+      <div class="ep-op-counts">
+        <div class="ep-op-count-cell">
+          <div class="ep-op-count-label">
+            <span class="ep-op-count-dot" style="background:#22c55e"></span>
+            Completed
+          </div>
+          <div class="ep-op-count-val" style="color:#15803d">${plan.completedModules}</div>
+          <div class="ep-op-count-sub">modules done</div>
+        </div>
+        <div class="ep-op-count-cell">
+          <div class="ep-op-count-label">
+            <span class="ep-op-count-dot" style="background:var(--border-2)"></span>
+            Remaining
+          </div>
+          <div class="ep-op-count-val" style="color:var(--text)">${plan.remainingModules}</div>
+          <div class="ep-op-count-sub">modules left</div>
+        </div>
+        <div class="ep-op-count-cell">
+          <div class="ep-op-count-label">
+            <span class="ep-op-count-dot" style="background:var(--indigo)"></span>
+            Total
+          </div>
+          <div class="ep-op-count-val">${plan.totalModules}</div>
+          <div class="ep-op-count-sub">modules total</div>
+        </div>
+        <div class="ep-op-count-cell">
+          <div class="ep-op-count-label">
+            <span class="ep-op-count-dot" style="background:var(--accent-border)"></span>
+            Days Left
+          </div>
+          <div class="ep-op-count-val" style="color:var(--accent)">${plan.totalDays}</div>
+          <div class="ep-op-count-sub">until exam</div>
+        </div>
+      </div>
+
+      ${subjectHTML}
+
+      <div style="padding-top:12px;border-top:1px solid var(--border);margin-top:4px;font-size:11.5px;color:var(--muted-2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+        <span>Plan: <strong style="color:var(--text-2)">${plan.examName}</strong> · ${new Date(plan.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+        <span style="font-family:var(--mono);font-size:10.5px">Generated ${new Date(plan.generatedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+      </div>
+    </div>
+  `;
+
+  // Render feasibility analysis (runs after DOM is ready)
+  requestAnimationFrame(() => {
+    epRenderFeasibility(plan);
+
+    // Animate phase bars
+    plan.phases.forEach((ph, idx) => {
+      const phPct = ph.num === 1 ? plan.progressPct : 0;
+      const bar = document.getElementById('epPhBar_' + idx);
+      if (bar) {
+        requestAnimationFrame(() => { bar.style.width = phPct + '%'; });
+      }
+    });
+
+    // Animate overall progress bar + counter
+    const opFill = document.getElementById('epOpTrackFill');
+    const opPct  = document.getElementById('epOpPctLarge');
+    if (opFill) {
+      requestAnimationFrame(() => { opFill.style.width = plan.progressPct + '%'; });
+    }
+    if (opPct) {
+      // Animate the counter number
+      let start = 0;
+      const end = plan.progressPct;
+      const dur = 900;
+      const step = 16;
+      const inc  = (end / (dur / step));
+      const timer = setInterval(() => {
+        start = Math.min(end, start + inc);
+        opPct.textContent = Math.round(start) + '%';
+        if (start >= end) clearInterval(timer);
+      }, step);
+    }
+
+    // Animate subject bars
+    const entries2 = getEntries();
+    const subjectMap2 = {};
+    entries2.forEach(e => {
+      const s = (e.subject && e.subject !== '—') ? e.subject : null;
+      if (!s) return;
+      if (!subjectMap2[s]) subjectMap2[s] = 0;
+      subjectMap2[s]++;
+    });
+    const subjList = Object.entries(subjectMap2)
+      .map(([name, sessions]) => {
+        const sessionFraction = entries2.length > 0 ? sessions / entries2.length : 0;
+        const subjectPct = Math.min(100, Math.round(sessionFraction * plan.progressPct * 1.4));
+        return { name, subjectPct };
+      })
+      .sort((a, b) => b.subjectPct - a.subjectPct);
+
+    subjList.forEach((s, si) => {
+      const bar = document.getElementById('epSubjBar_' + si);
+      if (bar) {
+        requestAnimationFrame(() => { bar.style.width = s.subjectPct + '%'; });
+      }
+    });
+  });
+}
+
+// ── Auto-load saved plan on page init ─────────────────────────
+(function epInit() {
+  const saved = epLoadPlan();
+  if (saved) {
+    document.getElementById('epExamName').value         = saved.examName || '';
+    document.getElementById('epExamDate').value         = saved.examDate || '';
+    document.getElementById('epTotalModules').value     = saved.totalModules || '';
+    document.getElementById('epCompletedModules').value = saved.completedModules || '';
+    document.getElementById('epDailyHours').value       = saved.dailyHours || '';
+    epRenderPlan(saved);
+  }
+})();
+
+// ── Auto-regenerate when exam date or module count changes ─────
+(function epAutoRegen() {
+  const triggerIds = ['epExamDate', 'epTotalModules', 'epCompletedModules', 'epDailyHours'];
+  let regenTimer = null;
+  triggerIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', () => {
+      clearTimeout(regenTimer);
+      regenTimer = setTimeout(() => {
+        const name = document.getElementById('epExamName').value.trim();
+        const date = document.getElementById('epExamDate').value;
+        const mods = document.getElementById('epTotalModules').value;
+        const hrs  = document.getElementById('epDailyHours').value;
+        if (name && date && mods && hrs) {
+          epGeneratePlan();
+          setTimeout(spRender, 150);
+        }
+      }, 400);
+    });
+  });
+})();
+
+// ══════════════════════════════════════════════════════════════
+// FEASIBILITY ANALYSIS ENGINE
+// "Can I Finish On Time?" — all calculations client-side
+// ══════════════════════════════════════════════════════════════
+
+function epAnalyseFeasibility(plan) {
+  const entries  = getEntries();
+  const ctx      = plan.sessionContext;
+
+  // ── 1. Core numbers ────────────────────────────────────────
+  const daysLeft        = plan.totalDays;
+  const modsLeft        = plan.remainingModules;
+  const requiredPerDay  = daysLeft > 0 ? modsLeft / daysLeft : modsLeft;
+
+  // ── 2. Derive current pace from logged sessions ─────────────
+  // Use days since first entry if available, otherwise fall back to 0
+  let currentPace = 0;      // modules/day observed
+  let paceDataPoints = 0;
+  let avgSessionHours = plan.effectiveDailyHours;
+
+  if (entries.length >= 2) {
+    // Estimate modules covered per session from completion %:
+    // assume user logged sessions that correlate with modules done
+    const completedMods = plan.completedModules;
+    // Rough pace: completed modules spread over (total_sessions * avgHours / dailyHours) equivalent days
+    const totalHoursLogged = entries.reduce((s, e) => s + e.hours, 0);
+    const dailyHoursRef    = plan.dailyHours || 3;
+    const equivalentDays   = totalHoursLogged / dailyHoursRef;
+    currentPace            = equivalentDays > 0 ? completedMods / equivalentDays : 0;
+    paceDataPoints         = entries.length;
+    avgSessionHours        = totalHoursLogged / entries.length;
+  }
+
+  // ── 3. Productivity factor from session data ───────────────
+  let prodFactor = 1.0;
+  let mlScore    = null;
+
+  if (ctx && ctx.avgProductivity) {
+    const p = ctx.avgProductivity;
+    // Map 1–5 productivity to 0.6–1.2 efficiency multiplier
+    prodFactor = 0.6 + ((p - 1) / 4) * 0.6;
+  }
+
+  // Try to read ML prediction score if rendered in DOM
+  const mlEl = document.getElementById('mlPredText');
+  if (mlEl && mlEl.textContent && mlEl.textContent !== '—') {
+    const raw = parseFloat(mlEl.textContent);
+    if (!isNaN(raw)) mlScore = raw;
+  }
+
+  // ── 4. Adjusted capacity ───────────────────────────────────
+  const dailyCapacity        = plan.effectiveDailyHours;          // hrs/day available
+  const modulesPerHourTarget = modsLeft / (daysLeft * dailyCapacity); // required throughput
+  const adjustedDailyOutput  = requiredPerDay / prodFactor;       // modules/day accounting for efficiency
+
+  // ── 5. Verdict ─────────────────────────────────────────────
+  // Compare required pace vs capacity-adjusted pace
+  const ratio = requiredPerDay / Math.max(0.01, adjustedDailyOutput);
+  // ratio < 1  → ahead of required pace
+  // ratio ≈ 1  → on track
+  // ratio > 1  → behind
+  let verdict, verdictClass, verdictText, verdictSub;
+  if (ratio <= 1.05) {
+    verdict      = 'On Track';
+    verdictClass = 'ep-on-track';
+    verdictText  = '✓ On Track — current pacing can meet the deadline';
+    verdictSub   = `${modsLeft} modules, ${daysLeft} days left`;
+  } else if (ratio <= 1.35) {
+    verdict      = 'Slightly Behind';
+    verdictClass = 'ep-behind';
+    verdictText  = '⚠ Slightly Behind — a small push is needed';
+    verdictSub   = `${modsLeft} modules, ${daysLeft} days left`;
+  } else {
+    verdict      = 'High Risk';
+    verdictClass = 'ep-high-risk';
+    verdictText  = '✕ High Risk — current pace will not meet the deadline';
+    verdictSub   = `${modsLeft} modules, ${daysLeft} days left`;
+  }
+
+  // ── 6. Confidence level ────────────────────────────────────
+  let confidence, confidenceLevel, confidenceBasis;
+  if (entries.length >= 10 && mlScore !== null) {
+    confidence      = 'High';
+    confidenceLevel = 'high';
+    confidenceBasis = `Based on ${entries.length} sessions + ML prediction score`;
+  } else if (entries.length >= 4 || mlScore !== null) {
+    confidence      = 'Medium';
+    confidenceLevel = 'medium';
+    confidenceBasis = entries.length >= 4
+      ? `Based on ${entries.length} logged sessions`
+      : 'Based on ML prediction (limited session history)';
+  } else {
+    confidence      = 'Low';
+    confidenceLevel = 'low';
+    confidenceBasis = entries.length === 0
+      ? 'No sessions logged — log study sessions to improve accuracy'
+      : `Only ${entries.length} session${entries.length > 1 ? 's' : ''} logged — more data improves accuracy`;
+  }
+
+  // ── 7. Personalised recommendations ───────────────────────
+  const recs = [];
+  const subjectStats = ctx ? epGetSubjectStatsLocal(entries) : [];
+  const weakSubj     = subjectStats.length >= 2 ? subjectStats[subjectStats.length - 1] : null;
+  const strongSubj   = subjectStats.length >= 1 ? subjectStats[0] : null;
+
+  // Pace-based recs
+  if (verdict === 'On Track') {
+    recs.push({ type: 'rec-green', icon: '✓', text: `You are on pace. Maintain <strong>${requiredPerDay.toFixed(1)} modules/day</strong> to stay on schedule.` });
+  }
+
+  if (verdict === 'Slightly Behind' || verdict === 'High Risk') {
+    const extraMinsNeeded = Math.ceil((adjustedDailyOutput - requiredPerDay) * 60 / Math.max(0.5, modulesPerHourTarget));
+    const extraMins = Math.max(15, Math.round(Math.abs(extraMinsNeeded) / 15) * 15);
+    recs.push({ type: 'rec-amber', icon: '↑', text: `Increase daily study time by <strong>${extraMins} minutes</strong> to close the gap — target <strong>${(dailyCapacity + extraMins / 60).toFixed(1)}h/day</strong>.` });
+  }
+
+  if (verdict === 'High Risk') {
+    const extraModsThisWeek = Math.ceil((adjustedDailyOutput - requiredPerDay) * 7);
+    recs.push({ type: 'rec-red', icon: '!', text: `Complete <strong>${Math.max(2, extraModsThisWeek)} extra modules this week</strong> to recover lost ground before it compounds.` });
+  }
+
+  // Subject-specific recs
+  if (weakSubj && strongSubj && weakSubj.name !== strongSubj.name) {
+    recs.push({ type: 'rec-indigo', icon: '→', text: `Prioritise <strong>${weakSubj.name}</strong> (avg ${weakSubj.avgProd.toFixed(1)}/5) before <strong>${strongSubj.name}</strong> — tackle your weakest subject while focus is highest.` });
+  }
+
+  // Phase timing recs
+  const phase2StartDay = plan.phases[0].days;
+  const daysUntilPhase2 = phase2StartDay;
+  if (daysLeft <= daysUntilPhase2 + 2 && verdict !== 'On Track') {
+    recs.push({ type: 'rec-amber', icon: '⏩', text: `Consider starting the <strong>Revision phase earlier</strong> — your current pace suggests Phase 1 may run over its allocated ${plan.phases[0].days}-day window.` });
+  }
+
+  // Productivity-based recs
+  if (ctx && ctx.avgProductivity < 3) {
+    recs.push({ type: 'rec-amber', icon: '◈', text: `Your average productivity is <strong>${ctx.avgProductivity.toFixed(1)}/5</strong>. Use high-mood days for hard modules and routine days for review — protecting peak focus time is critical.` });
+  }
+
+  if (ctx && ctx.avgHours < plan.dailyHours * 0.7) {
+    recs.push({ type: 'rec-amber', icon: '⏱', text: `You're averaging <strong>${ctx.avgHours.toFixed(1)}h/session</strong> but your plan requires ${plan.dailyHours}h/day. Close this gap or reduce daily module targets proportionally.` });
+  }
+
+  if (mlScore !== null && mlScore < 4) {
+    recs.push({ type: 'rec-indigo', icon: '◈', text: `Productivity model predicts a <strong>below-average output session</strong> (score ${mlScore.toFixed(1)}/10). Front-load revision of key topics today rather than new material.` });
+  }
+
+  // Final buffer rec
+  if (daysLeft <= 5) {
+    recs.push({ type: 'rec-red', icon: '!', text: `<strong>Exam in ${daysLeft} days.</strong> Switch fully to high-yield summary review. Stop covering new modules — consolidate only.` });
+  } else if (verdict === 'On Track' && daysLeft > 14) {
+    recs.push({ type: 'rec-green', icon: '→', text: `With <strong>${daysLeft} days remaining</strong>, you have buffer. Consider building in one light day per week to prevent burnout without affecting the deadline.` });
+  }
+
+  return {
+    daysLeft, modsLeft, requiredPerDay, currentPace, paceDataPoints,
+    avgSessionHours, prodFactor, mlScore,
+    verdict, verdictClass, verdictText, verdictSub,
+    confidence, confidenceLevel, confidenceBasis,
+    recs, ratio
+  };
+}
+
+// Helper: local subject stats from entries (mirrors existing pattern)
+function epGetSubjectStatsLocal(entries) {
+  const map = {};
+  entries.forEach(e => {
+    const s = e.subject && e.subject !== '—' ? e.subject : null;
+    if (!s) return;
+    if (!map[s]) map[s] = [];
+    map[s].push(e.productivity);
+  });
+  return Object.entries(map)
+    .map(([name, prods]) => ({ name, avgProd: prods.reduce((a,b) => a+b,0)/prods.length, count: prods.length }))
+    .sort((a, b) => a.avgProd - b.avgProd); // ascending: weakest first
+}
+
+// ── Render the feasibility card ───────────────────────────────
+function epRenderFeasibility(plan) {
+  const f = epAnalyseFeasibility(plan);
+
+  // Badge
+  document.getElementById('epFeasBadge').innerHTML = `
+    <span class="ep-feas-badge-pill ${f.verdictClass}">${f.verdict}</span>
+  `;
+
+  // Verdict bar
+  document.getElementById('epVerdictBar').className = `ep-verdict-bar ${f.verdictClass}`;
+  document.getElementById('epVerdictBar').innerHTML = `
+    <div class="ep-verdict-stripe"></div>
+    <div class="ep-verdict-body">
+      <span>${f.verdictText}</span>
+      <span class="ep-verdict-sub">${f.verdictSub}</span>
+    </div>
+  `;
+
+  // Metric tiles
+  const reqColor  = f.verdict === 'On Track' ? 'ep-good' : f.verdict === 'Slightly Behind' ? 'ep-warn' : 'ep-risk';
+  const paceColor = f.currentPace > 0
+    ? (f.currentPace >= f.requiredPerDay ? 'ep-good' : f.currentPace >= f.requiredPerDay * 0.7 ? 'ep-warn' : 'ep-risk')
+    : '';
+  document.getElementById('epFeasMetrics').innerHTML = `
+    <div class="ep-feas-metric">
+      <div class="ep-feas-metric-label">Days Remaining</div>
+      <div class="ep-feas-metric-value">${f.daysLeft}</div>
+      <div class="ep-feas-metric-sub">until exam</div>
+    </div>
+    <div class="ep-feas-metric">
+      <div class="ep-feas-metric-label">Modules Left</div>
+      <div class="ep-feas-metric-value">${f.modsLeft}</div>
+      <div class="ep-feas-metric-sub">to complete</div>
+    </div>
+    <div class="ep-feas-metric">
+      <div class="ep-feas-metric-label">Required/Day</div>
+      <div class="ep-feas-metric-value ${reqColor}">${f.requiredPerDay.toFixed(1)}</div>
+      <div class="ep-feas-metric-sub">modules needed</div>
+    </div>
+    <div class="ep-feas-metric">
+      <div class="ep-feas-metric-label">Current Pace</div>
+      <div class="ep-feas-metric-value ${paceColor}">${f.currentPace > 0 ? f.currentPace.toFixed(1) : '—'}</div>
+      <div class="ep-feas-metric-sub">${f.currentPace > 0 ? 'modules/day (est.)' : 'log sessions to calculate'}</div>
+    </div>
+  `;
+
+  // Pace visual
+  const maxVal     = Math.max(f.requiredPerDay * 1.5, f.currentPace * 1.2, 1);
+  const reqPct     = Math.min(100, (f.requiredPerDay / maxVal) * 100);
+  const pacePct    = f.currentPace > 0 ? Math.min(100, (f.currentPace / maxVal) * 100) : null;
+  const fillColor  = f.verdict === 'On Track' ? 'var(--green)' : f.verdict === 'Slightly Behind' ? '#d97706' : 'var(--red)';
+  const fillPct    = pacePct !== null ? pacePct : reqPct;
+
+  document.getElementById('epPaceVisual').innerHTML = `
+    <div class="ep-pace-header">
+      <span class="ep-pace-label">Pace Comparison</span>
+      <div class="ep-pace-legend">
+        <div class="ep-pace-legend-item">
+          <div class="ep-pace-legend-swatch" style="background:${fillColor}"></div>
+          Current pace
+        </div>
+        <div class="ep-pace-legend-item">
+          <div class="ep-pace-legend-swatch" style="background:var(--text);opacity:0.5"></div>
+          Required pace
+        </div>
+      </div>
+    </div>
+    <div class="ep-pace-track">
+      <div class="ep-pace-fill" style="width:${fillPct}%;background:${fillColor};opacity:0.25"></div>
+      <div class="ep-pace-fill" style="width:${fillPct}%;background:${fillColor};height:5px;top:2.5px;border-radius:6px"></div>
+      <div class="ep-pace-marker" style="left:${reqPct}%" title="Required: ${f.requiredPerDay.toFixed(1)} mod/day"></div>
+    </div>
+    <div class="ep-pace-tick-labels">
+      <span>0</span>
+      <span>${(maxVal / 2).toFixed(1)} mod/day</span>
+      <span>${maxVal.toFixed(1)}</span>
+    </div>
+  `;
+
+  // Confidence row
+  const dotLevels = { high: 3, medium: 2, low: 1 };
+  const filledDots = dotLevels[f.confidenceLevel] || 1;
+  const dotsHTML = [1,2,3].map(i =>
+    `<div class="ep-confidence-dot ${i <= filledDots ? 'filled ' + f.confidenceLevel : ''}"></div>`
+  ).join('');
+  document.getElementById('epConfidenceRow').innerHTML = `
+    <span class="ep-confidence-label">Confidence</span>
+    <div class="ep-confidence-dots">${dotsHTML}</div>
+    <span class="ep-confidence-text">${f.confidence}</span>
+    <span class="ep-confidence-basis">${f.confidenceBasis}</span>
+  `;
+
+  // Recommendations
+  if (f.recs.length === 0) {
+    document.getElementById('epRecommendations').innerHTML = '';
+    return;
+  }
+  const recsHeader = `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted-2);margin-bottom:6px">Personalised Recommendations</div>`;
+  const recsBody = f.recs.map(r => `
+    <div class="ep-rec-item ${r.type}">
+      <div class="ep-rec-icon">${r.icon}</div>
+      <div class="ep-rec-body">${r.text}</div>
+    </div>
+  `).join('');
+  document.getElementById('epRecommendations').innerHTML = recsHeader + recsBody;
+}
+
+/* ══ END EXAM PLANNER MODULE ══ */
+
+/* ══════════════════════════════════════════════════════════════
+   SMART PLANNER — PRIORITY ENGINE
+   Auto-prioritises subjects, generates daily targets, timeline
+   Reads epLoadPlan() + getEntries() — no new data needed.
+══════════════════════════════════════════════════════════════ */
+
+// ── Utility ────────────────────────────────────────────────────
+function spAddDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+function spFmt(d) {
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+}
+
+function spWeekday(d) {
+  return d.toLocaleDateString('en-IN', { weekday: 'short' });
+}
+
+// ── Score-based subject priority ───────────────────────────────
+// Inputs: plan (from epLoadPlan), entries (from getEntries)
+// Returns sorted array of subject objects with priority score
+function spComputePriority(plan, entries) {
+  if (!plan) return [];
+
+  const today    = new Date(); today.setHours(0, 0, 0, 0);
+  const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
+  const daysLeft = Math.max(1, Math.round((examDate - today) / 86400000));
+
+  // Build per-subject stats from session entries
+  const subjectMap = {};
+  entries.forEach(e => {
+    const s = (e.subject && e.subject !== '—') ? e.subject : null;
+    if (!s) return;
+    if (!subjectMap[s]) subjectMap[s] = { name: s, prods: [], hours: 0, count: 0 };
+    subjectMap[s].prods.push(e.productivity);
+    subjectMap[s].hours += e.hours;
+    subjectMap[s].count++;
+  });
+
+  const subjectStats = Object.values(subjectMap).map(s => ({
+    ...s,
+    avgProd: s.prods.reduce((a, b) => a + b, 0) / s.prods.length
+  }));
+
+  // If no subjects tracked, create one synthetic subject from plan
+  const subjects = subjectStats.length > 0 ? subjectStats : [
+    { name: plan.examName, prods: [], hours: 0, count: 0, avgProd: plan.sessionContext ? plan.sessionContext.avgProductivity : 3 }
+  ];
+
+  // Priority score = weighted sum of 4 signals (0–100 each):
+  //   a) exam urgency (inverse days left)      — 35 pts
+  //   b) low productivity (weakest first)      — 30 pts
+  //   c) least sessions (least studied)        — 20 pts
+  //   d) modules remaining ratio               — 15 pts
+
+  const maxCount    = Math.max(...subjects.map(s => s.count), 1);
+  const prodMin     = Math.min(...subjects.map(s => s.avgProd), 1);
+  const prodMax     = Math.max(...subjects.map(s => s.avgProd), 5);
+  const prodRange   = Math.max(0.01, prodMax - prodMin);
+
+  // urgency — same for all subjects (based on plan)
+  const urgencyScore = Math.min(100, Math.round((1 - daysLeft / 120) * 100));
+
+  return subjects.map(s => {
+    const prodScore  = Math.round(((prodMax - s.avgProd) / prodRange) * 100);      // low prod = high priority
+    const sesScore   = Math.round(((maxCount - s.count) / maxCount) * 100);         // few sessions = high priority
+    const modsScore  = Math.round((plan.remainingModules / Math.max(1, plan.totalModules)) * 100);
+    const totalScore = Math.round(urgencyScore * 0.35 + prodScore * 0.30 + sesScore * 0.20 + modsScore * 0.15);
+    return { ...s, urgencyScore, prodScore, sesScore, modsScore, totalScore, daysLeft };
+  }).sort((a, b) => b.totalScore - a.totalScore);
+}
+
+// ── Render priority list ───────────────────────────────────────
+function spRenderPriorityList(subjects, plan) {
+  const el = document.getElementById('spPriorityList');
+  if (!subjects.length) {
+    el.innerHTML = '<p class="no-insight">No subject data found. Log sessions with subjects to enable ranking.</p>';
+    return;
+  }
+
+  const maxScore = subjects[0].totalScore || 100;
+
+  el.innerHTML = '<div class="sp-priority-list">' + subjects.slice(0, 6).map((s, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-4';
+    const barPct    = Math.round((s.totalScore / maxScore) * 100);
+    const prodLabel = s.avgProd <= 2 ? 'Weak' : s.avgProd <= 3.5 ? 'Avg' : 'Strong';
+    const examTag   = s.daysLeft <= 7 ? `<span class="sp-ptag pt-exam">${s.daysLeft}d left</span>` : '';
+    const prodTag   = s.avgProd <= 3 ? `<span class="sp-ptag pt-prod">Prod ${s.avgProd.toFixed(1)}</span>` : `<span class="sp-ptag pt-ok">${prodLabel}</span>`;
+    const sessTag   = s.count > 0 ? `<span class="sp-ptag pt-mods">${s.count} sess</span>` : `<span class="sp-ptag pt-exam">Not studied</span>`;
+
+    return `
+      <div class="sp-priority-row ${rankClass}">
+        <div class="sp-rank-badge">#${i + 1}</div>
+        <div class="sp-priority-name">${s.name}</div>
+        <div class="sp-priority-tags">${examTag}${prodTag}${sessTag}</div>
+        <div class="sp-priority-bar-wrap">
+          <div class="sp-priority-bar" style="width:${barPct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('') + '</div>';
+}
+
+// ── Render visual timeline ─────────────────────────────────────
+function spRenderTimeline(plan) {
+  const el = document.getElementById('spTimeline');
+  if (!plan) { el.innerHTML = '<p class="no-insight" style="padding:20px 0">Generate a plan first.</p>'; return; }
+
+  const today    = new Date(); today.setHours(0, 0, 0, 0);
+  const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
+  const total    = Math.max(1, Math.round((examDate - today) / 86400000));
+
+  const ph = plan.phases;
+  const p1pct = Math.max(5, Math.round((ph[0].days / total) * 100));
+  const p2pct = Math.max(5, Math.round((ph[1].days / total) * 100));
+  const p3pct = Math.max(5, 100 - p1pct - p2pct);
+
+  // "today" marker position inside phase 1 (always 0 days in from today)
+  const todayLabel = spFmt(today);
+  const examLabel  = spFmt(examDate);
+
+  // phase start dates
+  const p1Start = today;
+  const p2Start = spAddDays(today, ph[0].days);
+  const p3Start = spAddDays(today, ph[0].days + ph[1].days);
+
+  el.innerHTML = `
+    <div class="sp-timeline-wrap">
+      <div class="sp-timeline-track">
+        <div class="sp-tl-phase tl-p1 tl-today-marker" style="width:${p1pct}%" title="Phase 1: ${ph[0].name} (${ph[0].days} days)">
+          <span class="sp-tl-phase-label">Phase 1 · ${ph[0].days}d</span>
+        </div>
+        <div class="sp-tl-phase tl-p2" style="width:${p2pct}%" title="Phase 2: ${ph[1].name} (${ph[1].days} days)">
+          <span class="sp-tl-phase-label">Phase 2 · ${ph[1].days}d</span>
+        </div>
+        <div class="sp-tl-phase tl-p3" style="width:${p3pct}%" title="Phase 3: ${ph[2].name} (${ph[2].days} days)">
+          <span class="sp-tl-phase-label">Phase 3 · ${ph[2].days}d</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px">
+        <span style="font-size:10px;font-family:var(--mono);color:var(--muted)">Today (${todayLabel})</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--muted)">Exam (${examLabel})</span>
+      </div>
+      <div class="sp-timeline-legend">
+        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#818cf8"></div>Syllabus Completion (${spFmt(p1Start)} – ${spFmt(spAddDays(p1Start, ph[0].days - 1))})</div>
+        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#d97706"></div>Revision (${spFmt(p2Start)} – ${spFmt(spAddDays(p2Start, ph[1].days - 1))})</div>
+        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#16a34a"></div>Final Sprint (${spFmt(p3Start)} – ${spFmt(examDate)})</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Render today's target cards ────────────────────────────────
+function spRenderTargetCards(plan, subjects) {
+  if (!plan) return;
+
+  const today   = new Date(); today.setHours(0, 0, 0, 0);
+  const exam    = new Date(plan.examDate); exam.setHours(0, 0, 0, 0);
+  const dLeft   = Math.max(1, Math.round((exam - today) / 86400000));
+  const modsLeft = plan.remainingModules;
+  const dailyMods = parseFloat((modsLeft / dLeft).toFixed(1));
+  const weekMods  = Math.min(modsLeft, Math.round(dailyMods * 7));
+
+  // Determine which phase today falls in
+  let phaseToday = plan.phases[0];
+  const p2Start = spAddDays(today, plan.phases[0].days);
+  const p3Start = spAddDays(today, plan.phases[0].days + plan.phases[1].days);
+  // (since we always regenerate with today as start, phase 1 is always active initially)
+  const phaseName  = phaseToday.name;
+  const phaseDailyTarget = phaseToday.dailyTarget;
+
+  // Top subject to focus on today
+  const topSubject = subjects.length > 0 ? subjects[0].name : plan.examName;
+
+  document.getElementById('spTodayTarget').textContent  = phaseDailyTarget + ' mod';
+  document.getElementById('spTodaySub').textContent     = `${phaseDailyTarget} module(s) — ${phaseName}`;
+  document.getElementById('spTodayDetail').textContent  = `Focus: ${topSubject} · ${phaseToday.dailyHours.toFixed(1)}h target`;
+
+  document.getElementById('spWeekTarget').textContent   = weekMods;
+  document.getElementById('spWeekSub').textContent      = `modules this week (${modsLeft} remaining)`;
+  document.getElementById('spWeekDetail').textContent   = `~${dailyMods}/day across ${Math.min(7, dLeft)} active days`;
+
+  document.getElementById('spWorkload').textContent      = modsLeft;
+  document.getElementById('spWorkloadSub').textContent  = `modules, ${dLeft} days left`;
+  document.getElementById('spWorkloadDetail').textContent = `${plan.totalModules - modsLeft} of ${plan.totalModules} done (${plan.progressPct}%)`;
+}
+
+// ── Render today's schedule (breakdown by subject) ─────────────
+function spRenderTodaySchedule(plan, subjects) {
+  const el = document.getElementById('spTodaySchedule');
+  if (!plan || subjects.length === 0) {
+    el.innerHTML = '<p class="no-insight">Log sessions with subjects to get a personalised daily schedule.</p>';
+    return;
+  }
+
+  const phaseTarget = plan.phases[0].dailyTarget;
+  const phaseHours  = plan.phases[0].dailyHours;
+
+  // Distribute today's modules across subjects by priority score weight
+  const total   = subjects.reduce((s, x) => s + x.totalScore, 0) || 1;
+  const items   = subjects.slice(0, 4).map((s, i) => {
+    const share     = total > 0 ? s.totalScore / total : 1 / subjects.length;
+    const modShare  = Math.max(0.5, parseFloat((phaseTarget * share).toFixed(1)));
+    const hrShare   = Math.max(0.25, parseFloat((phaseHours * share).toFixed(1)));
+    const dotClass  = i === 0 ? 'prio-1' : i === 1 ? 'prio-2' : i === 2 ? 'prio-3' : 'prio-n';
+    return { name: s.name, mods: modShare, hrs: hrShare, dotClass };
+  });
+
+  el.innerHTML = `
+    <div style="margin-bottom:10px">
+      ${items.map(it => `
+        <div class="sp-day-item" style="margin-bottom:7px">
+          <div class="sp-day-dot ${it.dotClass}"></div>
+          <div class="sp-day-text"><strong>${it.name}</strong> — ${it.mods} module${it.mods !== 1 ? 's' : ''}</div>
+          <div class="sp-day-hours">${it.hrs}h</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+      Total: <strong>${phaseTarget} modules</strong> · <strong>${phaseHours.toFixed(1)}h</strong> study · Phase 1: ${plan.phases[0].name}
+    </div>
+  `;
+}
+
+// ── Render 3 phase cards (reuse ep-phase-card styles) ──────────
+function spRenderPhaseCards(plan, subjects) {
+  const el = document.getElementById('spPhaseCards');
+  const sec = document.getElementById('spPhaseSection');
+  if (!plan) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+
+  const topSubj = subjects.length > 0 ? subjects[0].name : plan.examName;
+
+  const phaseNames = ['Syllabus Completion', 'Revision', 'Final Sprint'];
+  const phaseFocuses = [
+    `Cover all remaining topics — prioritise ${topSubj} first`,
+    'Consolidate with active recall — focus on weakest areas',
+    'High-yield review only — no new material'
+  ];
+
+  el.innerHTML = plan.phases.map((ph, i) => `
+    <div class="ep-phase-card">
+      <div class="ep-phase-header">
+        <div class="ep-phase-title-row">
+          <span class="ep-phase-badge phase-${ph.num}">Phase ${ph.num}</span>
+          <span class="ep-phase-name">${phaseNames[i]}</span>
+        </div>
+        <div class="ep-phase-dates">${ph.start} → ${ph.end}</div>
+      </div>
+      <div class="ep-phase-body">
+        <div class="ep-phase-stats">
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Duration</div>
+            <div class="ep-phase-stat-value">${ph.days}</div>
+            <div class="ep-phase-stat-sub">days</div>
+          </div>
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Modules</div>
+            <div class="ep-phase-stat-value">${ph.modules}</div>
+            <div class="ep-phase-stat-sub">to cover</div>
+          </div>
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Daily Target</div>
+            <div class="ep-phase-stat-value">${ph.dailyTarget}</div>
+            <div class="ep-phase-stat-sub">modules/day</div>
+          </div>
+          <div class="ep-phase-stat">
+            <div class="ep-phase-stat-label">Study Hours</div>
+            <div class="ep-phase-stat-value">${ph.dailyHours.toFixed(1)}</div>
+            <div class="ep-phase-stat-sub">hrs/day</div>
+          </div>
+        </div>
+        <div class="ep-progress-wrap">
+          <div class="ep-progress-meta">
+            <span class="ep-progress-label">Focus</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-2);line-height:1.55">${phaseFocuses[i]}</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Render 7-day schedule ─────────────────────────────────────
+function spRender7Day(plan, subjects) {
+  const weekCard = document.getElementById('spWeekCard');
+  const el = document.getElementById('spWeekSchedule');
+  if (!plan) { weekCard.style.display = 'none'; return; }
+  weekCard.style.display = 'block';
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const days  = [];
+
+  for (let i = 0; i < 7; i++) {
+    const d = spAddDays(today, i);
+    days.push(d);
+  }
+
+  // Which phase does each day fall in?
+  function getPhaseForDay(dayOffset, plan) {
+    if (dayOffset < plan.phases[0].days)                        return { phase: plan.phases[0], idx: 0 };
+    if (dayOffset < plan.phases[0].days + plan.phases[1].days)  return { phase: plan.phases[1], idx: 1 };
+    return { phase: plan.phases[2], idx: 2 };
+  }
+
+  const phaseColors = ['prio-3', 'prio-2', 'prio-1'];
+
+  el.innerHTML = days.map((d, i) => {
+    const { phase, idx } = getPhaseForDay(i, plan);
+    const isToday = i === 0;
+    const slotClass = isToday ? 'sp-day-slot ds-today' : 'sp-day-slot';
+    const weekdayStr = isToday ? 'TODAY' : spWeekday(d);
+    const dateStr    = spFmt(d);
+    const dotClass   = phaseColors[idx];
+
+    // Main subject for this day (rotate through priority list)
+    const subjForDay = subjects.length > 0
+      ? subjects[i % subjects.length].name
+      : plan.examName;
+
+    const modsToday = phase.dailyTarget;
+    const hrsToday  = phase.dailyHours;
+
+    return `
+      <div class="${slotClass}">
+        <div class="sp-day-date">${dateStr}</div>
+        <div class="sp-day-label">${weekdayStr}</div>
+        <div class="sp-day-items">
+          <div class="sp-day-item">
+            <div class="sp-day-dot ${dotClass}"></div>
+            <div class="sp-day-text">${subjForDay} — ${modsToday} module(s) · Phase ${idx + 1}: ${phase.name.split(' ')[0]}</div>
+          </div>
+        </div>
+        <div class="sp-day-hours">${hrsToday.toFixed(1)}h</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Master render function ────────────────────────────────────
+function spRender() {
+  const plan    = epLoadPlan();
+  const entries = getEntries();
+
+  const emptyEl    = document.getElementById('spEmptyState');
+  const phaseEl    = document.getElementById('spPhaseSection');
+  const weekCard   = document.getElementById('spWeekCard');
+
+  if (!plan) {
+    emptyEl.style.display  = 'block';
+    if (phaseEl)   phaseEl.style.display  = 'none';
+    if (weekCard)  weekCard.style.display = 'none';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+
+  const subjects = spComputePriority(plan, entries);
+
+  spRenderTargetCards(plan, subjects);
+  spRenderPriorityList(subjects, plan);
+  spRenderTimeline(plan);
+  spRenderTodaySchedule(plan, subjects);
+  spRenderPhaseCards(plan, subjects);
+  spRender7Day(plan, subjects);
+}
+
+// ── Auto-init on load ─────────────────────────────────────────
+spRender();
+
+// ── Re-render when switching to priority engine panel ─────────
+// Use event listeners instead of overriding showPanel (avoids recursion)
+document.querySelectorAll('[onclick*="smartplanner"]').forEach(function(el) {
+  el.addEventListener('click', function() { setTimeout(spRender, 50); });
+});
+
+
+/* ══════════════════════════════════════════════════════════════
+   TODAY'S TARGET CARD
+   Reads: epLoadPlan() + getEntries()
+   Prioritises: nearest exam → weakest subject → productivity
+   Does NOT modify any existing planner logic.
+══════════════════════════════════════════════════════════════ */
+
+function renderTodaysTarget() {
+  const card  = document.getElementById('ttCard');
+  const inner = document.getElementById('ttInner');
+  if (!card || !inner) return;
+
+  const plan    = epLoadPlan();
+  const entries = getEntries();
+
+  // ── No plan: empty state ───────────────────────────────────
+  if (!plan) {
+    card.className = 'tt-card tt-none';
+    inner.innerHTML = `
+      <div class="tt-header">
+        <div class="tt-header-left">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <span class="tt-heading">Today's Target</span>
+        </div>
+        <span class="tt-badge tt-b-none">No Plan</span>
+      </div>
+      <div class="tt-empty">
+        <div class="tt-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="tt-empty-title">No exam plan yet</div>
+        <div class="tt-empty-desc">
+          Set up an exam in
+          <button class="tt-empty-desc a" onclick="showPanel('examplanner', null)" style="color:var(--text-2);text-decoration:underline;cursor:pointer;background:none;border:none;font:inherit;padding:0">Smart Planner</button>
+          to generate your daily target automatically.
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // ── Compute days left ──────────────────────────────────────
+  const today    = new Date(); today.setHours(0, 0, 0, 0);
+  const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
+  const daysLeft = Math.max(0, Math.round((examDate - today) / 86400000));
+
+  // ── Pick subject (weakest → nearest exam) ─────────────────
+  // Build per-subject productivity averages from sessions
+  const subjectMap = {};
+  entries.forEach(e => {
+    const s = (e.subject && e.subject !== '—') ? e.subject : null;
+    if (!s) return;
+    if (!subjectMap[s]) subjectMap[s] = { prods: [], hours: 0, count: 0 };
+    subjectMap[s].prods.push(e.productivity);
+    subjectMap[s].hours += e.hours;
+    subjectMap[s].count++;
+  });
+
+  let targetSubject, moduleName, moduleHint, reasonText, avgProdForSubj;
+
+  if (Object.keys(subjectMap).length > 0) {
+    // Sort subjects: weakest avg productivity first, then fewest sessions
+    const subjectStats = Object.entries(subjectMap).map(([name, d]) => ({
+      name,
+      avgProd: d.prods.reduce((a, b) => a + b, 0) / d.prods.length,
+      avgHours: d.hours / d.count,
+      count: d.count
+    })).sort((a, b) => {
+      // primary: lower productivity = higher priority
+      if (Math.abs(a.avgProd - b.avgProd) > 0.3) return a.avgProd - b.avgProd;
+      // secondary: fewer sessions = higher priority
+      return a.count - b.count;
+    });
+
+    const top = subjectStats[0];
+    targetSubject   = top.name;
+    avgProdForSubj  = top.avgProd;
+
+    // Derive recommended module number from completed modules + 1
+    const modsCompleted = plan.completedModules || 0;
+    const nextMod       = modsCompleted + 1;
+    moduleName  = 'Module ' + nextMod;
+    moduleHint  = top.avgProd <= 2
+      ? 'Needs most attention — low productivity history'
+      : top.avgProd <= 3.5
+        ? 'Average performance — focus and consolidate'
+        : 'Strong subject — maintain momentum';
+
+    reasonText = top.avgProd <= 2
+      ? 'Prioritised: weakest subject (avg ' + top.avgProd.toFixed(1) + '/5 productivity)'
+      : top.count <= 1
+        ? 'Prioritised: least studied subject (' + top.count + (top.count === 1 ? ' session' : ' sessions') + ' logged)'
+        : 'Prioritised: nearest exam · weakest available subject';
+  } else {
+    // Fall back to plan name when no sessions with subjects
+    targetSubject  = plan.examName;
+    avgProdForSubj = plan.sessionContext ? plan.sessionContext.avgProductivity : 3;
+    const nextMod  = (plan.completedModules || 0) + 1;
+    moduleName     = 'Module ' + nextMod;
+    moduleHint     = 'No session data yet — log sessions to personalise';
+    reasonText     = 'Prioritised: nearest exam (' + daysLeft + ' days remaining)';
+  }
+
+  // ── Determine priority level ───────────────────────────────
+  let priority, priorityClass, badgeClass, dotClass, footerDot;
+  if (daysLeft <= 5 || (avgProdForSubj !== undefined && avgProdForSubj < 2.5)) {
+    priority = 'High'; priorityClass = 'tt-high'; badgeClass = 'tt-b-high';
+    dotClass = 'tv-high'; footerDot = 'fd-high';
+  } else if (daysLeft <= 14 || (avgProdForSubj !== undefined && avgProdForSubj < 3.5)) {
+    priority = 'Medium'; priorityClass = 'tt-medium'; badgeClass = 'tt-b-medium';
+    dotClass = 'tv-medium'; footerDot = 'fd-medium';
+  } else {
+    priority = 'Low'; priorityClass = 'tt-low'; badgeClass = 'tt-b-low';
+    dotClass = 'tv-low'; footerDot = 'fd-low';
+  }
+  card.className = 'tt-card ' + priorityClass;
+
+  // ── Estimated study time ───────────────────────────────────
+  // Use current phase daily hours; if sessions exist, nudge by avg session length
+  const phaseHours    = plan.phases && plan.phases[0] ? plan.phases[0].dailyHours : plan.effectiveDailyHours;
+  let   estHours      = phaseHours;
+  if (plan.sessionContext && plan.sessionContext.avgHours) {
+    // blend plan hours with actual avg session length
+    estHours = (phaseHours * 0.6 + plan.sessionContext.avgHours * 0.4);
+  }
+  const estH   = Math.floor(estHours);
+  const estMin = Math.round((estHours - estH) * 60 / 15) * 15; // round to 15m
+  const estStr = estH > 0
+    ? (estH + 'h' + (estMin > 0 ? ' ' + estMin + 'm' : ''))
+    : (estMin + 'm');
+
+  // ── Countdown urgency class ────────────────────────────────
+  const countdownUrgent = daysLeft <= 5 ? ' urgent' : '';
+
+  // ── Timestamp ─────────────────────────────────────────────
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+  // ── Render ────────────────────────────────────────────────
+  inner.innerHTML = `
+    <div class="tt-header">
+      <div class="tt-header-left">
+        <span class="card-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </span>
+        <span class="tt-heading">Today's Target</span>
+      </div>
+      <span class="tt-badge ${badgeClass}">${priority} Priority</span>
+    </div>
+
+    <div class="tt-body">
+
+      <div class="tt-subject-block">
+        <div class="tt-subject-label">Subject to study today</div>
+        <div class="tt-subject-name">${targetSubject}</div>
+        <div class="tt-module-name">${moduleName}</div>
+        <div class="tt-module-hint">${moduleHint}</div>
+      </div>
+
+      <div class="tt-meta-grid">
+        <div class="tt-meta-item">
+          <div class="tt-meta-label">Estimated Time</div>
+          <div class="tt-meta-value">${estStr}</div>
+          <div class="tt-meta-sub">today's session</div>
+        </div>
+        <div class="tt-meta-item">
+          <div class="tt-meta-label">Priority</div>
+          <div class="tt-meta-value ${dotClass}">${priority}</div>
+          <div class="tt-meta-sub">${daysLeft <= 5 ? 'Exam imminent' : avgProdForSubj <= 2.5 ? 'Weak subject' : 'On schedule'}</div>
+        </div>
+        <div class="tt-meta-item">
+          <div class="tt-meta-label">Daily Target</div>
+          <div class="tt-meta-value">${plan.phases && plan.phases[0] ? plan.phases[0].dailyTarget : '—'}</div>
+          <div class="tt-meta-sub">modules / day</div>
+        </div>
+        <div class="tt-meta-item">
+          <div class="tt-meta-label">Progress</div>
+          <div class="tt-meta-value">${plan.progressPct}%</div>
+          <div class="tt-meta-sub">${plan.completedModules}/${plan.totalModules} done</div>
+        </div>
+      </div>
+
+      <div class="tt-countdown">
+        <div class="tt-countdown-label">Exam in</div>
+        <div class="tt-countdown-num${countdownUrgent}">${daysLeft}</div>
+        <div class="tt-countdown-label">days</div>
+        <div class="tt-countdown-exam">${plan.examName}</div>
+      </div>
+
+    </div>
+
+    <div class="tt-footer">
+      <div class="tt-footer-left">
+        <div class="tt-footer-dot ${footerDot}"></div>
+        <span class="tt-footer-reason">${reasonText}</span>
+      </div>
+      <span class="tt-footer-updated">Updated ${timeStr}</span>
+    </div>
+  `;
+}
+
+// ── Safe hooks: patch button onclicks & use MutationObserver ──
+// (avoids function-hoisting recursion from re-declaring named functions)
+
+// 1. Patch "Add Entry" button to also call renderTodaysTarget
+(function patchAddEntry() {
+  const btn = document.querySelector('button[onclick="addEntry()"]');
+  if (btn) btn.setAttribute('onclick', 'addEntry(); setTimeout(renderTodaysTarget, 50);');
+})();
+
+// 2. Patch "Generate Study Plan" button (already has spRender; append ours)
+(function patchGenerate() {
+  const btn = document.querySelector('button[onclick*="epGeneratePlan"]');
+  if (btn) {
+    const existing = btn.getAttribute('onclick') || '';
+    if (!existing.includes('renderTodaysTarget')) {
+      btn.setAttribute('onclick', existing.trim().replace(/;?$/, '; setTimeout(renderTodaysTarget, 200);'));
+    }
+  }
+})();
+
+// 3. Patch "Remove" buttons — re-patch on each table re-render via MutationObserver
+(function observeTable() {
+  const tbody = document.getElementById('tableBody');
+  if (!tbody) return;
+  new MutationObserver(function() {
+    setTimeout(renderTodaysTarget, 80);
+  }).observe(tbody, { childList: true, subtree: false });
+})();
+
+// 4. Also refresh when switching TO dashboard panel
+document.querySelectorAll('[onclick*="dashboard"]').forEach(function(el) {
+  el.addEventListener('click', function() { setTimeout(renderTodaysTarget, 50); });
+});
+
+// Initial render
+renderTodaysTarget();
+
+/* ══ END TODAY'S TARGET CARD ══ */
+
+/* ══ END SMART PLANNER MODULE ══ */
+
+/* ══════════════════════════════════════════════════════════════
+   UPCOMING EXAMS WIDGET
+   - Merges single EP_STORAGE_KEY plan with UE_EXAMS_KEY list
+   - Sorts by nearest date
+   - Color-codes urgency: <3 days = high, <7 days = medium, else normal
+   - Auto-refreshes every minute for live countdown
+══════════════════════════════════════════════════════════════ */
+
+const UE_EXAMS_KEY = 'ue_exams_list'; // stores extra exams added via widget
+
+// ── Load / save manual exams ───────────────────────────────────
+
+function ueLoadManual() {
+  try { return JSON.parse(localStorage.getItem(UE_EXAMS_KEY)) || []; } catch { return []; }
+}
+
+function ueSaveManual(list) {
+  localStorage.setItem(UE_EXAMS_KEY, JSON.stringify(list));
+}
+
+// ── Merge planner plan + manual exams ────────────────────────
+
+function ueGetAllExams() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const exams = [];
+
+  // 1. Pull single exam from Smart Planner
+  const plan = epLoadPlan();
+  if (plan && plan.examDate && plan.examName) {
+    const d = new Date(plan.examDate); d.setHours(0, 0, 0, 0);
+    const daysLeft = Math.round((d - today) / 86400000);
+    if (daysLeft >= 0) {
+      exams.push({
+        id: '__planner__',
+        name: plan.examName,
+        date: plan.examDate,
+        daysLeft,
+        fromPlanner: true
+      });
+    }
+  }
+
+  // 2. Pull manually added exams
+  ueLoadManual().forEach(function(e) {
+    const d = new Date(e.date); d.setHours(0, 0, 0, 0);
+    const daysLeft = Math.round((d - today) / 86400000);
+    if (daysLeft >= 0) {
+      exams.push({ id: e.id, name: e.name, date: e.date, daysLeft, fromPlanner: false });
+    }
+  });
+
+  // Sort nearest first
+  exams.sort(function(a, b) { return a.daysLeft - b.daysLeft; });
+  return exams;
+}
+
+// ── Urgency helper ─────────────────────────────────────────────
+
+function ueUrgency(daysLeft) {
+  if (daysLeft < 3)  return 'high';
+  if (daysLeft < 7)  return 'medium';
+  return 'normal';
+}
+
+function ueUrgencyLabel(urgency) {
+  if (urgency === 'high')   return 'High Priority';
+  if (urgency === 'medium') return 'Medium Priority';
+  return 'On Track';
+}
+
+// ── Render ─────────────────────────────────────────────────────
+
+function renderUpcomingExams() {
+  const listEl   = document.getElementById('ueList');
+  const badgeEl  = document.getElementById('ueCountBadge');
+  const footerEl = document.getElementById('ueFooter');
+  const footerTx = document.getElementById('ueFooterText');
+  if (!listEl) return;
+
+  const exams = ueGetAllExams();
+  const count = exams.length;
+
+  // Update count badge
+  if (badgeEl) {
+    badgeEl.textContent = count === 0 ? 'No exams' : count === 1 ? '1 exam' : count + ' exams';
+  }
+
+  if (count === 0) {
+    listEl.innerHTML = `
+      <div class="ue-empty">
+        <div class="ue-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <line x1="8" y1="14" x2="16" y2="14"/>
+            <line x1="8" y1="18" x2="13" y2="18"/>
+          </svg>
+        </div>
+        <div class="ue-empty-title">No upcoming exams</div>
+        <div class="ue-empty-desc">Add an exam above or generate a plan in the Smart Planner to see your countdown here.</div>
+      </div>`;
+    if (footerEl) footerEl.style.display = 'none';
+    return;
+  }
+
+  // Build list HTML
+  listEl.innerHTML = exams.map(function(exam) {
+    const urgency  = ueUrgency(exam.daysLeft);
+    const label    = ueUrgencyLabel(urgency);
+    const dateStr  = new Date(exam.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const dayWord  = exam.daysLeft === 1 ? 'Day' : 'Days';
+    const plannerTag = exam.fromPlanner
+      ? '<span style="font-size:9.5px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;color:var(--muted-2);background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:3px;margin-left:6px">Planner</span>'
+      : '';
+
+    const delBtn = exam.fromPlanner
+      ? '' // planner exams managed from Smart Planner
+      : `<button class="ue-del-btn" onclick="ueDeleteExam('${exam.id}')" title="Remove exam">Remove</button>`;
+
+    return `
+      <div class="ue-item ue-${urgency}">
+        <div class="ue-bubble">
+          <span class="ue-bubble-num">${exam.daysLeft}</span>
+          <span class="ue-bubble-unit">${dayWord}</span>
+        </div>
+        <div class="ue-info">
+          <div class="ue-name">${exam.name}${plannerTag}</div>
+          <div class="ue-date">${dateStr}</div>
+        </div>
+        <span class="ue-pill">${label}</span>
+        ${delBtn}
+      </div>`;
+  }).join('');
+
+  // Footer summary
+  if (footerEl && footerTx) {
+    const highCount = exams.filter(function(e) { return ueUrgency(e.daysLeft) === 'high'; }).length;
+    const medCount  = exams.filter(function(e) { return ueUrgency(e.daysLeft) === 'medium'; }).length;
+    const nearest   = exams[0];
+    let footerMsg = 'Next: ' + nearest.name + ' in ' + nearest.daysLeft + (nearest.daysLeft === 1 ? ' day' : ' days');
+    if (highCount > 0) footerMsg += ' · ' + highCount + ' high-priority';
+    if (medCount  > 0) footerMsg += ' · ' + medCount + ' medium-priority';
+    footerTx.textContent = footerMsg;
+    footerEl.style.display = 'flex';
+  }
+}
+
+// ── Toggle add-exam form ───────────────────────────────────────
+
+function ueToggleForm() {
+  const form = document.getElementById('ueAddForm');
+  if (!form) return;
+  const isOpen = form.classList.contains('open');
+  if (isOpen) {
+    form.classList.remove('open');
+    // Reset fields
+    document.getElementById('ueNewName').value = '';
+    document.getElementById('ueNewDate').value = '';
+  } else {
+    form.classList.add('open');
+    setTimeout(function() { document.getElementById('ueNewName').focus(); }, 60);
+  }
+}
+
+// ── Save new exam ──────────────────────────────────────────────
+
+function ueSaveExam() {
+  const nameEl = document.getElementById('ueNewName');
+  const dateEl = document.getElementById('ueNewDate');
+  if (!nameEl || !dateEl) return;
+
+  const name = nameEl.value.trim();
+  const date = dateEl.value;
+
+  if (!name) { nameEl.focus(); nameEl.style.borderColor = '#b91c1c'; return; }
+  nameEl.style.borderColor = '';
+
+  if (!date) { dateEl.focus(); dateEl.style.borderColor = '#b91c1c'; return; }
+  dateEl.style.borderColor = '';
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const examD = new Date(date); examD.setHours(0, 0, 0, 0);
+  if (examD <= today) {
+    dateEl.style.borderColor = '#b91c1c';
+    dateEl.title = 'Date must be in the future';
+    dateEl.focus();
+    return;
+  }
+  dateEl.style.borderColor = '';
+
+  const list = ueLoadManual();
+  list.push({ id: 'ue_' + Date.now(), name: name, date: date });
+  ueSaveManual(list);
+
+  ueToggleForm();
+  renderUpcomingExams();
+}
+
+// ── Delete manual exam ─────────────────────────────────────────
+
+function ueDeleteExam(id) {
+  const list = ueLoadManual().filter(function(e) { return e.id !== id; });
+  ueSaveManual(list);
+  renderUpcomingExams();
+}
+
+// ── Allow Enter key in form fields ────────────────────────────
+(function ueFormKeyboard() {
+  document.addEventListener('keydown', function(ev) {
+    const form = document.getElementById('ueAddForm');
+    if (!form || !form.classList.contains('open')) return;
+    if (ev.key === 'Enter') ueSaveExam();
+    if (ev.key === 'Escape') ueToggleForm();
+  });
+})();
+
+// ── Hook into planner plan generation to re-render widget ─────
+(function patchPlannerForUE() {
+  const genBtn = document.querySelector('button[onclick*="epGeneratePlan"]');
+  if (genBtn) {
+    const existing = genBtn.getAttribute('onclick') || '';
+    if (!existing.includes('renderUpcomingExams')) {
+      genBtn.setAttribute('onclick', existing.trim().replace(/;?\s*$/, '; setTimeout(renderUpcomingExams, 250);'));
+    }
+  }
+  // Also refresh when switching to dashboard
+  document.querySelectorAll('[onclick*="dashboard"]').forEach(function(el) {
+    el.addEventListener('click', function() { setTimeout(renderUpcomingExams, 50); });
+  });
+})();
+
+// ── Auto-refresh every minute for live countdown ───────────────
+setInterval(renderUpcomingExams, 60000);
+
+// ── Initial render ─────────────────────────────────────────────
+renderUpcomingExams();
+
+/* ══════════════════════════════════════════════════════════════
+   PLANNER SUMMARY STRIP
+   Five compact stat cards shown above the phase section.
+   Reads directly from the plan object — no calculations changed.
+══════════════════════════════════════════════════════════════ */
+
+function epRenderPlannerSummary(plan) {
+  const el = document.getElementById('epPlannerSummary');
+  if (!el) return;
+
+  if (!plan) { el.innerHTML = ''; return; }
+
+  // Total exams is always 1 per plan (one exam per plan object)
+  const totalExams    = 1;
+  const totalModules  = plan.totalModules;
+  const completed     = plan.completedModules;
+  const remaining     = plan.remainingModules;
+  const dailyTarget   = plan.totalDays > 0
+    ? parseFloat((remaining / plan.totalDays).toFixed(1))
+    : remaining;
+
+  el.innerHTML = `
+    <div class="ep-summary-strip">
+      <div class="ep-summary-card sc-exams">
+        <div class="ep-summary-label">Exams</div>
+        <div class="ep-summary-value">${totalExams}</div>
+        <div class="ep-summary-sub">${plan.examName}</div>
+      </div>
+      <div class="ep-summary-card sc-modules">
+        <div class="ep-summary-label">Modules</div>
+        <div class="ep-summary-value">${totalModules}</div>
+        <div class="ep-summary-sub">total in plan</div>
+      </div>
+      <div class="ep-summary-card sc-done">
+        <div class="ep-summary-label">Completed</div>
+        <div class="ep-summary-value">${completed}</div>
+        <div class="ep-summary-sub">${plan.progressPct}% done</div>
+      </div>
+      <div class="ep-summary-card sc-left">
+        <div class="ep-summary-label">Remaining</div>
+        <div class="ep-summary-value">${remaining}</div>
+        <div class="ep-summary-sub">modules left</div>
+      </div>
+      <div class="ep-summary-card sc-target">
+        <div class="ep-summary-label">Daily Target</div>
+        <div class="ep-summary-value">${dailyTarget}</div>
+        <div class="ep-summary-sub">modules / day</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ══ END PLANNER SUMMARY STRIP ══ */
+
+/* ══════════════════════════════════════════════════════════════
+   DAILY STUDY TIMELINE
+   Generates a day-by-day vertical timeline from the active plan.
+   – Shows subject (exam name) and module number per day
+   – Highlights today
+   – Highlights exam day
+   – Sorted by date automatically
+══════════════════════════════════════════════════════════════ */
+
+function epRenderDailyTimeline(plan) {
+  const container  = document.getElementById('epDailyTimeline');
+  const badgeEl    = document.getElementById('epTlCountBadge');
+  if (!container) return;
+
+  if (!plan) {
+    container.innerHTML = '<div class="ep-tl-empty">Generate a study plan to see your daily timeline.</div>';
+    if (badgeEl) badgeEl.textContent = '';
+    return;
+  }
+
+  const today      = new Date(); today.setHours(0, 0, 0, 0);
+  const examDate   = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
+  const examName   = plan.examName || 'Exam';
+
+  // Build a flat day-by-day list across all phases
+  // Each entry: { date, subject, moduleLabel, phase, isToday, isExam }
+  const days = [];
+
+  plan.phases.forEach(function(ph) {
+    const phaseStart = new Date(ph.start.replace(/(\d{2}) (\w{3}) (\d{2})/, function(m, d, mon, y) {
+      // Reconstruct ISO from "01 Jun 25" style from epFmtDate()
+      const months = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
+      return new Date(2000 + parseInt(y), months[mon], parseInt(d));
+    }));
+
+    // Re-derive start date from plan.phases using the plan generation logic
+    // ph.start is a formatted string; we need the actual Date.
+    // Safer: recompute start dates from plan data
+    const phaseStartDate = epParsePlanDate(ph.start);
+    if (!phaseStartDate) return;
+
+    let moduleCounter = 1; // per-phase module counter
+    const modsPerDay = ph.dailyTarget; // fractional e.g. 1.33
+
+    for (let d = 0; d < ph.days; d++) {
+      const date = new Date(phaseStartDate);
+      date.setDate(phaseStartDate.getDate() + d);
+      date.setHours(0, 0, 0, 0);
+
+      // Skip days past exam date
+      if (date > examDate) break;
+
+      // Calculate module range for this day
+      const modStart = Math.floor(d * modsPerDay) + 1;
+      const modEnd   = Math.min(ph.modules, Math.floor((d + 1) * modsPerDay));
+      let moduleLabel;
+      if (modEnd > modStart) {
+        moduleLabel = 'Module ' + modStart + '–' + modEnd;
+      } else if (modEnd === modStart) {
+        moduleLabel = 'Module ' + modStart;
+      } else {
+        moduleLabel = 'Review / Buffer';
+      }
+
+      days.push({
+        date,
+        subject: examName,
+        moduleLabel,
+        phase: ph.num,
+        phaseName: ph.name,
+        isToday: date.getTime() === today.getTime(),
+        isExam:  false,
+        isPast:  date < today
+      });
+    }
+  });
+
+  // Add exam day entry
+  days.push({
+    date: examDate,
+    subject: examName,
+    moduleLabel: 'Exam Day',
+    phase: 0,
+    phaseName: 'Exam',
+    isToday: examDate.getTime() === today.getTime(),
+    isExam: true,
+    isPast: examDate < today
+  });
+
+  // Sort by date
+  days.sort(function(a, b) { return a.date - b.date; });
+
+  // Deduplicate exact date+phase (e.g. if phases touch)
+  const seen = new Set();
+  const filteredDays = days.filter(function(d) {
+    const key = d.date.getTime() + '_' + (d.isExam ? 'exam' : d.phase);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  if (filteredDays.length === 0) {
+    container.innerHTML = '<div class="ep-tl-empty">No study days to display.</div>';
+    if (badgeEl) badgeEl.textContent = '';
+    return;
+  }
+
+  if (badgeEl) {
+    badgeEl.textContent = filteredDays.length + ' days';
+  }
+
+  // Build phase legend summary
+  const phaseColors  = { 1: '#818cf8', 2: '#d97706', 3: '#16a34a' };
+  const phaseNames   = { 1: 'Phase 1 — Syllabus', 2: 'Phase 2 — Revision', 3: 'Phase 3 — Final' };
+  const phasesUsed   = [...new Set(filteredDays.filter(d => !d.isExam).map(d => d.phase))].sort();
+
+  const legendHTML = `
+    <div class="ep-tl-summary">
+      ${phasesUsed.map(function(p) {
+        return `<div class="ep-tl-summary-item">
+          <div class="ep-tl-summary-swatch" style="background:${phaseColors[p]}"></div>
+          <span>${phaseNames[p]}</span>
+        </div>`;
+      }).join('')}
+      <div class="ep-tl-summary-item">
+        <div class="ep-tl-summary-swatch" style="background:#b91c1c;border-radius:50%"></div>
+        <span>Exam Day</span>
+      </div>
+      <div class="ep-tl-summary-item" style="margin-left:auto">
+        <div class="ep-tl-summary-swatch" style="background:var(--text);border-radius:50%"></div>
+        <span>Today</span>
+      </div>
+    </div>
+  `;
+
+  // Build timeline rows — collapse long plans
+  const SHOW_LIMIT = 14;
+  const needsCollapse = filteredDays.length > SHOW_LIMIT + 2;
+
+  const rowsHTML = filteredDays.map(function(item, idx) {
+    const d    = item.date;
+    const dow  = d.toLocaleDateString('en-IN', { weekday: 'short' });
+    const dayN = d.toLocaleDateString('en-IN', { day: '2-digit' });
+    const mon  = d.toLocaleDateString('en-IN', { month: 'short' });
+
+    const phaseClass = item.isExam   ? 'tl-exam'
+                     : item.isToday  ? 'tl-today tl-phase-' + item.phase
+                     : 'tl-phase-' + item.phase;
+
+    const badge = item.isToday && !item.isExam
+      ? '<span class="ep-tl-badge tl-b-today">Today</span>'
+      : item.isExam
+        ? '<span class="ep-tl-badge tl-b-exam">Exam</span>'
+        : '';
+
+    const badgeCls = item.isExam ? '' : 'tl-b-p' + item.phase;
+
+    return `
+      <div class="ep-tl-day ${phaseClass}">
+        <div class="ep-tl-spine">
+          <div class="ep-tl-dot"></div>
+        </div>
+        <div style="width:46px;flex-shrink:0;text-align:center;padding-top:9px">
+          <div class="ep-tl-date-day">${dow}</div>
+          <div class="ep-tl-date-num">${dayN} ${mon}</div>
+        </div>
+        <div class="ep-tl-content">
+          <div class="ep-tl-row">
+            <div class="ep-tl-phase-pip"></div>
+            <div class="ep-tl-text">
+              <div class="ep-tl-subject">${item.subject}</div>
+              <div class="ep-tl-module">${item.moduleLabel}</div>
+            </div>
+            ${badge || (!item.isExam ? `<span class="ep-tl-badge ${badgeCls}">Ph ${item.phase}</span>` : '')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const showMoreBtn = needsCollapse ? `
+    <button class="ep-tl-show-more" id="epTlShowMore" onclick="epTlToggleExpand(this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      Show all ${filteredDays.length} days
+    </button>` : '';
+
+  container.innerHTML = legendHTML + `
+    <div class="ep-daily-timeline${needsCollapse ? ' collapsed' : ''}" id="epDailyTimelineList">
+      ${rowsHTML}
+    </div>
+    ${showMoreBtn}
+  `;
+}
+
+function epTlToggleExpand(btn) {
+  const list = document.getElementById('epDailyTimelineList');
+  if (!list) return;
+  const isCollapsed = list.classList.contains('collapsed');
+  if (isCollapsed) {
+    list.classList.remove('collapsed');
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg> Show fewer days`;
+  } else {
+    list.classList.add('collapsed');
+    const total = list.querySelectorAll('.ep-tl-day').length;
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Show all ${total} days`;
+    // Scroll back to timeline top
+    document.getElementById('epDailyTimeline').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// Parse the formatted date string back to a Date object
+// epFmtDate produces: "01 Jun 25" (en-IN locale, day:'2-digit', month:'short', year:'2-digit')
+function epParsePlanDate(str) {
+  if (!str) return null;
+  try {
+    const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+    // Match "01 Jun 25" or "1 Jun 25"
+    const m = str.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{2,4})/);
+    if (!m) return null;
+    const day = parseInt(m[1]);
+    const mon = months[m[2]];
+    const yr  = parseInt(m[3]);
+    const year = yr < 100 ? 2000 + yr : yr;
+    if (mon === undefined) return null;
+    const d = new Date(year, mon, day);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  } catch { return null; }
+}
+
+// ── Hook timeline rendering into epRenderPlan ─────────────────
+(function patchEpRenderPlanForTimeline() {
+  const _origRender = epRenderPlan;
+  epRenderPlan = function(plan) {
+    _origRender(plan);
+    setTimeout(function() { epRenderDailyTimeline(plan); }, 60);
+  };
+})();
+
+// ── Hook into plan clear ──────────────────────────────────────
+(function patchEpClearPlanForTimeline() {
+  const _orig = epClearPlan;
+  epClearPlan = function() {
+    _orig();
+    epRenderDailyTimeline(null);
+  };
+})();
+
+// ── Initial render if plan exists ────────────────────────────
+(function epTlInit() {
+  const saved = epLoadPlan();
+  if (saved) setTimeout(function() { epRenderDailyTimeline(saved); }, 120);
+})();
+
+/* ══ END DAILY STUDY TIMELINE ══ */
+
+/* ══ END UPCOMING EXAMS WIDGET ══ */
 </script>
 </body>
 </html>
