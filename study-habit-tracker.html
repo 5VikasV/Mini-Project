@@ -5629,13 +5629,26 @@ function renderSubjectInsights(entries) {
     return;
   }
 
-  const strong = stats[0];
-  const weak   = stats[stats.length - 1];
+  // Detect ties: a subject is only "strongest" if its score is strictly
+  // higher than every other subject's score. Likewise for "weakest".
+  const topScore    = stats[0].avgProd;
+  const bottomScore = stats[stats.length - 1].avgProd;
+  const allEqual    = topScore === bottomScore;
+
+  // Count how many subjects share the top / bottom score
+  const topTie    = allEqual || stats.filter(s => s.avgProd === topScore).length > 1;
+  const bottomTie = allEqual || stats.filter(s => s.avgProd === bottomScore).length > 1;
+
+  const strong = topTie    ? null : stats[0];
+  const weak   = bottomTie ? null : stats[stats.length - 1];
 
   const barsHTML = `
     <div class="subject-bars">
       ${stats.map((s, i) => {
-        const cls = i === 0 ? 'strong' : i === stats.length - 1 ? 'weak' : '';
+        // Only highlight as strong/weak when there is no tie
+        const cls = (!topTie    && i === 0)                   ? 'strong'
+                  : (!bottomTie && i === stats.length - 1)    ? 'weak'
+                  : '';
         return `
           <div class="sub-row">
             <span class="sub-label" title="${s.name}">${s.name}</span>
@@ -5653,11 +5666,11 @@ function renderSubjectInsights(entries) {
     <div class="subject-grid">
       <div class="pattern-item highlight">
         <div class="p-label">Strong Subject</div>
-        <div class="p-value">${strong.name}</div>
+        <div class="p-value">${strong ? strong.name : '<span style="color:var(--muted-2);font-size:0.88em;font-weight:400">No clear strongest subject</span>'}</div>
       </div>
       <div class="pattern-item" style="border-color:#d4b87a;background:var(--accent-dim)">
         <div class="p-label" style="color:var(--muted)">Weak Subject</div>
-        <div class="p-value" style="color:var(--accent)">${weak.name}</div>
+        <div class="p-value" style="color:var(--accent)">${weak ? weak.name : '<span style="color:var(--muted-2);font-size:0.88em;font-weight:400">No clear weakest subject</span>'}</div>
       </div>
     </div>
     <hr class="pattern-divider"/>
@@ -6274,13 +6287,17 @@ function renderProgressTracking(entries) {
   });
 
   const subjectAnalysis = Object.entries(subjectMap)
-    .filter(([, prods]) => prods.length >= 2)
     .map(([name, prods]) => {
+      // With only 1 session there is no trend to compute — treat as stable
+      if (prods.length < 2) {
+        const only = avg(prods);
+        return { name, avgFirst: only, avgRecent: only, delta: 0, trend: 'stable', count: prods.length };
+      }
       const mid = Math.ceil(prods.length / 2);
       const firstHalf  = prods.slice(0, mid);
       const secondHalf = prods.slice(mid);
       const avgFirst  = avg(firstHalf);
-      const avgRecent = avg(secondHalf);
+      const avgRecent = secondHalf.length ? avg(secondHalf) : avgFirst;
       const delta = parseFloat((avgRecent - avgFirst).toFixed(2));
       let trend;
       if      (delta >=  0.3) trend = 'improving';
@@ -6322,7 +6339,7 @@ function renderProgressTracking(entries) {
     <div class="progress-section-label">Subject Improvement Analysis</div>
     <div class="progress-subject-list">
       ${subjectAnalysis.map((s, i) => {
-        const barWidth = ((s.avgRecent / 5) * 100).toFixed(1);
+        const barWidth = (((s.avgRecent || 0) / 5) * 100).toFixed(1);
         const deltaStr = s.delta > 0 ? '+' + s.delta.toFixed(1) : s.delta.toFixed(1);
         const deltaClass = s.delta > 0 ? 'pos' : s.delta < 0 ? 'neg' : 'neu';
         const trendLabel = { improving: '↑ Improving', stable: '→ Stable', declining: '↓ Declining' }[s.trend];
