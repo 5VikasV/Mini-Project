@@ -11,29 +11,29 @@
 html { overflow-x: hidden; scroll-behavior: smooth; }
 
 :root {
-  --bg:         #f7f7f6;
+  --bg:         #f5f4f2;
   --surface:    #ffffff;
-  --border:     #e4e2de;
-  --border-2:   #d0cdc8;
-  --text:       #1c1917;
-  --text-2:     #44403c;
-  --muted:      #78716c;
-  --muted-2:    #a8a29e;
-  --accent:     #b45309;
-  --accent-dim: #fef3c7;
-  --accent-border: #d97706;
-  --green:      #15803d;
-  --green-dim:  #dcfce7;
-  --green-border: #86efac;
-  --red:        #b91c1c;
-  --red-dim:    #fee2e2;
-  --red-border: #fca5a5;
-  --indigo:     #4338ca;
-  --indigo-dim: #eef2ff;
-  --indigo-border: #a5b4fc;
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow:     0 2px 8px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --border:     #e8e6e1;
+  --border-2:   #d4d2cc;
+  --text:       #1e1c1a;
+  --text-2:     #3e3c39;
+  --muted:      #6e6b66;
+  --muted-2:    #9e9b96;
+  --accent:     #7c6030;
+  --accent-dim: #f5efe3;
+  --accent-border: #b89a68;
+  --green:      #3a6b4e;
+  --green-dim:  #eaf2ec;
+  --green-border: #98bfa7;
+  --red:        #8c3a35;
+  --red-dim:    #f5ebe9;
+  --red-border: #c49490;
+  --indigo:     #4a5480;
+  --indigo-dim: #eeeff6;
+  --indigo-border: #9aa0c0;
+  --shadow-sm:  0 1px 4px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow:     0 2px 10px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+  --shadow-md:  0 4px 18px rgba(0,0,0,0.05), 0 2px 6px rgba(0,0,0,0.02);
   --radius:     8px;
   --radius-sm:  5px;
   --sidebar-w:  228px;
@@ -211,7 +211,7 @@ body {
 .topbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 18px 28px 16px;
+  padding: 20px 32px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -274,7 +274,7 @@ body {
 
 /* ── CONTENT ──────────────────────────────────────────────── */
 .content {
-  padding: 24px 28px 40px;
+  padding: 32px 32px 56px;
   flex: 1;
 }
 
@@ -293,7 +293,7 @@ body {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .panel-title {
@@ -313,8 +313,8 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px 22px;
-  margin-bottom: 14px;
+  padding: 28px 30px;
+  margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -322,9 +322,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 13px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .card-title {
@@ -335,7 +335,7 @@ body {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .card-title-icon {
@@ -360,15 +360,15 @@ body {
 .dash-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 18px;
+  margin-bottom: 20px;
 }
 
 .dash-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 18px;
+  margin-bottom: 20px;
 }
 
 /* ── STAT CARDS ──────────────────────────────────────────── */
@@ -376,7 +376,7 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px 16px;
+  padding: 24px 24px 20px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -387,7 +387,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
 
 .stat-label {
@@ -425,10 +425,10 @@ body {
 }
 
 .stat-trend {
-  margin-top: 10px;
+  margin-top: 16px;
   font-size: 11.5px;
   color: var(--muted);
-  padding-top: 10px;
+  padding-top: 14px;
   border-top: 1px solid var(--border);
 }
 
@@ -437,24 +437,24 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 11px;
-  padding: 11px 13px;
+  padding: 13px 15px;
   border-radius: var(--radius-sm);
   font-size: 12.5px;
   line-height: 1.6;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   border: 1px solid transparent;
 }
 
 .insight.positive {
-  background: #f6faf7;
-  border-color: #d1e8d8;
-  color: #2d5a3d;
+  background: #eef4f0;
+  border-color: #b0d0bc;
+  color: #234533;
 }
 
 .insight.warning {
-  background: #fdf8f0;
-  border-color: #e8d5b0;
-  color: #6b4c1e;
+  background: #f5efe3;
+  border-color: #c8b490;
+  color: #4a3015;
 }
 
 .insight-dot {
@@ -465,7 +465,7 @@ body {
   margin-top: 5px;
 }
 
-.insight.positive .insight-dot { background: #3a7d52; }
+.insight.positive .insight-dot { background: #3a6b4e; }
 .insight.warning  .insight-dot { background: #b07a2e; }
 
 .insight .emoji {
@@ -492,8 +492,8 @@ body {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .field label {
@@ -578,7 +578,7 @@ tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: var(--bg); }
 
 tbody td {
-  padding: 10px 10px;
+  padding: 12px 10px;
   color: var(--text-2);
   vertical-align: middle;
 }
@@ -795,7 +795,7 @@ tbody td {
   margin-bottom: 4px;
 }
 
-.pattern-item.highlight .p-label { color: #166534; }
+.pattern-item.highlight .p-label { color: #2e5540; }
 
 .pattern-item .p-value {
   font-size: 13.5px;
@@ -809,7 +809,8 @@ tbody td {
 .pattern-divider {
   border: none;
   border-top: 1px solid var(--border);
-  margin: 14px 0;
+  margin: 20px 0;
+  opacity: 0.5;
 }
 
 /* Bars */
@@ -870,8 +871,8 @@ tbody td {
 .progress-subject-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .progress-subject-row {
@@ -986,13 +987,13 @@ tbody td {
   color: var(--text);
 }
 
-.weekly-trend-box.wt-improving { background: #f6faf7; border-color: #c8dece; }
-.weekly-trend-box.wt-improving .wt-value { color: #2d5a3d; }
-.weekly-trend-box.wt-improving .wt-icon  { color: #3a7d52; }
+.weekly-trend-box.wt-improving { background: #eef4f0; border-color: #a8c8b4; }
+.weekly-trend-box.wt-improving .wt-value { color: #234533; }
+.weekly-trend-box.wt-improving .wt-icon  { color: #3a6b4e; }
 
-.weekly-trend-box.wt-declining { background: #fdf6f5; border-color: #e0c8c2; }
-.weekly-trend-box.wt-declining .wt-value { color: #7a3228; }
-.weekly-trend-box.wt-declining .wt-icon  { color: #9a4438; }
+.weekly-trend-box.wt-declining { background: #f8f0ee; border-color: #c4a8a4; }
+.weekly-trend-box.wt-declining .wt-value { color: #6a2a28; }
+.weekly-trend-box.wt-declining .wt-icon  { color: #7a3a34; }
 
 .weekly-trend-box.wt-stable { background: var(--bg); border-color: var(--border-2); }
 .weekly-trend-box.wt-stable .wt-value { color: var(--text-2); }
@@ -1004,8 +1005,8 @@ tbody td {
   letter-spacing: 0.07em;
   color: var(--muted);
   font-weight: 600;
-  margin-bottom: 8px;
-  margin-top: 16px;
+  margin-bottom: 10px;
+  margin-top: 24px;
 }
 
 .progress-section-label:first-child { margin-top: 0; }
@@ -1015,11 +1016,11 @@ tbody td {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: var(--radius-sm);
   background: var(--bg);
   border: 1px solid var(--border);
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .aba-style-icon {
@@ -1084,16 +1085,16 @@ tbody td {
   gap: 11px;
   padding: 12px 14px;
   border-radius: var(--radius-sm);
-  background: #fdf8f6;
-  border: 1px solid #e8cfc6;
+  background: #f6eeec;
+  border: 1px solid #c4a8a4;
   margin-bottom: 10px;
 }
 
 .aba-burnout-icon {
   width: 22px; height: 22px;
   border-radius: 4px;
-  background: #fdeee8;
-  border: 1px solid #e8cfc6;
+  background: #f5ebe9;
+  border: 1px solid #c4a8a4;
   display: flex; align-items: center; justify-content: center;
   font-size: 11px;
   flex-shrink: 0;
@@ -1104,13 +1105,13 @@ tbody td {
 .aba-burnout-title {
   font-size: 12.5px;
   font-weight: 600;
-  color: #9a3c28;
+  color: #7a3230;
   margin-bottom: 4px;
 }
 
 .aba-burnout-desc {
   font-size: 12px;
-  color: #7a4535;
+  color: #6a3830;
   line-height: 1.6;
 }
 
@@ -1127,9 +1128,9 @@ tbody td {
   border-radius: 3px;
   font-size: 10.5px;
   font-weight: 500;
-  background: #fdeee8;
-  color: #9a3c28;
-  border: 1px solid #e8cfc6;
+  background: #f5ebe9;
+  color: #7a3230;
+  border: 1px solid #c4a8a4;
   font-family: var(--mono);
 }
 
@@ -1139,10 +1140,10 @@ tbody td {
   gap: 10px;
   padding: 11px 13px;
   border-radius: var(--radius-sm);
-  background: #f6faf7;
-  border: 1px solid #c8dece;
+  background: #eef4f0;
+  border: 1px solid #a8c8b4;
   font-size: 12.5px;
-  color: #2d5a3d;
+  color: #234533;
   margin-bottom: 10px;
 }
 
@@ -1152,8 +1153,8 @@ tbody td {
   letter-spacing: 0.08em;
   color: var(--muted-2);
   font-weight: 600;
-  margin-bottom: 8px;
-  margin-top: 18px;
+  margin-bottom: 10px;
+  margin-top: 24px;
 }
 
 .aba-section-label:first-child { margin-top: 0; }
@@ -1183,8 +1184,8 @@ tbody td {
 .replay-summary-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .replay-stat {
@@ -1206,9 +1207,9 @@ tbody td {
   background: var(--border);
 }
 
-.replay-stat.rs-accent::after  { background: #3a7d52; }
-.replay-stat.rs-amber::after   { background: #c8951a; }
-.replay-stat.rs-indigo::after  { background: #4338ca; }
+.replay-stat.rs-accent::after  { background: #3a6b4e; }
+.replay-stat.rs-amber::after   { background: #8c7030; }
+.replay-stat.rs-indigo::after  { background: #4a5480; }
 .replay-stat.rs-neutral::after { background: var(--muted-2); }
 
 .replay-stat .rs-label {
@@ -1258,7 +1259,7 @@ tbody td {
 
 .replay-event {
   position: relative;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .replay-event-dot {
@@ -1305,17 +1306,17 @@ tbody td {
   border-color: var(--border-2);
 }
 
-.replay-block.rb-high   { border-left: 2px solid #3a7d52; }
-.replay-block.rb-mid    { border-left: 2px solid #c8951a; }
-.replay-block.rb-low    { border-left: 2px solid #b91c1c; }
+.replay-block.rb-high   { border-left: 2px solid #3a6b4e; }
+.replay-block.rb-mid    { border-left: 2px solid #8c7030; }
+.replay-block.rb-low    { border-left: 2px solid #8c3a35; }
 .replay-block.rb-break  { border-left: 2px solid var(--border-2); background: var(--bg); opacity: 0.6; }
-.replay-block.rb-streak { border-left: 2px solid #4338ca; }
+.replay-block.rb-streak { border-left: 2px solid #4a5480; }
 
-.replay-event-dot.dot-high   { background: #3a7d52; box-shadow: 0 0 0 1px #86efac; }
-.replay-event-dot.dot-mid    { background: #c8951a; box-shadow: 0 0 0 1px #fcd34d; }
-.replay-event-dot.dot-low    { background: #b91c1c; box-shadow: 0 0 0 1px #fca5a5; }
+.replay-event-dot.dot-high   { background: #3a6b4e; box-shadow: 0 0 0 1px #98bfa7; }
+.replay-event-dot.dot-mid    { background: #8c7030; box-shadow: 0 0 0 1px #c8a85a; }
+.replay-event-dot.dot-low    { background: #8c3a35; box-shadow: 0 0 0 1px #c49490; }
 .replay-event-dot.dot-break  { background: var(--border-2); box-shadow: 0 0 0 1px var(--border); }
-.replay-event-dot.dot-streak { background: #4338ca; box-shadow: 0 0 0 1px #a5b4fc; }
+.replay-event-dot.dot-streak { background: #4a5480; box-shadow: 0 0 0 1px #9aa0c0; }
 
 .rb-index {
   font-family: var(--mono);
@@ -1370,15 +1371,15 @@ tbody td {
   white-space: nowrap;
 }
 
-.rb-tag.t-prod-high  { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-.rb-tag.t-prod-mid   { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
-.rb-tag.t-prod-low   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-.rb-tag.t-hours      { background: var(--indigo-dim); color: #3730a3; border: 1px solid var(--indigo-border); }
+.rb-tag.t-prod-high  { background: #eaf2ec; color: #2e5540; border: 1px solid #98bfa7; }
+.rb-tag.t-prod-mid   { background: #f8f2e4; color: #6a4820; border: 1px solid #d4b87a; }
+.rb-tag.t-prod-low   { background: #f5ebe9; color: #7a3230; border: 1px solid #c49490; }
+.rb-tag.t-hours      { background: var(--indigo-dim); color: #3c4470; border: 1px solid var(--indigo-border); }
 .rb-tag.t-mood       { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
-.rb-tag.t-streak     { background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe; }
+.rb-tag.t-streak     { background: #eeeff6; color: #3c4470; border: 1px solid #b0b8d8; }
 .rb-tag.t-break      { background: var(--bg); color: var(--muted-2); border: 1px solid var(--border); }
-.rb-tag.t-peak       { background: #f0fdf4; color: #14532d; border: 1px solid #86efac; font-weight: 600; }
-.rb-tag.t-drop       { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+.rb-tag.t-peak       { background: #eaf2ec; color: #1e3d2a; border: 1px solid #98bfa7; font-weight: 600; }
+.rb-tag.t-drop       { background: #f5ede0; color: #9a3412; border: 1px solid #d4b88a; }
 
 .rb-event-label {
   font-size: 9.5px;
@@ -1393,7 +1394,7 @@ tbody td {
 
 /* ── Trend visualization ── */
 .replay-trend-section {
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
 
 .replay-trend-chart-area {
@@ -1449,11 +1450,11 @@ tbody td {
   transition: opacity 0.15s;
 }
 
-.replay-trend-bar.prod-5 { background: #3a7d52; }
-.replay-trend-bar.prod-4 { background: #6aab80; }
-.replay-trend-bar.prod-3 { background: #c8951a; }
-.replay-trend-bar.prod-2 { background: #d97706; }
-.replay-trend-bar.prod-1 { background: #b91c1c; }
+.replay-trend-bar.prod-5 { background: #3a6b4e; }
+.replay-trend-bar.prod-4 { background: #7da890; }
+.replay-trend-bar.prod-3 { background: #8c7030; }
+.replay-trend-bar.prod-2 { background: #a08040; }
+.replay-trend-bar.prod-1 { background: #8c3a35; }
 
 .replay-trend-axis {
   display: flex;
@@ -1489,10 +1490,10 @@ tbody td {
   overflow: hidden;
 }
 
-.replay-insight-item.ri-green  { border-color: #c8dece; }
-.replay-insight-item.ri-amber  { border-color: #e8d5b0; }
-.replay-insight-item.ri-indigo { border-color: #c7d2fe; }
-.replay-insight-item.ri-red    { border-color: #fecaca; }
+.replay-insight-item.ri-green  { border-color: #a8c8b4; }
+.replay-insight-item.ri-amber  { border-color: #c8b490; }
+.replay-insight-item.ri-indigo { border-color: #b0b8d8; }
+.replay-insight-item.ri-red    { border-color: #c49490; }
 
 .replay-insight-icon {
   width: 28px;
@@ -1507,19 +1508,19 @@ tbody td {
   flex-shrink: 0;
 }
 
-.replay-insight-item.ri-green  .replay-insight-icon { background: #f0fdf4; color: #3a7d52; }
-.replay-insight-item.ri-amber  .replay-insight-icon { background: #fffbeb; color: #b07a2e; }
-.replay-insight-item.ri-indigo .replay-insight-icon { background: #eef2ff; color: #4338ca; }
-.replay-insight-item.ri-red    .replay-insight-icon { background: #fef2f2; color: #b91c1c; }
+.replay-insight-item.ri-green  .replay-insight-icon { background: #eaf2ec; color: #3a6b4e; }
+.replay-insight-item.ri-amber  .replay-insight-icon { background: #f8f2e4; color: #b07a2e; }
+.replay-insight-item.ri-indigo .replay-insight-icon { background: #eeeff6; color: #4a5480; }
+.replay-insight-item.ri-red    .replay-insight-icon { background: #f5ebe9; color: #8c3a35; }
 
 .replay-insight-body {
   padding: 11px 13px;
 }
 
-.replay-insight-item.ri-green  .replay-insight-body { color: #1e3a2a; }
-.replay-insight-item.ri-amber  .replay-insight-body { color: #5a3d18; }
-.replay-insight-item.ri-indigo .replay-insight-body { color: #2e2777; }
-.replay-insight-item.ri-red    .replay-insight-body { color: #7f1d1d; }
+.replay-insight-item.ri-green  .replay-insight-body { color: #1a3028; }
+.replay-insight-item.ri-amber  .replay-insight-body { color: #4a3015; }
+.replay-insight-item.ri-indigo .replay-insight-body { color: #32407a; }
+.replay-insight-item.ri-red    .replay-insight-body { color: #6a2a28; }
 
 .replay-section-label {
   font-size: 10px;
@@ -1527,8 +1528,8 @@ tbody td {
   letter-spacing: 0.09em;
   color: var(--muted-2);
   font-weight: 600;
-  margin-bottom: 8px;
-  margin-top: 18px;
+  margin-bottom: 10px;
+  margin-top: 24px;
 }
 
 .replay-section-label:first-child { margin-top: 0; }
@@ -1577,7 +1578,7 @@ tbody td {
 
 .advisor-result {
   display: none;
-  margin-top: 20px;
+  margin-top: 28px;
   animation: fadeUp 0.25s ease both;
 }
 
@@ -1595,17 +1596,17 @@ tbody td {
   box-shadow: var(--shadow-sm);
 }
 
-.adv-context-bar.mood-high { border-color: #c8dece; }
+.adv-context-bar.mood-high { border-color: #a8c8b4; }
 .adv-context-bar.mood-mid  { border-color: var(--border-2); }
-.adv-context-bar.mood-low  { border-color: #e0d0b0; }
+.adv-context-bar.mood-low  { border-color: #c8b890; }
 
 .adv-context-stripe {
   width: 4px;
   flex-shrink: 0;
 }
-.mood-high .adv-context-stripe { background: #3a7d52; }
+.mood-high .adv-context-stripe { background: #3a6b4e; }
 .mood-mid  .adv-context-stripe { background: var(--muted-2); }
-.mood-low  .adv-context-stripe { background: #c8951a; }
+.mood-low  .adv-context-stripe { background: #8c7030; }
 
 .adv-context-body {
   flex: 1;
@@ -1639,9 +1640,9 @@ tbody td {
   letter-spacing: 0.06em;
 }
 
-.mood-high .adv-context-status { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.mood-high .adv-context-status { background: #eaf2ec; color: #2e5540; border: 1px solid #98bfa7; }
 .mood-mid  .adv-context-status { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
-.mood-low  .adv-context-status { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.mood-low  .adv-context-status { background: #f8f2e4; color: #6a4820; border: 1px solid #d4b87a; }
 
 .adv-context-title {
   font-size: 13.5px;
@@ -1785,17 +1786,17 @@ tbody td {
   margin-left: 8px;
 }
 
-.plan-step.step-weak   { border-color: #ead9b6; background: #fefbf4; }
-.plan-step.step-weak   .step-time    { color: #a0732a; }
-.plan-step.step-weak   .step-subject { color: #4a3218; }
-.plan-step.step-weak   .step-marker  { background: #c8951a; }
-.plan-step.step-weak   .step-tag-pill { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.plan-step.step-weak   { border-color: #c8b490; background: #f8f4ea; }
+.plan-step.step-weak   .step-time    { color: #7c5c28; }
+.plan-step.step-weak   .step-subject { color: #3c2810; }
+.plan-step.step-weak   .step-marker  { background: #8c7030; }
+.plan-step.step-weak   .step-tag-pill { background: #f8f2e4; color: #6a4820; border: 1px solid #d4b87a; }
 
-.plan-step.step-strong { border-color: #c0dbc8; background: #f5faf7; }
-.plan-step.step-strong .step-time    { color: #2e6b44; }
-.plan-step.step-strong .step-subject { color: #1a3d28; }
-.plan-step.step-strong .step-marker  { background: #3a7d52; }
-.plan-step.step-strong .step-tag-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.plan-step.step-strong { border-color: #a8c8b4; background: #eef4f0; }
+.plan-step.step-strong .step-time    { color: #2e5540; }
+.plan-step.step-strong .step-subject { color: #1a3028; }
+.plan-step.step-strong .step-marker  { background: #3a6b4e; }
+.plan-step.step-strong .step-tag-pill { background: #eaf2ec; color: #2e5540; border: 1px solid #98bfa7; }
 
 .plan-step.step-other  { border-color: var(--border); background: var(--surface); }
 .plan-step.step-other  .step-time    { color: var(--muted); }
@@ -1869,9 +1870,9 @@ tbody td {
   font-family: var(--mono);
 }
 
-.adv-reason-indicator.ind-green  { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-.adv-reason-indicator.ind-amber  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
-.adv-reason-indicator.ind-indigo { background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe; }
+.adv-reason-indicator.ind-green  { background: #eaf2ec; color: #2e5540; border: 1px solid #98bfa7; }
+.adv-reason-indicator.ind-amber  { background: #f8f2e4; color: #6a4820; border: 1px solid #d4b87a; }
+.adv-reason-indicator.ind-indigo { background: #eeeff6; color: #3c4470; border: 1px solid #b0b8d8; }
 .adv-reason-indicator.ind-neutral { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
 
 .advisor-no-data {
@@ -1896,9 +1897,9 @@ tbody td {
   border: 1px solid var(--border);
 }
 
-.advisor-explanation.mood-high { background: #f6faf7; color: #2d5a3d; border-color: #c8dece; }
+.advisor-explanation.mood-high { background: #eef4f0; color: #234533; border-color: #a8c8b4; }
 .advisor-explanation.mood-mid  { background: var(--bg); color: var(--text-2); border-color: var(--border); }
-.advisor-explanation.mood-low  { background: #fdf8f0; color: #5a3d18; border-color: #e0d0b0; }
+.advisor-explanation.mood-low  { background: #f5efe3; color: #4a3015; border-color: #c8b890; }
 
 /* ── ML PREDICTION BOX ──────────────────────────────────── */
 #mlPrediction {
@@ -1928,8 +1929,8 @@ tbody td {
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--muted-2);
-  margin-bottom: 10px;
-  margin-top: 18px;
+  margin-bottom: 12px;
+  margin-top: 28px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1940,14 +1941,15 @@ tbody td {
   flex: 1;
   height: 1px;
   background: var(--border);
+  opacity: 0.5;
 }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 960px) {
   .form-row { grid-template-columns: 1fr 1fr; }
   .dash-grid-3 { grid-template-columns: 1fr 1fr; }
-  .content { padding: 20px 20px 32px; }
-  .topbar { padding: 14px 20px; }
+  .content { padding: 24px 24px 40px; }
+  .topbar { padding: 16px 24px; }
 }
 
 @media (max-width: 700px) {
@@ -2144,8 +2146,8 @@ tbody td {
 .ep-phase-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 18px;
+  margin-bottom: 20px;
 }
 
 .ep-phase-card {
@@ -2399,13 +2401,13 @@ tbody td {
 }
 
 .ep-prog-bar.epb-green  {
-  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+  background: linear-gradient(90deg, #3a6b4e 0%, #5a9e74 100%);
 }
 .ep-prog-bar.epb-indigo {
-  background: linear-gradient(90deg, #4338ca 0%, #818cf8 100%);
+  background: linear-gradient(90deg, #4a5480 0%, #8a95c0 100%);
 }
 .ep-prog-bar.epb-amber  {
-  background: linear-gradient(90deg, #b45309 0%, #f59e0b 100%);
+  background: linear-gradient(90deg, #7c6030 0%, #b09050 100%);
 }
 .ep-prog-bar.epb-muted  {
   background: linear-gradient(90deg, var(--border-2) 0%, var(--muted-2) 100%);
@@ -2423,7 +2425,7 @@ tbody td {
 }
 
 .ep-prog-bar.epb-green.shimmer {
-  background-image: linear-gradient(90deg, #15803d 0%, #22c55e 40%, #4ade80 50%, #22c55e 60%, #15803d 100%);
+  background-image: linear-gradient(90deg, #3a6b4e 0%, #5a9e74 40%, #7dbf94 50%, #5a9e74 60%, #3a6b4e 100%);
 }
 
 /* Module counter strip */
@@ -2448,7 +2450,7 @@ tbody td {
   flex-shrink: 0;
 }
 
-.ep-prog-count-dot.dot-done      { background: #22c55e; }
+.ep-prog-count-dot.dot-done      { background: #5a9e74; }
 .ep-prog-count-dot.dot-remaining { background: var(--border-2); }
 
 .ep-prog-count-num {
@@ -2474,7 +2476,7 @@ tbody td {
   gap: 8px;
 }
 
-.ep-prog-blocks-fill   { color: #15803d; }
+.ep-prog-blocks-fill   { color: #3a6b4e; }
 .ep-prog-blocks-empty  { color: var(--border-2); }
 .ep-prog-blocks-pct    {
   font-size: 12px;
@@ -2500,7 +2502,7 @@ tbody td {
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 3px;
-  background: linear-gradient(to bottom, #4338ca, #22c55e);
+  background: linear-gradient(to bottom, #4a5480, #5a9e74);
   border-radius: 0;
 }
 
@@ -2592,7 +2594,7 @@ tbody td {
 .ep-op-track-fill {
   height: 100%;
   border-radius: 8px;
-  background: linear-gradient(90deg, #4338ca 0%, #22c55e 100%);
+  background: linear-gradient(90deg, #4a5480 0%, #5a9e74 100%);
   width: 0;
   transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
@@ -2623,7 +2625,7 @@ tbody td {
   line-height: 1;
 }
 
-.ep-op-blocks-fill  { color: #22c55e; }
+.ep-op-blocks-fill  { color: #5a9e74; }
 .ep-op-blocks-empty { color: var(--border-2); }
 
 .ep-op-blocks-label {
@@ -2809,13 +2811,13 @@ tbody td {
 }
 
 .ep-phase-prog-bar.phase-1 {
-  background: linear-gradient(90deg, #4338ca 0%, #818cf8 100%);
+  background: linear-gradient(90deg, #4a5480 0%, #8a95c0 100%);
 }
 .ep-phase-prog-bar.phase-2 {
-  background: linear-gradient(90deg, #b45309 0%, #f59e0b 100%);
+  background: linear-gradient(90deg, #7c6030 0%, #b09050 100%);
 }
 .ep-phase-prog-bar.phase-3 {
-  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+  background: linear-gradient(90deg, #3a6b4e 0%, #5a9e74 100%);
 }
 
 .ep-phase-prog-counts {
@@ -2932,9 +2934,9 @@ tbody td {
   z-index: 1;
 }
 
-.ep-tl-day.tl-phase-1 .ep-tl-dot { background: #818cf8; box-shadow: 0 0 0 1px #818cf8; }
-.ep-tl-day.tl-phase-2 .ep-tl-dot { background: #d97706; box-shadow: 0 0 0 1px #d97706; }
-.ep-tl-day.tl-phase-3 .ep-tl-dot { background: #16a34a; box-shadow: 0 0 0 1px #16a34a; }
+.ep-tl-day.tl-phase-1 .ep-tl-dot { background: #8a95c0; box-shadow: 0 0 0 1px #8a95c0; }
+.ep-tl-day.tl-phase-2 .ep-tl-dot { background: #a08040; box-shadow: 0 0 0 1px #a08040; }
+.ep-tl-day.tl-phase-3 .ep-tl-dot { background: #3a6b4e; box-shadow: 0 0 0 1px #3a6b4e; }
 
 .ep-tl-day.tl-today .ep-tl-dot {
   width: 12px;
@@ -2947,7 +2949,7 @@ tbody td {
 .ep-tl-day.tl-exam .ep-tl-dot {
   width: 12px;
   height: 12px;
-  background: #b91c1c;
+  background: #8c3a35;
   box-shadow: 0 0 0 3px rgba(185,28,28,0.15);
   border: 2px solid var(--surface);
 }
@@ -3019,7 +3021,7 @@ tbody td {
 
 /* Exam day */
 .ep-tl-day.tl-exam .ep-tl-row {
-  border-color: #fca5a5;
+  border-color: #c49490;
   background: #fff5f5;
 }
 
@@ -3030,10 +3032,10 @@ tbody td {
   flex-shrink: 0;
 }
 
-.tl-phase-1 .ep-tl-phase-pip { background: #818cf8; }
-.tl-phase-2 .ep-tl-phase-pip { background: #d97706; }
-.tl-phase-3 .ep-tl-phase-pip { background: #16a34a; }
-.tl-exam .ep-tl-phase-pip    { background: #b91c1c; }
+.tl-phase-1 .ep-tl-phase-pip { background: #8a95c0; }
+.tl-phase-2 .ep-tl-phase-pip { background: #a08040; }
+.tl-phase-3 .ep-tl-phase-pip { background: #3a6b4e; }
+.tl-exam .ep-tl-phase-pip    { background: #8c3a35; }
 
 .ep-tl-text {
   flex: 1;
@@ -3080,16 +3082,16 @@ tbody td {
 }
 
 .ep-tl-badge.tl-b-exam {
-  background: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+  background: #f5ebe9;
+  color: #8c3a35;
+  border: 1px solid #c49490;
   animation: ep-tl-pulse 2.5s ease-in-out infinite;
 }
 
 .ep-tl-badge.tl-b-p1 {
-  background: #eef2ff;
-  color: #4338ca;
-  border: 1px solid #c7d2fe;
+  background: #eeeff6;
+  color: #4a5480;
+  border: 1px solid #b0b8d8;
 }
 .ep-tl-badge.tl-b-p2 {
   background: var(--accent-dim);
@@ -3125,7 +3127,7 @@ tbody td {
   gap: 9px;
   padding: 10px 13px;
   border-radius: var(--radius-sm);
-  border: 1px solid #fca5a5;
+  border: 1px solid #c49490;
   background: #fff5f5;
 }
 
@@ -3226,7 +3228,7 @@ tbody td {
 .ep-summary-card.sc-modules::before  { background: var(--muted-2); }
 .ep-summary-card.sc-done::before     { background: var(--green); }
 .ep-summary-card.sc-left::before     { background: var(--accent-border); }
-.ep-summary-card.sc-target::before   { background: #b91c1c; }
+.ep-summary-card.sc-target::before   { background: #8c3a35; }
 
 .ep-summary-label {
   font-size: 9.5px;
@@ -3248,7 +3250,7 @@ tbody td {
 
 .ep-summary-card.sc-done  .ep-summary-value { color: var(--green); }
 .ep-summary-card.sc-left  .ep-summary-value { color: var(--accent); }
-.ep-summary-card.sc-target .ep-summary-value { color: #b91c1c; }
+.ep-summary-card.sc-target .ep-summary-value { color: #8c3a35; }
 
 .ep-summary-sub {
   font-size: 10.5px;
@@ -3298,17 +3300,17 @@ tbody td {
   font-family: var(--mono);
 }
 
-.ep-verdict-bar.ep-on-track   { border-color: var(--green-border); background: #f6faf7; }
+.ep-verdict-bar.ep-on-track   { border-color: var(--green-border); background: #eef4f0; }
 .ep-verdict-bar.ep-on-track   .ep-verdict-stripe { background: var(--green); }
-.ep-verdict-bar.ep-on-track   .ep-verdict-body { color: #1e3a2a; }
+.ep-verdict-bar.ep-on-track   .ep-verdict-body { color: #1a3028; }
 
-.ep-verdict-bar.ep-behind     { border-color: #fde68a; background: #fffbeb; }
-.ep-verdict-bar.ep-behind     .ep-verdict-stripe { background: #d97706; }
+.ep-verdict-bar.ep-behind     { border-color: #d4b87a; background: #f8f2e4; }
+.ep-verdict-bar.ep-behind     .ep-verdict-stripe { background: #a08040; }
 .ep-verdict-bar.ep-behind     .ep-verdict-body { color: #78350f; }
 
 .ep-verdict-bar.ep-high-risk  { border-color: var(--red-border); background: var(--red-dim); }
 .ep-verdict-bar.ep-high-risk  .ep-verdict-stripe { background: var(--red); }
-.ep-verdict-bar.ep-high-risk  .ep-verdict-body { color: #7f1d1d; }
+.ep-verdict-bar.ep-high-risk  .ep-verdict-body { color: #6a2a28; }
 
 /* Feasibility status badge */
 .ep-feas-badge-pill {
@@ -3325,7 +3327,7 @@ tbody td {
 }
 
 .ep-feas-badge-pill.ep-on-track  { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
-.ep-feas-badge-pill.ep-behind    { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+.ep-feas-badge-pill.ep-behind    { background: #f5efe3; color: #7c6030; border: 1px solid #c8a85a; }
 .ep-feas-badge-pill.ep-high-risk { background: var(--red-dim);    color: var(--red);    border: 1px solid var(--red-border); }
 
 /* Metric tiles */
@@ -3488,7 +3490,7 @@ tbody td {
 }
 
 .ep-confidence-dot.filled.high   { background: var(--green); }
-.ep-confidence-dot.filled.medium { background: #d97706; }
+.ep-confidence-dot.filled.medium { background: #a08040; }
 .ep-confidence-dot.filled.low    { background: var(--red); }
 
 .ep-confidence-text {
@@ -3544,21 +3546,21 @@ tbody td {
 
 .ep-rec-body strong { color: var(--text); }
 
-.ep-rec-item.rec-green  { border-color: #c8dece; }
-.ep-rec-item.rec-green  .ep-rec-icon { background: #f0fdf4; color: #3a7d52; }
-.ep-rec-item.rec-green  .ep-rec-body { color: #1e3a2a; }
+.ep-rec-item.rec-green  { border-color: #a8c8b4; }
+.ep-rec-item.rec-green  .ep-rec-icon { background: #eaf2ec; color: #3a6b4e; }
+.ep-rec-item.rec-green  .ep-rec-body { color: #1a3028; }
 
-.ep-rec-item.rec-amber  { border-color: #e8d5b0; }
-.ep-rec-item.rec-amber  .ep-rec-icon { background: #fffbeb; color: #b07a2e; }
-.ep-rec-item.rec-amber  .ep-rec-body { color: #5a3d18; }
+.ep-rec-item.rec-amber  { border-color: #c8b490; }
+.ep-rec-item.rec-amber  .ep-rec-icon { background: #f8f2e4; color: #b07a2e; }
+.ep-rec-item.rec-amber  .ep-rec-body { color: #4a3015; }
 
-.ep-rec-item.rec-indigo { border-color: #c7d2fe; }
-.ep-rec-item.rec-indigo .ep-rec-icon { background: #eef2ff; color: #4338ca; }
-.ep-rec-item.rec-indigo .ep-rec-body { color: #2e2777; }
+.ep-rec-item.rec-indigo { border-color: #b0b8d8; }
+.ep-rec-item.rec-indigo .ep-rec-icon { background: #eeeff6; color: #4a5480; }
+.ep-rec-item.rec-indigo .ep-rec-body { color: #32407a; }
 
 .ep-rec-item.rec-red    { border-color: var(--red-border); }
 .ep-rec-item.rec-red    .ep-rec-icon { background: var(--red-dim); color: var(--red); }
-.ep-rec-item.rec-red    .ep-rec-body { color: #7f1d1d; }
+.ep-rec-item.rec-red    .ep-rec-body { color: #6a2a28; }
 
 /* ── END Feasibility CSS ─────────────────────────────────── */
 
@@ -3648,8 +3650,8 @@ tbody td {
   overflow: hidden;
 }
 
-.sp-priority-row.rank-1 { border-color: #fecaca; background: #fff8f8; }
-.sp-priority-row.rank-2 { border-color: #fde68a; background: #fffdf0; }
+.sp-priority-row.rank-1 { border-color: #c49490; background: #fff8f8; }
+.sp-priority-row.rank-2 { border-color: #d4b87a; background: #fffdf0; }
 .sp-priority-row.rank-3 { border-color: var(--indigo-border); background: #f8f9ff; }
 .sp-priority-row.rank-4 { border-color: var(--border-2); background: var(--surface); }
 
@@ -3666,8 +3668,8 @@ tbody td {
   flex-shrink: 0;
 }
 
-.rank-1 .sp-rank-badge { background: #fee2e2; color: #b91c1c; }
-.rank-2 .sp-rank-badge { background: #fef3c7; color: var(--accent); }
+.rank-1 .sp-rank-badge { background: #f5ebe9; color: #8c3a35; }
+.rank-2 .sp-rank-badge { background: #f5efe3; color: var(--accent); }
 .rank-3 .sp-rank-badge { background: var(--indigo-dim); color: var(--indigo); }
 .rank-4 .sp-rank-badge { background: var(--bg); color: var(--muted); }
 
@@ -3698,7 +3700,7 @@ tbody td {
   white-space: nowrap;
 }
 
-.sp-ptag.pt-exam  { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.sp-ptag.pt-exam  { background: #f5ebe9; color: #8c3a35; border: 1px solid #c49490; }
 .sp-ptag.pt-prod  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
 .sp-ptag.pt-mods  { background: var(--indigo-dim); color: var(--indigo); border: 1px solid var(--indigo-border); }
 .sp-ptag.pt-ok    { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
@@ -3718,7 +3720,7 @@ tbody td {
   transition: width 0.6s ease;
 }
 
-.rank-1 .sp-priority-bar { background: #b91c1c; }
+.rank-1 .sp-priority-bar { background: #8c3a35; }
 .rank-2 .sp-priority-bar { background: var(--accent-border); }
 .rank-3 .sp-priority-bar { background: var(--indigo); }
 .rank-4 .sp-priority-bar { background: var(--muted-2); }
@@ -3762,9 +3764,9 @@ tbody td {
 
 .sp-tl-phase:hover { opacity: 0.85; }
 
-.sp-tl-phase.tl-p1 { background: #818cf8; color: #fff; }
-.sp-tl-phase.tl-p2 { background: #d97706; color: #fff; }
-.sp-tl-phase.tl-p3 { background: #16a34a; color: #fff; }
+.sp-tl-phase.tl-p1 { background: #8a95c0; color: #fff; }
+.sp-tl-phase.tl-p2 { background: #a08040; color: #fff; }
+.sp-tl-phase.tl-p3 { background: #3a6b4e; color: #fff; }
 
 .sp-tl-phase.tl-today-marker::after {
   content: 'TODAY';
@@ -3885,7 +3887,7 @@ tbody td {
   background: var(--muted-2);
 }
 
-.sp-day-dot.prio-1 { background: #b91c1c; }
+.sp-day-dot.prio-1 { background: #8c3a35; }
 .sp-day-dot.prio-2 { background: var(--accent-border); }
 .sp-day-dot.prio-3 { background: var(--indigo); }
 .sp-day-dot.prio-n { background: var(--muted-2); }
@@ -3935,9 +3937,9 @@ tbody td {
   transition: background 0.3s;
 }
 
-.tt-card.tt-high   { --tt-accent: #b91c1c; }
-.tt-card.tt-medium { --tt-accent: #d97706; }
-.tt-card.tt-low    { --tt-accent: #15803d; }
+.tt-card.tt-high   { --tt-accent: #8c3a35; }
+.tt-card.tt-medium { --tt-accent: #a08040; }
+.tt-card.tt-low    { --tt-accent: #3a6b4e; }
 .tt-card.tt-none   { --tt-accent: var(--muted-2); }
 
 /* header row */
@@ -3978,7 +3980,7 @@ tbody td {
   font-family: var(--mono);
 }
 
-.tt-badge.tt-b-high   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.tt-badge.tt-b-high   { background: #f5ebe9; color: #8c3a35; border: 1px solid #c49490; }
 .tt-badge.tt-b-medium { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
 .tt-badge.tt-b-low    { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
 .tt-badge.tt-b-none   { background: var(--bg); color: var(--muted); border: 1px solid var(--border-2); }
@@ -4065,9 +4067,9 @@ tbody td {
   line-height: 1.1;
 }
 
-.tt-meta-value.tv-high   { color: #b91c1c; }
-.tt-meta-value.tv-medium { color: #b45309; }
-.tt-meta-value.tv-low    { color: #15803d; }
+.tt-meta-value.tv-high   { color: #8c3a35; }
+.tt-meta-value.tv-medium { color: #7c6030; }
+.tt-meta-value.tv-low    { color: #3a6b4e; }
 
 .tt-meta-sub {
   font-size: 11px;
@@ -4097,7 +4099,7 @@ tbody td {
   line-height: 1;
 }
 
-.tt-countdown-num.urgent { color: #b91c1c; }
+.tt-countdown-num.urgent { color: #8c3a35; }
 
 .tt-countdown-label {
   font-size: 10px;
@@ -4147,9 +4149,9 @@ tbody td {
   flex-shrink: 0;
 }
 
-.tt-footer-dot.fd-high   { background: #b91c1c; }
-.tt-footer-dot.fd-medium { background: #d97706; }
-.tt-footer-dot.fd-low    { background: #15803d; }
+.tt-footer-dot.fd-high   { background: #8c3a35; }
+.tt-footer-dot.fd-medium { background: #a08040; }
+.tt-footer-dot.fd-low    { background: #3a6b4e; }
 
 .tt-footer-reason {
   font-size: 11.5px;
@@ -4407,9 +4409,9 @@ tbody td {
   width: 3px;
 }
 
-.ue-item.ue-high::before   { background: #b91c1c; }
-.ue-item.ue-medium::before { background: #d97706; }
-.ue-item.ue-normal::before { background: #15803d; }
+.ue-item.ue-high::before   { background: #8c3a35; }
+.ue-item.ue-medium::before { background: #a08040; }
+.ue-item.ue-normal::before { background: #3a6b4e; }
 
 /* Countdown bubble */
 .ue-bubble {
@@ -4425,8 +4427,8 @@ tbody td {
   gap: 0;
 }
 
-.ue-item.ue-high   .ue-bubble { background: #fee2e2; border-color: #fecaca; }
-.ue-item.ue-medium .ue-bubble { background: var(--accent-dim); border-color: #fde68a; }
+.ue-item.ue-high   .ue-bubble { background: #f5ebe9; border-color: #c49490; }
+.ue-item.ue-medium .ue-bubble { background: var(--accent-dim); border-color: #d4b87a; }
 .ue-item.ue-normal .ue-bubble { background: var(--green-dim);  border-color: var(--green-border); }
 
 .ue-bubble-num {
@@ -4437,9 +4439,9 @@ tbody td {
   line-height: 1;
 }
 
-.ue-item.ue-high   .ue-bubble-num { color: #b91c1c; }
-.ue-item.ue-medium .ue-bubble-num { color: #b45309; }
-.ue-item.ue-normal .ue-bubble-num { color: #15803d; }
+.ue-item.ue-high   .ue-bubble-num { color: #8c3a35; }
+.ue-item.ue-medium .ue-bubble-num { color: #7c6030; }
+.ue-item.ue-normal .ue-bubble-num { color: #3a6b4e; }
 
 .ue-bubble-unit {
   font-size: 9px;
@@ -4448,9 +4450,9 @@ tbody td {
   letter-spacing: 0.07em;
 }
 
-.ue-item.ue-high   .ue-bubble-unit { color: #991b1b; }
-.ue-item.ue-medium .ue-bubble-unit { color: #92400e; }
-.ue-item.ue-normal .ue-bubble-unit { color: #166534; }
+.ue-item.ue-high   .ue-bubble-unit { color: #7a3230; }
+.ue-item.ue-medium .ue-bubble-unit { color: #6a4820; }
+.ue-item.ue-normal .ue-bubble-unit { color: #2e5540; }
 
 /* Exam info */
 .ue-info {
@@ -4488,7 +4490,7 @@ tbody td {
   white-space: nowrap;
 }
 
-.ue-item.ue-high   .ue-pill { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.ue-item.ue-high   .ue-pill { background: #f5ebe9; color: #8c3a35; border: 1px solid #c49490; }
 .ue-item.ue-medium .ue-pill { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
 .ue-item.ue-normal .ue-pill { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
 
@@ -4682,41 +4684,18 @@ tbody td {
     <div class="panel active" id="panel-dashboard">
       <div class="panel-header">
         <div class="panel-title">Dashboard</div>
-        <div class="panel-subtitle">Overview of your study performance</div>
+        <div class="panel-subtitle">Your study overview at a glance</div>
       </div>
 
-      <div class="dash-grid-3">
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-label">Avg Study Hours</div>
-            <span class="stat-badge amber">hrs / session</span>
-          </div>
-          <div class="stat-value" id="dashAvgHours">—</div>
-          <div class="stat-sub">hours per session</div>
-          <div class="stat-trend" id="dashHoursTrend">No data yet</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-label">Avg Productivity</div>
-            <span class="stat-badge green">out of 5</span>
-          </div>
-          <div class="stat-value" id="dashAvgProd">—</div>
-          <div class="stat-sub">productivity score</div>
-          <div class="stat-trend" id="dashProdTrend">No data yet</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-label">Total Sessions</div>
-            <span class="stat-badge indigo">logged</span>
-          </div>
-          <div class="stat-value" id="dashTotalSessions">—</div>
-          <div class="stat-sub">sessions recorded</div>
-          <div class="stat-trend" id="dashSessionsTrend">Start logging</div>
-        </div>
+      <!-- Hidden stat cards preserved for JS compat -->
+      <div style="display:none">
+        <div id="dashAvgHours"></div>
+        <div id="dashHoursTrend"></div>
+        <div id="dashAvgProd"></div>
+        <div id="dashProdTrend"></div>
+        <div id="dashTotalSessions"></div>
+        <div id="dashSessionsTrend"></div>
       </div>
-
 
       <!-- ══ TODAY'S TARGET CARD ══════════════════════════════════ -->
       <div class="tt-card tt-none" id="ttCard">
@@ -4779,41 +4758,47 @@ tbody td {
 
       </div><!-- /ueCard -->
 
-      <div class="dash-grid">
-        <div class="card">
-          <div class="card-title">
-            <span class="card-title-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
-            Quick Insights
-          </div>
-          <div id="dashInsights"><p class="no-insight">Add a few entries to see insights.</p></div>
+      <!-- ══ OVERALL PROGRESS ══════════════════════════════════ -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">
+          <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+          Overall Progress
         </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-            Best Study Pattern
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0">
+          <div style="padding:4px 16px 4px 0;border-right:1px solid var(--border)">
+            <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-2);margin-bottom:5px">Avg Hours / Session</div>
+            <div id="dashAvgHoursInline" style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--text);letter-spacing:-0.03em;line-height:1;margin-bottom:3px">—</div>
+            <div id="dashHoursTrendInline" style="font-size:11.5px;color:var(--muted)">No data yet</div>
           </div>
-          <div id="dashBestPattern"><p class="no-insight">Add at least 3 entries to see your best pattern.</p></div>
+          <div style="padding:4px 16px;border-right:1px solid var(--border)">
+            <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-2);margin-bottom:5px">Avg Productivity</div>
+            <div id="dashAvgProdInline" style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--text);letter-spacing:-0.03em;line-height:1;margin-bottom:3px">—</div>
+            <div id="dashProdTrendInline" style="font-size:11.5px;color:var(--muted)">No data yet</div>
+          </div>
+          <div style="padding:4px 0 4px 16px">
+            <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-2);margin-bottom:5px">Sessions Logged</div>
+            <div id="dashTotalSessionsInline" style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--text);letter-spacing:-0.03em;line-height:1;margin-bottom:3px">—</div>
+            <div id="dashSessionsTrendInline" style="font-size:11.5px;color:var(--muted)">Start logging</div>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title">
-          <span class="card-title-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
-          Productivity Over Time
-        </div>
-        <div class="chart-subtitle">Session-by-session productivity score (1–5). Each point is one logged session.</div>
-        <div class="chart-wrap"><canvas id="chart"></canvas></div>
-        <div class="chart-legend">
-          <div class="chart-legend-item">
-            <div class="chart-legend-line" style="background:#b45309"></div>
-            Productivity trend
+      <!-- ══ KEY INSIGHT ════════════════════════════════════════ -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">
+            <span class="card-title-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+            Key Insight
           </div>
-          <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background:#b45309"></div>
-            Individual session
-          </div>
+          <button onclick="showPanel('insights', document.querySelector('.nav-item[onclick*=insights]'))" style="font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--font);padding:0">View all →</button>
         </div>
+        <div id="dashInsights"><p class="no-insight">Add a few entries to see insights.</p></div>
+        <!-- Hidden compat target for Best Study Pattern (not shown on dashboard) -->
+        <div style="display:none" id="dashBestPattern"></div>
       </div>
+
+      <!-- Hidden chart canvas preserved for JS compat -->
+      <div style="display:none"><canvas id="chart"></canvas></div>
     </div>
 
     <!-- ══ SESSIONS ═══════════════════════════════════════════ -->
@@ -4925,11 +4910,11 @@ tbody td {
         <div class="chart-wrap"><canvas id="chartAnalytics"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item">
-            <div class="chart-legend-line" style="background:#b45309"></div>
+            <div class="chart-legend-line" style="background:#7c6030"></div>
             Trend line
           </div>
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background:#b45309;border:2px solid #fff;box-shadow:0 0 0 1.5px #b45309"></div>
+            <div class="chart-legend-dot" style="background:#7c6030;border:2px solid #fff;box-shadow:0 0 0 1.5px #7c6030"></div>
             Session point
           </div>
           <div class="chart-legend-item" style="margin-left:auto">
@@ -5042,9 +5027,9 @@ tbody td {
             <div style="font-size:11.5px;color:var(--muted);margin-left:25px">Each bar represents one session. Height maps to score (1–5).</div>
           </div>
           <div class="replay-legend">
-            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#3a7d52"></div>High 4–5</div>
-            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#c8951a"></div>Mid 3</div>
-            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#b91c1c"></div>Low 1–2</div>
+            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#3a6b4e"></div>High 4–5</div>
+            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#8c7030"></div>Mid 3</div>
+            <div class="replay-legend-item"><div class="replay-legend-swatch" style="background:#8c3a35"></div>Low 1–2</div>
           </div>
         </div>
         <div class="replay-trend-chart-area">
@@ -5068,13 +5053,13 @@ tbody td {
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
             <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)">
-              <div style="width:6px;height:6px;border-radius:50%;background:#3a7d52;box-shadow:0 0 0 1.5px #86efac"></div>High
+              <div style="width:6px;height:6px;border-radius:50%;background:#3a6b4e;box-shadow:0 0 0 1.5px #98bfa7"></div>High
             </div>
             <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)">
-              <div style="width:6px;height:6px;border-radius:50%;background:#c8951a;box-shadow:0 0 0 1.5px #fcd34d"></div>Mid
+              <div style="width:6px;height:6px;border-radius:50%;background:#8c7030;box-shadow:0 0 0 1.5px #c8a85a"></div>Mid
             </div>
             <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)">
-              <div style="width:6px;height:6px;border-radius:50%;background:#b91c1c;box-shadow:0 0 0 1.5px #fca5a5"></div>Low
+              <div style="width:6px;height:6px;border-radius:50%;background:#8c3a35;box-shadow:0 0 0 1.5px #c49490"></div>Low
             </div>
           </div>
         </div>
@@ -5670,7 +5655,7 @@ function renderSubjectInsights(entries) {
         <div class="p-label">Strong Subject</div>
         <div class="p-value">${strong.name}</div>
       </div>
-      <div class="pattern-item" style="border-color:#fde68a;background:var(--accent-dim)">
+      <div class="pattern-item" style="border-color:#d4b87a;background:var(--accent-dim)">
         <div class="p-label" style="color:var(--muted)">Weak Subject</div>
         <div class="p-value" style="color:var(--accent)">${weak.name}</div>
       </div>
@@ -6492,7 +6477,7 @@ function renderAIBehaviorAnalysis(entries) {
       <div class="aba-section-label">Fatigue &amp; Load Analysis</div>
       <div class="aba-burnout-box">
         <div class="aba-burnout-icon">
-          <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#9a3c28"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#7a3230"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>
         <div class="aba-burnout-body">
           <div class="aba-burnout-title">Performance decline indicators detected.</div>
@@ -6506,7 +6491,7 @@ function renderAIBehaviorAnalysis(entries) {
     : `
       <div class="aba-section-label">Fatigue &amp; Load Analysis</div>
       <div class="aba-ok-box">
-        <span style="font-family:var(--mono);font-size:12px;font-weight:600;color:#3a7d52">✓</span>
+        <span style="font-family:var(--mono);font-size:12px;font-weight:600;color:#3a6b4e">✓</span>
         <span>No significant fatigue indicators detected. Hours, cognitive state, and productivity output remain within balanced ranges.</span>
       </div>
     `;
@@ -6859,6 +6844,19 @@ function render() {
   if (dht) dht.textContent = avgH !== null ? (avgH <= 2 ? 'Short sessions' : avgH <= 4 ? 'Balanced duration' : 'Long sessions') : 'No data yet';
   if (dpt) dpt.textContent = avgP !== null ? (avgP >= 4 ? 'Excellent' : avgP >= 3 ? 'On track' : 'Needs attention') : 'No data yet';
   if (dst) dst.textContent = entries.length > 0 ? (entries.length === 1 ? '1 session logged' : `${entries.length} sessions logged`) : 'Start logging';
+  // Overall Progress inline row (dashboard simplified view)
+  const dahI = document.getElementById('dashAvgHoursInline');
+  const dapI = document.getElementById('dashAvgProdInline');
+  const dtsI = document.getElementById('dashTotalSessionsInline');
+  const dhtI = document.getElementById('dashHoursTrendInline');
+  const dptI = document.getElementById('dashProdTrendInline');
+  const dstI = document.getElementById('dashSessionsTrendInline');
+  if (dahI) dahI.textContent = avgHStr;
+  if (dapI) dapI.textContent = avgPStr;
+  if (dtsI) dtsI.textContent = entries.length || '—';
+  if (dhtI) dhtI.textContent = avgH !== null ? (avgH <= 2 ? 'Short sessions' : avgH <= 4 ? 'Balanced duration' : 'Long sessions') : 'No data yet';
+  if (dptI) dptI.textContent = avgP !== null ? (avgP >= 4 ? 'Excellent' : avgP >= 3 ? 'On track' : 'Needs attention') : 'No data yet';
+  if (dstI) dstI.textContent = entries.length > 0 ? (entries.length === 1 ? '1 session logged' : `${entries.length} sessions logged`) : 'Start logging';
 
   // Dashboard quick widgets (mirror the full ones)
   renderBestPattern(entries, 'dashBestPattern');
@@ -6888,8 +6886,15 @@ function render() {
 
   // Insights — render to both dashboard and insights panel
   const insightsHTML = buildInsightsHTML(entries);
-  document.getElementById('insights').innerHTML     = insightsHTML;
-  document.getElementById('dashInsights').innerHTML = insightsHTML;
+  document.getElementById('insights').innerHTML = insightsHTML;
+  // Dashboard shows only the top insight to reduce clutter
+  (function() {
+    var tmp = document.createElement('div');
+    tmp.innerHTML = insightsHTML;
+    var first = tmp.querySelector('.insight');
+    var dashEl = document.getElementById('dashInsights');
+    if (dashEl) dashEl.innerHTML = first ? first.outerHTML : insightsHTML;
+  })();
 
   // Smart Recommendations
   renderSmartRecs(entries);
@@ -6949,14 +6954,14 @@ function render() {
   const sharedDataset = {
     label: 'Productivity',
     data,
-    borderColor: '#b45309',
+    borderColor: '#7c6030',
     backgroundColor: buildGradient,
     pointBackgroundColor: '#ffffff',
-    pointBorderColor: '#b45309',
+    pointBorderColor: '#7c6030',
     pointBorderWidth: 2,
     pointRadius: 4.5,
     pointHoverRadius: 7,
-    pointHoverBackgroundColor: '#b45309',
+    pointHoverBackgroundColor: '#7c6030',
     pointHoverBorderColor: '#ffffff',
     pointHoverBorderWidth: 2.5,
     fill: true,
@@ -7739,7 +7744,7 @@ function epRenderPlan(plan) {
             <span><strong>${phCompleted}</strong> / ${ph.modules} modules${phaseWithinSubject === 0 ? ' completed' : ' planned'}</span>
             <span style="display:flex;align-items:center;gap:5px">
               <span class="ep-prog-blocks" style="font-size:11px;letter-spacing:0.5px">
-                <span style="color:#22c55e">${'█'.repeat(phFilled)}</span><span style="color:var(--border-2)">${'░'.repeat(10 - phFilled)}</span>
+                <span style="color:#5a9e74">${'█'.repeat(phFilled)}</span><span style="color:var(--border-2)">${'░'.repeat(10 - phFilled)}</span>
               </span>
             </span>
           </div>
@@ -7798,7 +7803,7 @@ function epRenderPlan(plan) {
     <div class="ep-subject-progress">
       <div class="ep-subj-header">Subject Breakdown</div>
       ${subjectRows.map((s, si) => {
-        const barColors = ['#4338ca','#15803d','#b45309','#0e7490','#7c3aed'];
+        const barColors = ['#4a5480','#3a6b4e','#7c6030','#0e7490','#7c3aed'];
         const barColor  = barColors[si % barColors.length];
         return `
         <div class="ep-subj-row">
@@ -7849,10 +7854,10 @@ function epRenderPlan(plan) {
       <div class="ep-op-counts">
         <div class="ep-op-count-cell">
           <div class="ep-op-count-label">
-            <span class="ep-op-count-dot" style="background:#22c55e"></span>
+            <span class="ep-op-count-dot" style="background:#5a9e74"></span>
             Completed
           </div>
-          <div class="ep-op-count-val" style="color:#15803d">${plan.completedModules}</div>
+          <div class="ep-op-count-val" style="color:#3a6b4e">${plan.completedModules}</div>
           <div class="ep-op-count-sub">modules done</div>
         </div>
         <div class="ep-op-count-cell">
@@ -8241,7 +8246,7 @@ function epRenderFeasibility(plan) {
   const maxVal     = Math.max(f.requiredPerDay * 1.5, f.currentPace * 1.2, 1);
   const reqPct     = Math.min(100, (f.requiredPerDay / maxVal) * 100);
   const pacePct    = f.currentPace > 0 ? Math.min(100, (f.currentPace / maxVal) * 100) : null;
-  const fillColor  = f.verdict === 'On Track' ? 'var(--green)' : f.verdict === 'Slightly Behind' ? '#d97706' : 'var(--red)';
+  const fillColor  = f.verdict === 'On Track' ? 'var(--green)' : f.verdict === 'Slightly Behind' ? '#a08040' : 'var(--red)';
   const fillPct    = pacePct !== null ? pacePct : reqPct;
 
   document.getElementById('epPaceVisual').innerHTML = `
@@ -8447,9 +8452,9 @@ function spRenderTimeline(plan) {
         <span style="font-size:10px;font-family:var(--mono);color:var(--muted)">Exam (${examLabel})</span>
       </div>
       <div class="sp-timeline-legend">
-        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#818cf8"></div>Syllabus Completion (${spFmt(p1Start)} – ${spFmt(spAddDays(p1Start, ph[0].days - 1))})</div>
-        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#d97706"></div>Revision (${spFmt(p2Start)} – ${spFmt(spAddDays(p2Start, ph[1].days - 1))})</div>
-        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#16a34a"></div>Final Sprint (${spFmt(p3Start)} – ${spFmt(examDate)})</div>
+        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#8a95c0"></div>Syllabus Completion (${spFmt(p1Start)} – ${spFmt(spAddDays(p1Start, ph[0].days - 1))})</div>
+        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#a08040"></div>Revision (${spFmt(p2Start)} – ${spFmt(spAddDays(p2Start, ph[1].days - 1))})</div>
+        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#3a6b4e"></div>Final Sprint (${spFmt(p3Start)} – ${spFmt(examDate)})</div>
       </div>
     </div>
   `;
@@ -9126,16 +9131,16 @@ function ueSaveExam() {
   const name = nameEl.value.trim();
   const date = dateEl.value;
 
-  if (!name) { nameEl.focus(); nameEl.style.borderColor = '#b91c1c'; return; }
+  if (!name) { nameEl.focus(); nameEl.style.borderColor = '#8c3a35'; return; }
   nameEl.style.borderColor = '';
 
-  if (!date) { dateEl.focus(); dateEl.style.borderColor = '#b91c1c'; return; }
+  if (!date) { dateEl.focus(); dateEl.style.borderColor = '#8c3a35'; return; }
   dateEl.style.borderColor = '';
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const examD = new Date(date); examD.setHours(0, 0, 0, 0);
   if (examD <= today) {
-    dateEl.style.borderColor = '#b91c1c';
+    dateEl.style.borderColor = '#8c3a35';
     dateEl.title = 'Date must be in the future';
     dateEl.focus();
     return;
@@ -9359,7 +9364,7 @@ function epRenderDailyTimeline(plan) {
   }
 
   // Build phase legend summary
-  const phaseColors  = { 1: '#818cf8', 2: '#d97706', 3: '#16a34a' };
+  const phaseColors  = { 1: '#8a95c0', 2: '#a08040', 3: '#3a6b4e' };
   const phaseNames   = { 1: 'Phase 1 — Syllabus', 2: 'Phase 2 — Revision', 3: 'Phase 3 — Final' };
   const phasesUsed   = [...new Set(filteredDays.filter(d => !d.isExam).map(d => d.phase))].sort();
 
@@ -9372,7 +9377,7 @@ function epRenderDailyTimeline(plan) {
         </div>`;
       }).join('')}
       <div class="ep-tl-summary-item">
-        <div class="ep-tl-summary-swatch" style="background:#b91c1c;border-radius:50%"></div>
+        <div class="ep-tl-summary-swatch" style="background:#8c3a35;border-radius:50%"></div>
         <span>Exam Day</span>
       </div>
       <div class="ep-tl-summary-item" style="margin-left:auto">
