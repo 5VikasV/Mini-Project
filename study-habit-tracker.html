@@ -5507,8 +5507,14 @@ function buildInsightsHTML(entries) {
     .map(([name, prods]) => ({ name, avgProd: avg(prods) }))
     .sort((a, b) => b.avgProd - a.avgProd);
   if (subjectAvgs.length >= 1) {
-    const best = subjectAvgs[0];
-    insights.push({ type: 'positive', emoji: '📚', text: `Your strongest subject is <strong>${best.name}</strong> with avg productivity ${best.avgProd.toFixed(1)}/5.` });
+    const topScore = subjectAvgs[0].avgProd;
+    const tied = subjectAvgs.filter(s => s.avgProd === topScore);
+    if (tied.length > 1) {
+      insights.push({ type: 'positive', emoji: '📚', text: `All tracked subjects currently have similar productivity scores.` });
+    } else {
+      const best = subjectAvgs[0];
+      insights.push({ type: 'positive', emoji: '📚', text: `Your strongest subject is <strong>${best.name}</strong> with avg productivity ${best.avgProd.toFixed(1)}/5.` });
+    }
   }
 
   // ── Fallback: data exists but no pattern insights fired ──────────────────
