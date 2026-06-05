@@ -9660,15 +9660,16 @@ function epRenderDailyTimeline(plan) {
     const totalMods = ph.modules || 0;
     const totalDays = ph.days || 1;
 
-    // Distribute modules across days sequentially, one per day.
-    // Extra days (when days > modules) get "Review / Buffer".
-    // Build an array: dayModules[d] = module number (1-based within phase), or 0 for buffer.
-    const dayModules = new Array(totalDays).fill(0);
+    // Distribute modules across days sequentially.
+    // When days > modules: some days get no module ("Review / Buffer").
+    // When days <= modules: some days get multiple modules (shown as a range, e.g. M2–M3).
+    // Build an array: dayModules[d] = array of 1-based phase-local module indices for that day.
+    const dayModules = Array.from({ length: totalDays }, () => []);
     if (totalMods > 0) {
       for (let m = 0; m < totalMods; m++) {
-        // Spread modules evenly: place module m on day floor(m * totalDays / totalMods)
+        // Spread modules evenly across days
         const targetDay = Math.min(totalDays - 1, Math.floor(m * totalDays / totalMods));
-        dayModules[targetDay] = m + 1; // module index within phase (1-based)
+        dayModules[targetDay].push(m + 1); // phase-local 1-based module index
       }
     }
 
@@ -9678,12 +9679,17 @@ function epRenderDailyTimeline(plan) {
       date.setHours(0, 0, 0, 0);
 
       let moduleLabel;
-      if (totalMods === 0 || dayModules[d] === 0) {
+      if (totalMods === 0 || dayModules[d].length === 0) {
         moduleLabel = 'Review / Buffer';
       } else {
-        // Absolute module number = moduleOffset + phaseLocalModuleIndex
-        const absModNum = ph.moduleOffset + dayModules[d];
-        moduleLabel = 'M' + absModNum;
+        // Map phase-local indices to absolute module numbers using per-subject offset
+        const absNums = dayModules[d].map(localIdx => ph.moduleOffset + localIdx);
+        if (absNums.length === 1) {
+          moduleLabel = 'M' + absNums[0];
+        } else {
+          // Show a range: M<first>–M<last>
+          moduleLabel = 'M' + absNums[0] + '\u2013M' + absNums[absNums.length - 1];
+        }
       }
 
       days.push({
