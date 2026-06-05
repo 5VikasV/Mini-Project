@@ -7532,40 +7532,127 @@ function epGeneratePlan() {
   if (ctx && ctx.avgProductivity < 2.5)     effectiveDailyHours = Math.max(0.5, dailyHoursIn * 0.85);
   else if (ctx && ctx.avgProductivity >= 4) effectiveDailyHours = dailyHoursIn * 1.05;
 
-  // ── 5. Allocate study days per subject ─────────────────────
-  // Each active subject gets days proportional to its remaining modules,
-  // capped at its own exam date. Completed subjects are excluded.
+  // ── 5. Allocate study days per subject (interleaved, proportional) ────────
+  // Days are distributed across subjects daily so no subject monopolises the
+  // calendar before another starts. Allocation weight per subject per day:
+  //   weight = (remainingModules / daysUntilExam) * priorityBoost
+  // The subject with the highest urgency on each day wins that day, subject
+  // to its exam not yet having passed. Subjects with only 1 day left always
+  // win (forced finish). Each subject also reserves its last 15 % of days as
+  // a revision tail — those days are never assigned to other subjects.
   const subjectsForPlan = activeSubjects; // always non-empty (all-completed handled above)
-  const overallDays    = subjectsForPlan[0].daysLeft; // anchor = nearest active exam
-  const totalRemaining = subjectsForPlan.reduce((s, x) => s + x.remainingModules, 0);
 
-  let cursor = new Date(today); // rolling start date
-
-  // ── 6. Build phases dynamically per subject — active subjects only ──
-  // Phases are generated based on available days and remaining modules:
-  //   3 phases (Study → Revision → Final Revision): availDays ≥ 7 and rem ≥ 3
-  //   2 phases (Study → Revision):                  availDays ≥ 4 and rem ≥ 2
-  //   1 phase  (Study only):                        otherwise
   function makeDailyTarget(mods, days) {
     return days > 0 ? parseFloat((mods / days).toFixed(2)) : mods;
   }
 
+  // ── 5a. Interleaved day-by-day allocation ──────────────────────────────
+  // Build a per-day assignment array: dayAssignments[i] = subjectIndex in subjectsForPlan
+  const overallDays = subjectsForPlan[0].daysLeft; // span = nearest active exam
+
+  // Track remaining "allocatable study days" per subject.
+  // Reserve the last ceil(daysLeft * 0.15) days of each subject exclusively
+  // for its own revision phases — those days cannot be given to other subjects.
+  const subjectState = subjectsForPlan.map((s, si) => {
+    const reservedTail = Math.max(1, Math.ceil(s.daysLeft * 0.15));
+    const allocatable  = Math.max(1, s.daysLeft - reservedTail);
+    return {
+      si,
+      name:          s.name,
+      daysLeft:      s.daysLeft,
+      rem:           s.remainingModules,
+      reservedTail,
+      allocatable,
+      assignedDays:  0,   // study days assigned so far
+      examDay:       s.daysLeft - 1  // last calendar offset (0-based) before exam
+    };
+  });
+
+  const dayAssignments = []; // length = overallDays
+  // Use a deficit-based round-robin (Bresenham/Largest-Remainder style).
+  // Each subject gets a share proportional to (remainingModules / daysLeft).
+  // On every day we pick the subject with the highest accumulated deficit,
+  // ensuring the actual assigned fraction tracks the desired fraction closely.
+  const desiredRate = subjectState.map(ss => ss.daysLeft > 0 ? ss.rem / ss.daysLeft : 0);
+  const totalRate   = desiredRate.reduce((a, b) => a + b, 0) || 1;
+  const deficit     = subjectState.map((_, i) => desiredRate[i] / totalRate); // initial credit
+
+  for (let dayOffset = 0; dayOffset < overallDays; dayOffset++) {
+    // Subjects still available on this calendar day
+    const candidates = subjectState.filter(ss => {
+      if (dayOffset > ss.examDay) return false;
+      if (ss.rem <= 0) return false;
+      return true;
+    });
+
+    if (candidates.length === 0) break;
+
+    // Forced: if any candidate has only 1 day left before its exam, pick it
+    const forced = candidates.filter(ss => ss.examDay - dayOffset <= 0);
+    let chosen;
+    if (forced.length > 0) {
+      chosen = forced[0];
+    } else {
+      // Pick candidate with largest deficit (most overdue relative to its share)
+      chosen = candidates.reduce((best, ss) =>
+        deficit[ss.si] > deficit[best.si] ? ss : best, candidates[0]);
+    }
+
+    dayAssignments.push(chosen.si);
+    chosen.assignedDays++;
+
+    // Update deficits: subtract 1 from chosen, add share to all candidates
+    const sharePerCandidate = 1 / Math.max(1, candidates.length);
+    for (const ss of candidates) {
+      deficit[ss.si] += desiredRate[ss.si] / totalRate;
+    }
+    deficit[chosen.si] -= 1;
+
+    // Virtual burn-down for urgency tracking
+    const modsThisDay = chosen.rem / Math.max(1, chosen.examDay - dayOffset + 1);
+    chosen.rem = Math.max(0, chosen.rem - modsThisDay);
+  }
+
+  // ── 5b. Count total allocated days per subject from dayAssignments ──────
+  const allocatedDays = subjectsForPlan.map(() => 0);
+  for (const si of dayAssignments) allocatedDays[si]++;
+
+  // Each subject's total available days = allocatedStudyDays + reservedTail.
+  // Clamp to daysLeft in case of edge cases.
+  const totalDaysPerSubject = subjectsForPlan.map((s, si) => {
+    const tail = subjectState[si].reservedTail;
+    return Math.min(s.daysLeft, allocatedDays[si] + tail);
+  });
+
+  // ── 5c. Determine start dates per subject ───────────────────────────────
+  // Each subject's first study day is the earliest dayOffset assigned to it.
+  const firstDayOffset = subjectsForPlan.map(() => overallDays); // sentinel
+  const lastDayOffset  = subjectsForPlan.map(() => -1);
+  dayAssignments.forEach((si, offset) => {
+    if (offset < firstDayOffset[si]) firstDayOffset[si] = offset;
+    if (offset > lastDayOffset[si])  lastDayOffset[si]  = offset;
+  });
+
+  // ── 6. Build phases per subject from allocated totals ──────────────────
   const allPhases = [];
   let phaseNumGlobal = 0;
 
   subjectsForPlan.forEach((s, si) => {
-    const subjectStart = new Date(cursor);
-    const availDays    = Math.max(1, epDaysBetween(subjectStart, s.examDate));
+    const availDays    = totalDaysPerSubject[si];
     const rem          = s.remainingModules;
     const moduleOffset = s.completedMods;
     const subjectLabel = subjectsForPlan.length > 1 ? ` — ${s.name}` : '';
+
+    // Start date = first day this subject appears in the interleaved schedule
+    const startOffset = firstDayOffset[si] < overallDays ? firstDayOffset[si] : 0;
+    const subjectStart = epAddDays(today, startOffset);
 
     // ── Decide how many phases to generate ────────────────────────
     const useThreePhases = availDays >= 7 && rem >= 3;
     const useTwoPhases   = !useThreePhases && availDays >= 4 && rem >= 2;
     // otherwise: one phase
 
-    // ── Allocate days ──────────────────────────────────────────────
+    // ── Allocate days across phases ────────────────────────────────
     let phase1Days, phase2Days, phase3Days;
     if (useThreePhases) {
       phase1Days = Math.max(1, Math.round(availDays * 0.50));
@@ -7581,7 +7668,7 @@ function epGeneratePlan() {
       phase3Days = 0;
     }
 
-    // ── Allocate modules — budget is exactly rem, never exceeded ──
+    // ── Allocate modules — budget is exactly rem, never exceeded ────
     let phase1Mods, phase2Mods, phase3Mods;
     if (useThreePhases) {
       phase1Mods = Math.max(1, Math.min(rem - 1, Math.round(rem * 0.60)));
@@ -7597,12 +7684,12 @@ function epGeneratePlan() {
       phase3Mods = 0;
     }
 
-    // ── Phase start dates ─────────────────────────────────────────
+    // ── Phase start dates ──────────────────────────────────────────
     const ph1Start = new Date(subjectStart);
     const ph2Start = phase2Days > 0 ? epAddDays(ph1Start, phase1Days) : null;
     const ph3Start = phase3Days > 0 ? epAddDays(ph1Start, phase1Days + phase2Days) : null;
 
-    // ── Push Phase 1: Study ───────────────────────────────────────
+    // ── Push Phase 1: Study ────────────────────────────────────────
     allPhases.push({
       num: ++phaseNumGlobal,
       name: 'Study' + subjectLabel,
@@ -7627,7 +7714,7 @@ function epGeneratePlan() {
       ]
     });
 
-    // ── Push Phase 2: Revision (if applicable) ────────────────────
+    // ── Push Phase 2: Revision (if applicable) ─────────────────────
     if (useTwoPhases || useThreePhases) {
       allPhases.push({
         num: ++phaseNumGlobal,
@@ -7656,7 +7743,7 @@ function epGeneratePlan() {
       });
     }
 
-    // ── Push Phase 3: Final Revision (only when time allows) ──────
+    // ── Push Phase 3: Final Revision (only when time allows) ───────
     if (useThreePhases) {
       allPhases.push({
         num: ++phaseNumGlobal,
@@ -7680,11 +7767,6 @@ function epGeneratePlan() {
         ]
       });
     }
-
-    // ── Advance cursor past this subject's last phase ─────────────
-    const lastPhDays = useThreePhases ? phase3Days : useTwoPhases ? phase2Days : phase1Days;
-    const lastPhStart = useThreePhases ? ph3Start : useTwoPhases ? ph2Start : ph1Start;
-    cursor = epAddDays(lastPhStart, lastPhDays);
   });
 
   // ── 7. Aggregate plan totals ────────────────────────────────
@@ -7875,12 +7957,8 @@ function epRenderPlan(plan) {
     // Progress shown for the study phase of each subject
     const subjData  = plan.subjects ? plan.subjects.find(s => s.name === ph.subjectName) : null;
     const phPct     = phaseWithinSubject === 0 && subjData ? subjData.progressPct : 0;
+    const phCompleted = phaseWithinSubject === 0 && subjData ? subjData.completedMods : 0;
     const phFilled  = Math.round(phPct / 10);
-    // For the study phase: show overall subject progress (completedMods / totalModules).
-    // For revision/final phases: show phase-local progress (0 / ph.modules).
-    const phCompleted      = phaseWithinSubject === 0 && subjData ? subjData.completedMods : 0;
-    const phProgressTotal  = phaseWithinSubject === 0 && subjData ? subjData.totalModules  : ph.modules;
-    const phProgressLabel  = phaseWithinSubject === 0 ? 'completed' : 'planned';
 
     const subjectChip = plan.multiSubject
       ? `<span style="font-size:10.5px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;color:var(--muted-2);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:3px;margin-left:6px">${ph.subjectName}</span>`
@@ -7928,7 +8006,7 @@ function epRenderPlan(plan) {
             <div class="ep-phase-prog-bar ${badge}" id="epPhBar_${idx}" style="width:0%"></div>
           </div>
           <div class="ep-phase-prog-counts">
-            <span><strong>${phCompleted}</strong> / ${phProgressTotal} modules ${phProgressLabel}</span>
+            <span><strong>${phCompleted}</strong> / ${ph.modules} modules${phaseWithinSubject === 0 ? ' completed' : ' planned'}</span>
             <span style="display:flex;align-items:center;gap:5px">
               <span class="ep-prog-blocks" style="font-size:11px;letter-spacing:0.5px">
                 <span style="color:#5a9e74">${'█'.repeat(phFilled)}</span><span style="color:var(--border-2)">${'░'.repeat(10 - phFilled)}</span>
@@ -9574,27 +9652,39 @@ function epRenderDailyTimeline(plan) {
     const phaseWithinSubject = typeof ph.phaseIndexWithinSubject !== 'undefined'
       ? ph.phaseIndexWithinSubject
       : (typeof ph.subjectIndex !== 'undefined' ? (plan.phases.indexOf(ph) % 3) : (ph.num - 1) % 3);
-    const modsPerDay = ph.dailyTarget;
     const subjectLabel = ph.subjectName || examName;
 
     // Map phase-within-subject (0,1,2) to a phase number (1,2,3) for styling
     const stylePhase = phaseWithinSubject + 1;
 
-    for (let d = 0; d < ph.days; d++) {
+    const totalMods = ph.modules || 0;
+    const totalDays = ph.days || 1;
+
+    // Distribute modules across days sequentially, one per day.
+    // Extra days (when days > modules) get "Review / Buffer".
+    // Build an array: dayModules[d] = module number (1-based within phase), or 0 for buffer.
+    const dayModules = new Array(totalDays).fill(0);
+    if (totalMods > 0) {
+      for (let m = 0; m < totalMods; m++) {
+        // Spread modules evenly: place module m on day floor(m * totalDays / totalMods)
+        const targetDay = Math.min(totalDays - 1, Math.floor(m * totalDays / totalMods));
+        dayModules[targetDay] = m + 1; // module index within phase (1-based)
+      }
+    }
+
+    for (let d = 0; d < totalDays; d++) {
       const date = new Date(phaseStartDate);
       date.setDate(phaseStartDate.getDate() + d);
       date.setHours(0, 0, 0, 0);
 
-      const modStart = ph.moduleOffset + Math.floor(d * modsPerDay) + 1;
-      const modEnd   = ph.moduleOffset + Math.min(ph.modules, Math.floor((d + 1) * modsPerDay));
-      // Hard-clamp: never emit a module number beyond what exists
-      const clampedStart = Math.min(modStart, ph.moduleOffset + ph.modules);
-      const clampedEnd   = Math.min(modEnd,   ph.moduleOffset + ph.modules);
       let moduleLabel;
-      if (ph.modules === 0)                       moduleLabel = 'Review / Buffer';
-      else if (clampedEnd > clampedStart)         moduleLabel = 'M' + clampedStart + '–M' + clampedEnd;
-      else if (clampedEnd === clampedStart && clampedStart > ph.moduleOffset) moduleLabel = 'M' + clampedStart;
-      else                                        moduleLabel = 'Review / Buffer';
+      if (totalMods === 0 || dayModules[d] === 0) {
+        moduleLabel = 'Review / Buffer';
+      } else {
+        // Absolute module number = moduleOffset + phaseLocalModuleIndex
+        const absModNum = ph.moduleOffset + dayModules[d];
+        moduleLabel = 'M' + absModNum;
+      }
 
       days.push({
         date,
@@ -9640,10 +9730,10 @@ function epRenderDailyTimeline(plan) {
   // Sort by date
   days.sort(function(a, b) { return a.date - b.date; });
 
-  // Deduplicate exact date+phase (e.g. if phases touch)
+  // Deduplicate: same date + same subject + same phase (handles phase boundaries touching)
   const seen = new Set();
   const filteredDays = days.filter(function(d) {
-    const key = d.date.getTime() + '_' + (d.isExam ? 'exam' : d.phase);
+    const key = d.date.getTime() + '_' + d.subject + '_' + (d.isExam ? 'exam' : d.phase);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
