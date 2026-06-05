@@ -7541,7 +7541,11 @@ function epGeneratePlan() {
 
   let cursor = new Date(today); // rolling start date
 
-  // ── 6. Build phases (3 phases per subject) — active subjects only ──
+  // ── 6. Build phases dynamically per subject — active subjects only ──
+  // Phases are generated based on available days and remaining modules:
+  //   3 phases (Study → Revision → Final Revision): availDays ≥ 7 and rem ≥ 3
+  //   2 phases (Study → Revision):                  availDays ≥ 4 and rem ≥ 2
+  //   1 phase  (Study only):                        otherwise
   function makeDailyTarget(mods, days) {
     return days > 0 ? parseFloat((mods / days).toFixed(2)) : mods;
   }
@@ -7550,30 +7554,61 @@ function epGeneratePlan() {
   let phaseNumGlobal = 0;
 
   subjectsForPlan.forEach((s, si) => {
-    // Days available for this subject = from cursor to its exam date
     const subjectStart = new Date(cursor);
-    const availDays    = Math.max(3, epDaysBetween(subjectStart, s.examDate));
-
-    const phase1Days = Math.max(1, Math.round(availDays * 0.50));
-    const phase3Days = Math.max(1, Math.round(availDays * 0.15));
-    const phase2Days = Math.max(1, availDays - phase1Days - phase3Days);
-
-    const phase1Mods = Math.max(1, Math.round(s.remainingModules * 0.60));
-    const phase2Mods = Math.max(1, Math.round(s.remainingModules * 0.30));
-    const phase3Mods = Math.max(0, s.remainingModules - phase1Mods - phase2Mods);
-
-    const ph1Start = new Date(subjectStart);
-    const ph2Start = epAddDays(ph1Start, phase1Days);
-    const ph3Start = epAddDays(ph1Start, phase1Days + phase2Days);
-
+    const availDays    = Math.max(1, epDaysBetween(subjectStart, s.examDate));
+    const rem          = s.remainingModules;
+    const moduleOffset = s.completedMods;
     const subjectLabel = subjectsForPlan.length > 1 ? ` — ${s.name}` : '';
 
-    // moduleOffset = number of modules already completed for this subject.
-    // Phase module counts are relative (phase1Mods covers modules offset+1 … offset+phase1Mods).
-    const moduleOffset = s.completedMods;
+    // ── Decide how many phases to generate ────────────────────────
+    const useThreePhases = availDays >= 7 && rem >= 3;
+    const useTwoPhases   = !useThreePhases && availDays >= 4 && rem >= 2;
+    // otherwise: one phase
 
+    // ── Allocate days ──────────────────────────────────────────────
+    let phase1Days, phase2Days, phase3Days;
+    if (useThreePhases) {
+      phase1Days = Math.max(1, Math.round(availDays * 0.50));
+      phase3Days = Math.max(1, Math.round(availDays * 0.15));
+      phase2Days = Math.max(1, availDays - phase1Days - phase3Days);
+    } else if (useTwoPhases) {
+      phase1Days = Math.max(1, Math.round(availDays * 0.65));
+      phase2Days = Math.max(1, availDays - phase1Days);
+      phase3Days = 0;
+    } else {
+      phase1Days = availDays;
+      phase2Days = 0;
+      phase3Days = 0;
+    }
+
+    // ── Allocate modules — budget is exactly rem, never exceeded ──
+    let phase1Mods, phase2Mods, phase3Mods;
+    if (useThreePhases) {
+      phase1Mods = Math.max(1, Math.min(rem - 1, Math.round(rem * 0.60)));
+      phase2Mods = Math.max(0, Math.min(rem - phase1Mods, Math.round(rem * 0.30)));
+      phase3Mods = Math.max(0, rem - phase1Mods - phase2Mods);
+    } else if (useTwoPhases) {
+      phase1Mods = Math.max(1, Math.min(rem - 1, Math.round(rem * 0.65)));
+      phase2Mods = Math.max(0, rem - phase1Mods);
+      phase3Mods = 0;
+    } else {
+      phase1Mods = rem;
+      phase2Mods = 0;
+      phase3Mods = 0;
+    }
+
+    // ── Phase start dates ─────────────────────────────────────────
+    const ph1Start = new Date(subjectStart);
+    const ph2Start = phase2Days > 0 ? epAddDays(ph1Start, phase1Days) : null;
+    const ph3Start = phase3Days > 0 ? epAddDays(ph1Start, phase1Days + phase2Days) : null;
+
+    // ── Push Phase 1: Study ───────────────────────────────────────
     allPhases.push({
-      num: ++phaseNumGlobal, name: 'Syllabus Completion' + subjectLabel, badge: 'phase-1',
+      num: ++phaseNumGlobal,
+      name: 'Study' + subjectLabel,
+      badge: 'phase-1',
+      phaseType: 'study',
+      phaseIndexWithinSubject: 0,
       subjectName: s.name, subjectIndex: si,
       days: phase1Days, modules: phase1Mods,
       moduleOffset,
@@ -7585,51 +7620,71 @@ function epGeneratePlan() {
       tips: [
         'Work through modules in order — avoid skipping ahead.',
         'Log each session to track momentum and stay accountable.',
-        ctx && ctx.subjects.length > 0
+        ctx && ctx.subjects && ctx.subjects.length > 0
           ? `Cross-reference with your tracked sessions for ${s.name}.`
           : 'Break larger modules into sub-topics for better retention.',
         'Aim to finish slightly ahead of schedule as buffer for delays.'
       ]
     });
-    allPhases.push({
-      num: ++phaseNumGlobal, name: 'Revision' + subjectLabel, badge: 'phase-2',
-      subjectName: s.name, subjectIndex: si,
-      days: phase2Days, modules: phase2Mods,
-      moduleOffset: moduleOffset + phase1Mods,
-      dailyTarget: makeDailyTarget(phase2Mods, phase2Days),
-      dailyHours: Math.max(0.5, effectiveDailyHours * 0.9),
-      start: epFmtDate(ph2Start),
-      end:   epFmtDate(epAddDays(ph2Start, phase2Days - 1)),
-      focus: `Consolidate ${s.name} through active recall`,
-      tips: [
-        'Use spaced repetition — revisit topics you found hardest in Phase 1.',
-        'Solve past papers or practice questions per module.',
-        ctx && ctx.avgProductivity >= 3
-          ? 'Your session data shows solid consistency — maintain daily hours.'
-          : 'If focus dips, shorten sessions and take more frequent breaks.',
-        'Create summary notes or mind maps for quick review in Phase 3.'
-      ]
-    });
-    allPhases.push({
-      num: ++phaseNumGlobal, name: 'Final Revision' + subjectLabel, badge: 'phase-3',
-      subjectName: s.name, subjectIndex: si,
-      days: phase3Days, modules: Math.max(0, phase3Mods),
-      moduleOffset: moduleOffset + phase1Mods + phase2Mods,
-      dailyTarget: makeDailyTarget(Math.max(1, phase3Mods), phase3Days),
-      dailyHours: Math.max(0.5, effectiveDailyHours * 0.75),
-      start: epFmtDate(ph3Start),
-      end:   epFmtDate(epAddDays(ph3Start, phase3Days - 1)),
-      focus: `High-yield review and exam confidence for ${s.name}`,
-      tips: [
-        'Focus on key concepts, formulas, and high-priority areas only.',
-        'Avoid learning new material — consolidation only.',
-        'Simulate exam conditions with timed practice sessions.',
-        'Rest well the night before — sleep is critical for recall.'
-      ]
-    });
 
-    // Advance cursor to end of this subject's final phase
-    cursor = epAddDays(ph3Start, phase3Days);
+    // ── Push Phase 2: Revision (if applicable) ────────────────────
+    if (useTwoPhases || useThreePhases) {
+      allPhases.push({
+        num: ++phaseNumGlobal,
+        name: 'Revision' + subjectLabel,
+        badge: 'phase-2',
+        phaseType: 'revision',
+        phaseIndexWithinSubject: 1,
+        subjectName: s.name, subjectIndex: si,
+        days: phase2Days, modules: phase2Mods,
+        moduleOffset: Math.min(s.totalModules, moduleOffset + phase1Mods),
+        dailyTarget: makeDailyTarget(phase2Mods, phase2Days),
+        dailyHours: Math.max(0.5, effectiveDailyHours * 0.9),
+        start: epFmtDate(ph2Start),
+        end:   epFmtDate(epAddDays(ph2Start, phase2Days - 1)),
+        focus: `Consolidate ${s.name} through active recall`,
+        tips: [
+          'Use spaced repetition — revisit topics you found hardest in Phase 1.',
+          'Solve past papers or practice questions per module.',
+          ctx && ctx.avgProductivity >= 3
+            ? 'Your session data shows solid consistency — maintain daily hours.'
+            : 'If focus dips, shorten sessions and take more frequent breaks.',
+          useTwoPhases
+            ? 'Exam is close — focus on high-yield topics for maximum impact.'
+            : 'Create summary notes or mind maps for quick review in Phase 3.'
+        ]
+      });
+    }
+
+    // ── Push Phase 3: Final Revision (only when time allows) ──────
+    if (useThreePhases) {
+      allPhases.push({
+        num: ++phaseNumGlobal,
+        name: 'Final Revision' + subjectLabel,
+        badge: 'phase-3',
+        phaseType: 'final',
+        phaseIndexWithinSubject: 2,
+        subjectName: s.name, subjectIndex: si,
+        days: phase3Days, modules: phase3Mods,
+        moduleOffset: Math.min(s.totalModules, moduleOffset + phase1Mods + phase2Mods),
+        dailyTarget: phase3Mods > 0 ? makeDailyTarget(phase3Mods, phase3Days) : 0,
+        dailyHours: Math.max(0.5, effectiveDailyHours * 0.75),
+        start: epFmtDate(ph3Start),
+        end:   epFmtDate(epAddDays(ph3Start, phase3Days - 1)),
+        focus: `High-yield review and exam confidence for ${s.name}`,
+        tips: [
+          'Focus on key concepts, formulas, and high-priority areas only.',
+          'Avoid learning new material — consolidation only.',
+          'Simulate exam conditions with timed practice sessions.',
+          'Rest well the night before — sleep is critical for recall.'
+        ]
+      });
+    }
+
+    // ── Advance cursor past this subject's last phase ─────────────
+    const lastPhDays = useThreePhases ? phase3Days : useTwoPhases ? phase2Days : phase1Days;
+    const lastPhStart = useThreePhases ? ph3Start : useTwoPhases ? ph2Start : ph1Start;
+    cursor = epAddDays(lastPhStart, lastPhDays);
   });
 
   // ── 7. Aggregate plan totals ────────────────────────────────
@@ -7809,19 +7864,23 @@ function epRenderPlan(plan) {
   }
 
   // Phase cards — with enhanced progress bars
-  // badge cycles per subject (3 phases each), progress shown for phase-1 of each subject
-  const subjectBadgeSets = ['phase-1','phase-2','phase-3'];
   document.getElementById('epPhaseCards').innerHTML = '<div class="ep-phase-list">' + plan.phases.map((ph, idx) => {
-    // Determine which phase within the subject (0,1,2 = syllabus,revision,final)
-    const phaseWithinSubject = idx % 3; // 0,1,2
-    const badge = subjectBadgeSets[phaseWithinSubject];
-    const phaseLocalNum = phaseWithinSubject + 1; // 1,2,3
+    // Use stored phase index if available, fall back to position-based for legacy plans
+    const phaseWithinSubject = typeof ph.phaseIndexWithinSubject !== 'undefined'
+      ? ph.phaseIndexWithinSubject
+      : idx % 3;
+    const badge = ph.badge || ['phase-1','phase-2','phase-3'][phaseWithinSubject];
+    const phaseLocalNum = phaseWithinSubject + 1;
 
-    // Progress shown for the syllabus phase of each subject
+    // Progress shown for the study phase of each subject
     const subjData  = plan.subjects ? plan.subjects.find(s => s.name === ph.subjectName) : null;
     const phPct     = phaseWithinSubject === 0 && subjData ? subjData.progressPct : 0;
-    const phCompleted = phaseWithinSubject === 0 && subjData ? subjData.completedMods : 0;
     const phFilled  = Math.round(phPct / 10);
+    // For the study phase: show overall subject progress (completedMods / totalModules).
+    // For revision/final phases: show phase-local progress (0 / ph.modules).
+    const phCompleted      = phaseWithinSubject === 0 && subjData ? subjData.completedMods : 0;
+    const phProgressTotal  = phaseWithinSubject === 0 && subjData ? subjData.totalModules  : ph.modules;
+    const phProgressLabel  = phaseWithinSubject === 0 ? 'completed' : 'planned';
 
     const subjectChip = plan.multiSubject
       ? `<span style="font-size:10.5px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;color:var(--muted-2);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:3px;margin-left:6px">${ph.subjectName}</span>`
@@ -7832,7 +7891,7 @@ function epRenderPlan(plan) {
       <div class="ep-phase-header">
         <div class="ep-phase-title-row">
           <span class="ep-phase-badge ${badge}">Phase ${phaseLocalNum}</span>
-          <span class="ep-phase-name">${phaseWithinSubject === 0 ? 'Syllabus Completion' : phaseWithinSubject === 1 ? 'Revision' : 'Final Revision'}${subjectChip}</span>
+          <span class="ep-phase-name">${ph.phaseType === 'study' || phaseWithinSubject === 0 ? 'Study' : ph.phaseType === 'revision' || phaseWithinSubject === 1 ? 'Revision' : 'Final Revision'}${subjectChip}</span>
         </div>
         <div class="ep-phase-dates">${ph.start} → ${ph.end}</div>
       </div>
@@ -7869,7 +7928,7 @@ function epRenderPlan(plan) {
             <div class="ep-phase-prog-bar ${badge}" id="epPhBar_${idx}" style="width:0%"></div>
           </div>
           <div class="ep-phase-prog-counts">
-            <span><strong>${phCompleted}</strong> / ${ph.modules} modules${phaseWithinSubject === 0 ? ' completed' : ' planned'}</span>
+            <span><strong>${phCompleted}</strong> / ${phProgressTotal} modules ${phProgressLabel}</span>
             <span style="display:flex;align-items:center;gap:5px">
               <span class="ep-prog-blocks" style="font-size:11px;letter-spacing:0.5px">
                 <span style="color:#5a9e74">${'█'.repeat(phFilled)}</span><span style="color:var(--border-2)">${'░'.repeat(10 - phFilled)}</span>
@@ -7888,8 +7947,8 @@ function epRenderPlan(plan) {
   // Schedule table
   const phaseColorMap = { 'phase-1': 'badge-subject', 'phase-2': 'badge-mood', 'phase-3': 'badge-prod' };
   document.getElementById('epScheduleBody').innerHTML = plan.phases.map((ph, idx) => {
-    const badge = ['phase-1','phase-2','phase-3'][idx % 3];
-    const localNum = (idx % 3) + 1;
+    const badge = ph.badge || ['phase-1','phase-2','phase-3'][(ph.phaseIndexWithinSubject !== undefined ? ph.phaseIndexWithinSubject : idx) % 3];
+    const localNum = (ph.phaseIndexWithinSubject !== undefined ? ph.phaseIndexWithinSubject : idx % 3) + 1;
     return `
     <tr>
       <td><span class="badge ${phaseColorMap[badge]}">Phase ${localNum}${plan.multiSubject ? ' — ' + ph.subjectName : ''}</span></td>
@@ -8029,7 +8088,7 @@ function epRenderPlan(plan) {
 
     // Animate phase bars
     plan.phases.forEach((ph, idx) => {
-      const phaseWithinSubject = idx % 3;
+      const phaseWithinSubject = typeof ph.phaseIndexWithinSubject !== 'undefined' ? ph.phaseIndexWithinSubject : idx % 3;
       const subjData = plan.subjects ? plan.subjects[ph.subjectIndex] : null;
       const phPct = phaseWithinSubject === 0 && subjData ? subjData.progressPct : 0;
       const bar = document.getElementById('epPhBar_' + idx);
@@ -8274,7 +8333,7 @@ function epAnalyseFeasibility(plan) {
   }
 
   // Phase timing recs
-  if (plan.phases && plan.phases.length > 0) {
+  if (plan.phases && plan.phases.length > 1) {
   const phase2StartDay = plan.phases[0].days;
   const daysUntilPhase2 = phase2StartDay;
   if (daysLeft <= daysUntilPhase2 + 2 && verdict !== 'On Track') {
@@ -8586,48 +8645,64 @@ function spRenderPriorityList(subjects, plan) {
 // ── Render visual timeline ─────────────────────────────────────
 function spRenderTimeline(plan) {
   const el = document.getElementById('spTimeline');
-  if (!plan || !plan.phases || plan.phases.length < 3) { el.innerHTML = '<p class="no-insight" style="padding:20px 0">Generate a plan first.</p>'; return; }
+  if (!plan || !plan.phases || plan.phases.length === 0) { el.innerHTML = '<p class="no-insight" style="padding:20px 0">Generate a plan first.</p>'; return; }
 
   const today    = new Date(); today.setHours(0, 0, 0, 0);
   const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
   const total    = Math.max(1, Math.round((examDate - today) / 86400000));
-
-  const ph = plan.phases;
-  const p1pct = Math.max(5, Math.round((ph[0].days / total) * 100));
-  const p2pct = Math.max(5, Math.round((ph[1].days / total) * 100));
-  const p3pct = Math.max(5, 100 - p1pct - p2pct);
-
-  // "today" marker position inside phase 1 (always 0 days in from today)
   const todayLabel = spFmt(today);
   const examLabel  = spFmt(examDate);
 
-  // phase start dates
-  const p1Start = today;
-  const p2Start = spAddDays(today, ph[0].days);
-  const p3Start = spAddDays(today, ph[0].days + ph[1].days);
+  // Use phases for the nearest subject only (first subject's phases)
+  // Identify unique subjects in order
+  const subjectNames = [];
+  plan.phases.forEach(ph => { if (ph.subjectName && !subjectNames.includes(ph.subjectName)) subjectNames.push(ph.subjectName); });
+  const firstSubjectName = subjectNames[0] || null;
+  const subjectPhases = firstSubjectName
+    ? plan.phases.filter(ph => ph.subjectName === firstSubjectName)
+    : plan.phases.slice(0, 3);
+
+  const phaseColors = ['#8a95c0', '#a08040', '#3a6b4e'];
+  const phaseLabels = ['Syllabus / Study', 'Revision', 'Final Revision'];
+
+  // Compute widths proportionally, min 5% each
+  const totalPhaseDays = subjectPhases.reduce((s, p) => s + p.days, 0) || 1;
+  const rawPcts = subjectPhases.map(p => Math.max(5, Math.round((p.days / total) * 100)));
+  // Normalise so they sum to 100
+  const sumRaw = rawPcts.reduce((a, b) => a + b, 0);
+  const pcts   = rawPcts.map((p, i) => i === rawPcts.length - 1 ? 100 - rawPcts.slice(0, -1).reduce((a, b) => a + b, 0) : Math.round(p * 100 / sumRaw));
+
+  // Phase start dates for legend
+  let phStart = new Date(today);
+  const phStartDates = subjectPhases.map(p => {
+    const s = new Date(phStart);
+    phStart = spAddDays(phStart, p.days);
+    return s;
+  });
+
+  const tlPhases = subjectPhases.map((p, i) => {
+    const color = phaseColors[i] || phaseColors[2];
+    const todayClass = i === 0 ? ' tl-today-marker' : '';
+    const tlClass = `tl-p${i + 1}`;
+    return `<div class="sp-tl-phase ${tlClass}${todayClass}" style="width:${pcts[i]}%" title="Phase ${i + 1}: ${p.name} (${p.days} days)">
+      <span class="sp-tl-phase-label">Phase ${i + 1} · ${p.days}d</span>
+    </div>`;
+  }).join('');
+
+  const legendItems = subjectPhases.map((p, i) => {
+    const color = phaseColors[i] || phaseColors[2];
+    const label = phaseLabels[i] || p.name;
+    return `<div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:${color}"></div>${label} (${spFmt(phStartDates[i])} – ${spFmt(spAddDays(phStartDates[i], p.days - 1))})</div>`;
+  }).join('');
 
   el.innerHTML = `
     <div class="sp-timeline-wrap">
-      <div class="sp-timeline-track">
-        <div class="sp-tl-phase tl-p1 tl-today-marker" style="width:${p1pct}%" title="Phase 1: ${ph[0].name} (${ph[0].days} days)">
-          <span class="sp-tl-phase-label">Phase 1 · ${ph[0].days}d</span>
-        </div>
-        <div class="sp-tl-phase tl-p2" style="width:${p2pct}%" title="Phase 2: ${ph[1].name} (${ph[1].days} days)">
-          <span class="sp-tl-phase-label">Phase 2 · ${ph[1].days}d</span>
-        </div>
-        <div class="sp-tl-phase tl-p3" style="width:${p3pct}%" title="Phase 3: ${ph[2].name} (${ph[2].days} days)">
-          <span class="sp-tl-phase-label">Phase 3 · ${ph[2].days}d</span>
-        </div>
-      </div>
+      <div class="sp-timeline-track">${tlPhases}</div>
       <div style="display:flex;justify-content:space-between;margin-top:5px">
         <span style="font-size:10px;font-family:var(--mono);color:var(--muted)">Today (${todayLabel})</span>
         <span style="font-size:10px;font-family:var(--mono);color:var(--muted)">Exam (${examLabel})</span>
       </div>
-      <div class="sp-timeline-legend">
-        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#8a95c0"></div>Syllabus Completion (${spFmt(p1Start)} – ${spFmt(spAddDays(p1Start, ph[0].days - 1))})</div>
-        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#a08040"></div>Revision (${spFmt(p2Start)} – ${spFmt(spAddDays(p2Start, ph[1].days - 1))})</div>
-        <div class="sp-tl-legend-item"><div class="sp-tl-legend-swatch" style="background:#3a6b4e"></div>Final Sprint (${spFmt(p3Start)} – ${spFmt(examDate)})</div>
-      </div>
+      <div class="sp-timeline-legend">${legendItems}</div>
     </div>
   `;
 }
@@ -8782,7 +8857,7 @@ function spRenderPhaseCards(plan, subjects) {
 function spRender7Day(plan, subjects) {
   const weekCard = document.getElementById('spWeekCard');
   const el = document.getElementById('spWeekSchedule');
-  if (!plan || !plan.phases || plan.phases.length < 3) { weekCard.style.display = 'none'; return; }
+  if (!plan || !plan.phases || plan.phases.length === 0) { weekCard.style.display = 'none'; return; }
   weekCard.style.display = 'block';
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -8793,11 +8868,14 @@ function spRender7Day(plan, subjects) {
     days.push(d);
   }
 
-  // Which phase does each day fall in?
+  // Which phase does each day fall in? Works for 1, 2, or 3 phases.
   function getPhaseForDay(dayOffset, plan) {
-    if (dayOffset < plan.phases[0].days)                        return { phase: plan.phases[0], idx: 0 };
-    if (dayOffset < plan.phases[0].days + plan.phases[1].days)  return { phase: plan.phases[1], idx: 1 };
-    return { phase: plan.phases[2], idx: 2 };
+    let cumulative = 0;
+    for (let i = 0; i < plan.phases.length; i++) {
+      cumulative += plan.phases[i].days;
+      if (dayOffset < cumulative) return { phase: plan.phases[i], idx: i };
+    }
+    return { phase: plan.phases[plan.phases.length - 1], idx: plan.phases.length - 1 };
   }
 
   const phaseColors = ['prio-3', 'prio-2', 'prio-1'];
@@ -9493,7 +9571,9 @@ function epRenderDailyTimeline(plan) {
     const phaseStartDate = epParsePlanDate(ph.start);
     if (!phaseStartDate) return;
 
-    const phaseWithinSubject = typeof ph.subjectIndex !== 'undefined' ? (plan.phases.indexOf(ph) % 3) : (ph.num - 1) % 3;
+    const phaseWithinSubject = typeof ph.phaseIndexWithinSubject !== 'undefined'
+      ? ph.phaseIndexWithinSubject
+      : (typeof ph.subjectIndex !== 'undefined' ? (plan.phases.indexOf(ph) % 3) : (ph.num - 1) % 3);
     const modsPerDay = ph.dailyTarget;
     const subjectLabel = ph.subjectName || examName;
 
@@ -9507,10 +9587,14 @@ function epRenderDailyTimeline(plan) {
 
       const modStart = ph.moduleOffset + Math.floor(d * modsPerDay) + 1;
       const modEnd   = ph.moduleOffset + Math.min(ph.modules, Math.floor((d + 1) * modsPerDay));
+      // Hard-clamp: never emit a module number beyond what exists
+      const clampedStart = Math.min(modStart, ph.moduleOffset + ph.modules);
+      const clampedEnd   = Math.min(modEnd,   ph.moduleOffset + ph.modules);
       let moduleLabel;
-      if (modEnd > modStart)        moduleLabel = 'M' + modStart + '–M' + modEnd;
-      else if (modEnd === modStart)  moduleLabel = 'M' + modStart;
-      else                           moduleLabel = 'Review / Buffer';
+      if (ph.modules === 0)                       moduleLabel = 'Review / Buffer';
+      else if (clampedEnd > clampedStart)         moduleLabel = 'M' + clampedStart + '–M' + clampedEnd;
+      else if (clampedEnd === clampedStart && clampedStart > ph.moduleOffset) moduleLabel = 'M' + clampedStart;
+      else                                        moduleLabel = 'Review / Buffer';
 
       days.push({
         date,
@@ -9575,9 +9659,19 @@ function epRenderDailyTimeline(plan) {
     badgeEl.textContent = filteredDays.length + ' days';
   }
 
-  // Build phase legend summary
+  // Build phase legend summary — names driven by phaseType if available
   const phaseColors  = { 1: '#8a95c0', 2: '#a08040', 3: '#3a6b4e' };
-  const phaseNames   = { 1: 'Phase 1 — Syllabus', 2: 'Phase 2 — Revision', 3: 'Phase 3 — Final' };
+  const phaseNameMap = { 1: 'Phase 1 — Study', 2: 'Phase 2 — Revision', 3: 'Phase 3 — Final' };
+  // Enrich with actual names from plan phases
+  if (plan && plan.phases) {
+    plan.phases.forEach(function(ph) {
+      const idx = ph.phaseIndexWithinSubject;
+      if (idx !== undefined) {
+        const key = idx + 1;
+        phaseNameMap[key] = 'Phase ' + key + ' — ' + (ph.phaseType === 'study' ? 'Study' : ph.phaseType === 'revision' ? 'Revision' : 'Final Revision');
+      }
+    });
+  }
   const phasesUsed   = [...new Set(filteredDays.filter(d => !d.isExam).map(d => d.phase))].sort();
 
   const legendHTML = `
@@ -9585,7 +9679,7 @@ function epRenderDailyTimeline(plan) {
       ${phasesUsed.map(function(p) {
         return `<div class="ep-tl-summary-item">
           <div class="ep-tl-summary-swatch" style="background:${phaseColors[p]}"></div>
-          <span>${phaseNames[p]}</span>
+          <span>${phaseNameMap[p] || ('Phase ' + p)}</span>
         </div>`;
       }).join('')}
       <div class="ep-tl-summary-item">
