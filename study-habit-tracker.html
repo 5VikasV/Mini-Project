@@ -6042,20 +6042,20 @@ async function getAdvisorSuggestion() {
     explanation = moodBoostsPerf
       ? 'High mood detected — your data confirms this boosts productivity. Perfect time to tackle weaker areas.'
       : 'High mood detected — good time to focus on weaker areas and challenging content.';
-    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other',  weight: 1 });
-    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 3 });
-    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
-    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 1 });
+    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other'  });
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak'   });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other'  }));
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong' });
   } else if (moodVal === 3) {
     icon = '→';
     moodClass = 'mood-mid';
     moodStatusLabel = 'Neutral';
     contextTitle = 'Baseline cognitive state — mixing challenging and familiar material keeps momentum without overloading focus.';
     explanation = 'Neutral mood detected — steady, balanced work is best. Mix weak areas with familiar subjects.';
-    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other',  weight: 1 });
-    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 2 });
-    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
-    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 1 });
+    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other'  });
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak'   });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other'  }));
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong' });
   } else {
     icon = '↓';
     moodClass = 'mood-low';
@@ -6066,15 +6066,36 @@ async function getAdvisorSuggestion() {
     explanation = moodBoostsPerf
       ? 'Low mood detected — your data shows this reduces focus. Stick to familiar, confidence-building material.'
       : 'Low mood detected — easy wins with strong subjects help rebuild motivation. Keep it comfortable.';
-    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other',  weight: 1 });
-    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 3 });
-    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
-    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 1 });
+    // Low mood: lead with strong subject for confidence, but time allocation still favours weak
+    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other'  });
+    if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong' });
+    otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other'  }));
+    if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak'   });
   }
 
-  if (mlWinnerWeights && mlWinnerWeights.length === subjectQueue.length) {
-    subjectQueue.forEach((slot, i) => { slot.weight = mlWinnerWeights[i]; });
-  }
+  // ── Time allocation: always inversely proportional to productivity ──────────
+  // Weight = (maxProd + 1) - avgProd  →  lower productivity earns more time.
+  // Mood modulates the weak-subject boost: high mood amplifies it (best time to
+  // tackle hard material); low mood softens it slightly (shorter bursts).
+  // Strong subjects are capped at a minimum review share and never exceed 1.0.
+  const MAX_PROD = 5;
+  const moodWeakBoost   = moodVal >= 4 ? 1.3 : moodVal === 3 ? 1.0 : 0.85;
+  const moodStrongScale = moodVal >= 4 ? 0.7 : moodVal === 3 ? 0.8 : 1.0;
+
+  subjectQueue.forEach(slot => {
+    const invProd = (MAX_PROD + 1) - slot.avgProd; // range 1–5 (low prod → high weight)
+    if (slot.tag === 'needs work') {
+      slot.weight = invProd * moodWeakBoost;
+    } else if (slot.tag === 'confidence builder') {
+      slot.weight = Math.max(0.5, invProd * moodStrongScale);
+    } else {
+      // 'scheduled', 'focus subject' — straight inverse, no modifier
+      slot.weight = invProd;
+    }
+  });
+
+  // ML override is intentionally removed: the /predict endpoint is not available
+  // in this environment and its 'strong-heavy' preset was inverting the allocation.
 
   result.className = 'advisor-result visible';
 
