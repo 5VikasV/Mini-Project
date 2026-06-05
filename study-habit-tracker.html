@@ -7439,7 +7439,8 @@ function epBuildPlanData(showAlerts) {
       if (!name)                   { if (showAlerts) alert(`Row ${i + 1}: please enter a subject name.`);  return null; }
       if (!dateStr)                { if (showAlerts) alert(`Row ${i + 1}: please select an exam date.`);   return null; }
       if (isNaN(mods) || mods < 1) { if (showAlerts) alert(`Row ${i + 1}: please enter total modules ≥ 1.`); return null; }
-      subjects.push({ name, dateStr, totalModules: mods, completedInput: Math.max(0, Math.min(mods - 1, completed)) });
+      // Clamp completed to [0, totalModules]. Completed === totalModules means the subject is done.
+      subjects.push({ name, dateStr, totalModules: mods, completedInput: Math.max(0, Math.min(mods, completed)) });
     }
   }
 
@@ -7491,11 +7492,39 @@ function epGeneratePlan() {
     return a.progressPct - b.progressPct;
   });
 
-  // If all subjects are complete, still sort for display
+  // All subjects sorted for display (completed ones go to the end)
   subjects.sort((a, b) => {
+    if (a.isCompleted !== b.isCompleted) return a.isCompleted ? 1 : -1;
     if (a.daysLeft !== b.daysLeft) return a.daysLeft - b.daysLeft;
     return a.progressPct - b.progressPct;
   });
+
+  // ── ALL SUBJECTS COMPLETE — show completion message, skip phase generation ──
+  if (activeSubjects.length === 0) {
+    const totalModulesAll = subjects.reduce((s, x) => s + x.totalModules, 0);
+    const plan = {
+      examName:         subjects[0].name,
+      examDate:         subjects[0].dateStr,
+      totalModules:     totalModulesAll,
+      completedModules: totalModulesAll,
+      remainingModules: 0,
+      dailyHours:       dailyHoursIn,
+      effectiveDailyHours: dailyHoursIn,
+      totalDays:        subjects[0].daysLeft,
+      progressPct:      100,
+      generatedAt:      Date.now(),
+      sessionContext:   epGetSessionContext(),
+      subjects,
+      activeSubjects:   [],
+      completedSubjects: subjects,
+      multiSubject:     subjects.length > 1,
+      phases:           [],
+      allCompleted:     true
+    };
+    epSavePlan(plan);
+    epRenderPlan(plan);
+    return;
+  }
 
   // ── 4. Adjust daily hours from session context ─────────────
   const ctx = epGetSessionContext();
@@ -7504,9 +7533,9 @@ function epGeneratePlan() {
   else if (ctx && ctx.avgProductivity >= 4) effectiveDailyHours = dailyHoursIn * 1.05;
 
   // ── 5. Allocate study days per subject ─────────────────────
-  // Each subject gets days proportional to its remaining modules,
-  // capped at its own exam date.
-  const subjectsForPlan = activeSubjects.length > 0 ? activeSubjects : subjects; // fallback: all done
+  // Each active subject gets days proportional to its remaining modules,
+  // capped at its own exam date. Completed subjects are excluded.
+  const subjectsForPlan = activeSubjects; // always non-empty (all-completed handled above)
   const overallDays    = subjectsForPlan[0].daysLeft; // anchor = nearest active exam
   const totalRemaining = subjectsForPlan.reduce((s, x) => s + x.remainingModules, 0);
 
@@ -7537,7 +7566,7 @@ function epGeneratePlan() {
     const ph2Start = epAddDays(ph1Start, phase1Days);
     const ph3Start = epAddDays(ph1Start, phase1Days + phase2Days);
 
-    const subjectLabel = subjects.length > 1 ? ` — ${s.name}` : '';
+    const subjectLabel = subjectsForPlan.length > 1 ? ` — ${s.name}` : '';
 
     // moduleOffset = number of modules already completed for this subject.
     // Phase module counts are relative (phase1Mods covers modules offset+1 … offset+phase1Mods).
@@ -7646,6 +7675,27 @@ function epGeneratePlan() {
 function epRenderPlan(plan) {
   document.getElementById('epEmptyState').style.display = 'none';
   document.getElementById('epPlanOutput').style.display = 'block';
+
+  // ── ALL SUBJECTS COMPLETED — show a completion banner and skip phase rendering ──
+  if (plan.allCompleted) {
+    const subjectList = plan.subjects.map(s => s.name).join(', ');
+    document.getElementById('epStatCards').innerHTML = `
+      <div class="stat-card" style="grid-column:1/-1;text-align:center;padding:32px 24px;background:var(--green-dim);border-color:var(--green-border)">
+        <div style="font-size:28px;margin-bottom:8px">🎉</div>
+        <div style="font-size:16px;font-weight:600;color:var(--green);margin-bottom:6px">All subjects completed!</div>
+        <div style="font-size:13px;color:var(--text-2);margin-bottom:4px">${subjectList}</div>
+        <div style="font-size:12px;color:var(--muted)">Every module is marked as done. Update your module counts or add a new subject to generate a new plan.</div>
+      </div>
+    `;
+    epRenderPlannerSummary(plan);
+    document.getElementById('epContextBanner').style.display = 'none';
+    document.getElementById('epPhaseCards').innerHTML = '';
+    document.getElementById('epScheduleBody').innerHTML = '';
+    document.getElementById('epSavedInfo').innerHTML = '';
+    const feasEl = document.getElementById('epFeasibility');
+    if (feasEl) feasEl.innerHTML = '';
+    return;
+  }
 
   // Stat cards — Progress card now has live bar
   const _pct    = plan.progressPct;
@@ -8224,10 +8274,12 @@ function epAnalyseFeasibility(plan) {
   }
 
   // Phase timing recs
+  if (plan.phases && plan.phases.length > 0) {
   const phase2StartDay = plan.phases[0].days;
   const daysUntilPhase2 = phase2StartDay;
   if (daysLeft <= daysUntilPhase2 + 2 && verdict !== 'On Track') {
     recs.push({ type: 'rec-amber', icon: '⏩', text: `Consider starting the <strong>Revision phase earlier</strong> — your current pace suggests Phase 1 may run over its allocated ${plan.phases[0].days}-day window.` });
+  }
   }
 
   // Productivity-based recs
@@ -8275,6 +8327,7 @@ function epGetSubjectStatsLocal(entries) {
 
 // ── Render the feasibility card ───────────────────────────────
 function epRenderFeasibility(plan) {
+  if (!plan || plan.allCompleted || !plan.phases || !plan.phases.length) return;
   const f = epAnalyseFeasibility(plan);
 
   // Badge
@@ -8406,13 +8459,12 @@ function spWeekday(d) {
 
 // ── Score-based subject priority ───────────────────────────────
 // Inputs: plan (from epLoadPlan), entries (from getEntries)
-// Returns sorted array of subject objects with priority score
+// Returns sorted array of subject objects with priority score.
+// Completed subjects (remainingModules === 0) are excluded.
 function spComputePriority(plan, entries) {
   if (!plan) return [];
 
-  const today    = new Date(); today.setHours(0, 0, 0, 0);
-  const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
-  const daysLeft = Math.max(1, Math.round((examDate - today) / 86400000));
+  const today = new Date(); today.setHours(0, 0, 0, 0);
 
   // Build per-subject stats from session entries
   const subjectMap = {};
@@ -8430,30 +8482,72 @@ function spComputePriority(plan, entries) {
     avgProd: s.prods.reduce((a, b) => a + b, 0) / s.prods.length
   }));
 
-  // If no subjects tracked, create one synthetic subject from plan
-  const subjects = subjectStats.length > 0 ? subjectStats : [
-    { name: plan.examName, prods: [], hours: 0, count: 0, avgProd: plan.sessionContext ? plan.sessionContext.avgProductivity : 3 }
-  ];
+  // Active (incomplete) subjects from the plan — these drive recommendations
+  const activePlanSubjects = plan.activeSubjects && plan.activeSubjects.length > 0
+    ? plan.activeSubjects
+    : (plan.subjects ? plan.subjects.filter(s => !s.isCompleted) : []);
+
+  // Build the working list: session-tracked subjects that are still active,
+  // supplemented by any active plan subjects not yet in session data.
+  let subjects;
+  if (subjectStats.length > 0) {
+    // Filter out completed plan subjects from session data
+    const completedNames = new Set(
+      (plan.completedSubjects || []).map(s => s.name)
+    );
+    const filteredStats = subjectStats.filter(s => !completedNames.has(s.name));
+
+    // Augment: add active plan subjects that have no session entry yet
+    const trackedNames = new Set(filteredStats.map(s => s.name));
+    activePlanSubjects.forEach(ps => {
+      if (!trackedNames.has(ps.name)) {
+        filteredStats.push({
+          name: ps.name, prods: [], hours: 0, count: 0,
+          avgProd: plan.sessionContext ? plan.sessionContext.avgProductivity : 3
+        });
+      }
+    });
+
+    subjects = filteredStats.length > 0 ? filteredStats : activePlanSubjects.map(ps => ({
+      name: ps.name, prods: [], hours: 0, count: 0,
+      avgProd: plan.sessionContext ? plan.sessionContext.avgProductivity : 3
+    }));
+  } else {
+    // No session data — seed from active plan subjects, nearest exam first
+    subjects = activePlanSubjects.map(ps => ({
+      name: ps.name, prods: [], hours: 0, count: 0,
+      avgProd: plan.sessionContext ? plan.sessionContext.avgProductivity : 3
+    }));
+    // Fallback if plan has no activeSubjects at all
+    if (subjects.length === 0) {
+      subjects = [{ name: plan.examName, prods: [], hours: 0, count: 0, avgProd: 3 }];
+    }
+  }
 
   // Priority score = weighted sum of 4 signals (0–100 each):
-  //   a) exam urgency (inverse days left)      — 35 pts
-  //   b) low productivity (weakest first)      — 30 pts
-  //   c) least sessions (least studied)        — 20 pts
-  //   d) modules remaining ratio               — 15 pts
+  //   a) exam urgency (inverse days left, per subject)   — 35 pts
+  //   b) low productivity (weakest first)                — 30 pts
+  //   c) least sessions (least studied)                  — 20 pts
+  //   d) modules remaining ratio (per subject)           — 15 pts
 
-  const maxCount    = Math.max(...subjects.map(s => s.count), 1);
-  const prodMin     = Math.min(...subjects.map(s => s.avgProd), 1);
-  const prodMax     = Math.max(...subjects.map(s => s.avgProd), 5);
-  const prodRange   = Math.max(0.01, prodMax - prodMin);
-
-  // urgency — same for all subjects (based on plan)
-  const urgencyScore = Math.min(100, Math.round((1 - daysLeft / 120) * 100));
+  const maxCount  = Math.max(...subjects.map(s => s.count), 1);
+  const prodMin   = Math.min(...subjects.map(s => s.avgProd), 1);
+  const prodMax   = Math.max(...subjects.map(s => s.avgProd), 5);
+  const prodRange = Math.max(0.01, prodMax - prodMin);
 
   return subjects.map(s => {
-    const prodScore  = Math.round(((prodMax - s.avgProd) / prodRange) * 100);      // low prod = high priority
-    const sesScore   = Math.round(((maxCount - s.count) / maxCount) * 100);         // few sessions = high priority
-    const modsScore  = Math.round((plan.remainingModules / Math.max(1, plan.totalModules)) * 100);
-    const totalScore = Math.round(urgencyScore * 0.35 + prodScore * 0.30 + sesScore * 0.20 + modsScore * 0.15);
+    // Per-subject days left (nearest exam for this subject)
+    const planSubj  = activePlanSubjects.find(ps => ps.name === s.name);
+    const daysLeft  = planSubj
+      ? Math.max(1, planSubj.daysLeft)
+      : Math.max(1, activePlanSubjects.length > 0 ? activePlanSubjects[0].daysLeft : 30);
+
+    const urgencyScore = Math.min(100, Math.round((1 - daysLeft / 120) * 100));
+    const prodScore    = Math.round(((prodMax - s.avgProd) / prodRange) * 100);
+    const sesScore     = Math.round(((maxCount - s.count) / maxCount) * 100);
+    const remainPct    = planSubj ? planSubj.remainingModules / Math.max(1, planSubj.totalModules) : 0.5;
+    const modsScore    = Math.round(remainPct * 100);
+    const totalScore   = Math.round(urgencyScore * 0.35 + prodScore * 0.30 + sesScore * 0.20 + modsScore * 0.15);
     return { ...s, urgencyScore, prodScore, sesScore, modsScore, totalScore, daysLeft };
   }).sort((a, b) => b.totalScore - a.totalScore);
 }
@@ -8492,7 +8586,7 @@ function spRenderPriorityList(subjects, plan) {
 // ── Render visual timeline ─────────────────────────────────────
 function spRenderTimeline(plan) {
   const el = document.getElementById('spTimeline');
-  if (!plan) { el.innerHTML = '<p class="no-insight" style="padding:20px 0">Generate a plan first.</p>'; return; }
+  if (!plan || !plan.phases || plan.phases.length < 3) { el.innerHTML = '<p class="no-insight" style="padding:20px 0">Generate a plan first.</p>'; return; }
 
   const today    = new Date(); today.setHours(0, 0, 0, 0);
   const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
@@ -8543,26 +8637,38 @@ function spRenderTargetCards(plan, subjects) {
   if (!plan) return;
 
   const today   = new Date(); today.setHours(0, 0, 0, 0);
-  const exam    = new Date(plan.examDate); exam.setHours(0, 0, 0, 0);
+
+  // Use nearest active subject's exam date for days-left anchor
+  const nearestActive = plan.activeSubjects && plan.activeSubjects.length > 0
+    ? plan.activeSubjects.slice().sort((a, b) => (a.daysLeft || 999) - (b.daysLeft || 999))[0]
+    : null;
+  const exam    = nearestActive
+    ? new Date(nearestActive.dateStr)
+    : new Date(plan.examDate);
+  exam.setHours(0, 0, 0, 0);
   const dLeft   = Math.max(1, Math.round((exam - today) / 86400000));
-  const modsLeft = plan.remainingModules;
+
+  // Use live table values for remaining (avoids stale plan object)
+  const live    = (typeof epReadProgressFromTable === 'function')
+    ? epReadProgressFromTable()
+    : { totalLeft: plan.remainingModules };
+  const modsLeft  = live.totalLeft;
   const dailyMods = parseFloat((modsLeft / dLeft).toFixed(1));
   const weekMods  = Math.min(modsLeft, Math.round(dailyMods * 7));
 
-  // Determine which phase today falls in
-  let phaseToday = plan.phases[0];
-  const p2Start = spAddDays(today, plan.phases[0].days);
-  const p3Start = spAddDays(today, plan.phases[0].days + plan.phases[1].days);
-  // (since we always regenerate with today as start, phase 1 is always active initially)
-  const phaseName  = phaseToday.name;
-  const phaseDailyTarget = phaseToday.dailyTarget;
+  // Determine which phase today falls in — only when phases exist
+  const hasPhases = plan.phases && plan.phases.length > 0;
+  const phaseToday       = hasPhases ? plan.phases[0] : null;
+  const phaseName        = hasPhases ? phaseToday.name        : '—';
+  const phaseDailyTarget = hasPhases ? phaseToday.dailyTarget : dailyMods;
+  const phaseHoursVal    = hasPhases ? phaseToday.dailyHours  : plan.effectiveDailyHours || plan.dailyHours || 0;
 
   // Top subject to focus on today
   const topSubject = subjects.length > 0 ? subjects[0].name : plan.examName;
 
   document.getElementById('spTodayTarget').textContent  = phaseDailyTarget + ' mod';
   document.getElementById('spTodaySub').textContent     = `${phaseDailyTarget} module(s) — ${phaseName}`;
-  document.getElementById('spTodayDetail').textContent  = `Focus: ${topSubject} · ${phaseToday.dailyHours.toFixed(1)}h target`;
+  document.getElementById('spTodayDetail').textContent  = `Focus: ${topSubject} · ${phaseHoursVal.toFixed(1)}h target`;
 
   document.getElementById('spWeekTarget').textContent   = weekMods;
   document.getElementById('spWeekSub').textContent      = `modules this week (${modsLeft} remaining)`;
@@ -8570,13 +8676,16 @@ function spRenderTargetCards(plan, subjects) {
 
   document.getElementById('spWorkload').textContent      = modsLeft;
   document.getElementById('spWorkloadSub').textContent  = `modules, ${dLeft} days left`;
-  document.getElementById('spWorkloadDetail').textContent = `${plan.totalModules - modsLeft} of ${plan.totalModules} done (${plan.progressPct}%)`;
+  const livePct = (typeof epReadProgressFromTable === 'function')
+    ? epReadProgressFromTable().pct
+    : plan.progressPct;
+  document.getElementById('spWorkloadDetail').textContent = `${plan.totalModules - modsLeft} of ${plan.totalModules} done (${livePct}%)`;
 }
 
 // ── Render today's schedule (breakdown by subject) ─────────────
 function spRenderTodaySchedule(plan, subjects) {
   const el = document.getElementById('spTodaySchedule');
-  if (!plan || subjects.length === 0) {
+  if (!plan || !plan.phases || !plan.phases.length || subjects.length === 0) {
     el.innerHTML = '<p class="no-insight">Log sessions with subjects to get a personalised daily schedule.</p>';
     return;
   }
@@ -8614,7 +8723,7 @@ function spRenderTodaySchedule(plan, subjects) {
 function spRenderPhaseCards(plan, subjects) {
   const el = document.getElementById('spPhaseCards');
   const sec = document.getElementById('spPhaseSection');
-  if (!plan) { sec.style.display = 'none'; return; }
+  if (!plan || !plan.phases || !plan.phases.length) { sec.style.display = 'none'; return; }
   sec.style.display = 'block';
 
   const topSubj = subjects.length > 0 ? subjects[0].name : plan.examName;
@@ -8673,7 +8782,7 @@ function spRenderPhaseCards(plan, subjects) {
 function spRender7Day(plan, subjects) {
   const weekCard = document.getElementById('spWeekCard');
   const el = document.getElementById('spWeekSchedule');
-  if (!plan) { weekCard.style.display = 'none'; return; }
+  if (!plan || !plan.phases || plan.phases.length < 3) { weekCard.style.display = 'none'; return; }
   weekCard.style.display = 'block';
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -8743,6 +8852,16 @@ function spRender() {
 
   emptyEl.style.display = 'none';
 
+  // If all subjects are completed, show target cards with zeroed-out values
+  // and hide phase-dependent sections that need plan.phases[0]
+  if (plan.allCompleted) {
+    spRenderTargetCards(plan, []);
+    spRenderPriorityList([], plan);
+    if (phaseEl)  phaseEl.style.display  = 'none';
+    if (weekCard) weekCard.style.display = 'none';
+    return;
+  }
+
   const subjects = spComputePriority(plan, entries);
 
   spRenderTargetCards(plan, subjects);
@@ -8804,12 +8923,13 @@ function renderTodaysTarget() {
     return;
   }
 
-  // ── Compute days left ──────────────────────────────────────
+  // Stat cards — Progress card now has live bar
+  const _pct    = plan.progressPct;
   const today    = new Date(); today.setHours(0, 0, 0, 0);
   const examDate = new Date(plan.examDate); examDate.setHours(0, 0, 0, 0);
   const daysLeft = Math.max(0, Math.round((examDate - today) / 86400000));
 
-  // ── Pick subject (weakest → nearest exam) ─────────────────
+  // ── Pick subject (weakest → nearest exam, active only) ────
   // Build per-subject productivity averages from sessions
   const subjectMap = {};
   entries.forEach(e => {
@@ -8821,21 +8941,35 @@ function renderTodaysTarget() {
     subjectMap[s].count++;
   });
 
+  // Names of subjects that are fully completed — exclude from recommendations
+  const completedNames = new Set(
+    (plan.completedSubjects || []).map(s => s.name)
+  );
+
+  // Active plan subjects (sorted nearest-exam first) for fallback ordering
+  const activePlanSubjs = plan.activeSubjects && plan.activeSubjects.length > 0
+    ? plan.activeSubjects
+    : (plan.subjects ? plan.subjects.filter(s => !s.isCompleted) : []);
+  activePlanSubjs.sort((a, b) => (a.daysLeft || 999) - (b.daysLeft || 999));
+
   let targetSubject, moduleName, moduleHint, reasonText, avgProdForSubj;
 
   if (Object.keys(subjectMap).length > 0) {
     // Sort subjects: weakest avg productivity first, then fewest sessions
-    const subjectStats = Object.entries(subjectMap).map(([name, d]) => ({
-      name,
-      avgProd: d.prods.reduce((a, b) => a + b, 0) / d.prods.length,
-      avgHours: d.hours / d.count,
-      count: d.count
-    })).sort((a, b) => {
-      // primary: lower productivity = higher priority
-      if (Math.abs(a.avgProd - b.avgProd) > 0.3) return a.avgProd - b.avgProd;
-      // secondary: fewer sessions = higher priority
-      return a.count - b.count;
-    });
+    // Exclude subjects that are already fully completed
+    const subjectStats = Object.entries(subjectMap)
+      .filter(([name]) => !completedNames.has(name))
+      .map(([name, d]) => ({
+        name,
+        avgProd: d.prods.reduce((a, b) => a + b, 0) / d.prods.length,
+        avgHours: d.hours / d.count,
+        count: d.count
+      })).sort((a, b) => {
+        // primary: lower productivity = higher priority
+        if (Math.abs(a.avgProd - b.avgProd) > 0.3) return a.avgProd - b.avgProd;
+        // secondary: fewer sessions = higher priority
+        return a.count - b.count;
+      });
 
     const top = subjectStats[0];
     targetSubject   = top.name;
@@ -8863,13 +8997,13 @@ function renderTodaysTarget() {
         ? 'Prioritised: least studied subject (' + top.count + (top.count === 1 ? ' session' : ' sessions') + ' logged)'
         : 'Prioritised: nearest exam · weakest available subject';
   } else {
-    // Fall back to plan name when no sessions with subjects
-    targetSubject  = plan.examName;
+    // Fall back to nearest active plan subject when no sessions with subjects
+    const fallbackSubj = activePlanSubjs.length > 0
+      ? activePlanSubjs[0]
+      : (plan.subjects && plan.subjects.length > 0 ? plan.subjects.find(s => !s.isCompleted) || plan.subjects[0] : null);
+    targetSubject  = fallbackSubj ? fallbackSubj.name : plan.examName;
     avgProdForSubj = plan.sessionContext ? plan.sessionContext.avgProductivity : 3;
     // Use the nearest active subject's per-subject next module
-    const fallbackSubj = plan.activeSubjects && plan.activeSubjects.length > 0
-      ? plan.activeSubjects[0]
-      : (plan.subjects && plan.subjects.length > 0 ? plan.subjects[0] : null);
     const fallbackNext = fallbackSubj
       ? Math.min(fallbackSubj.completedMods + 1, fallbackSubj.totalModules)
       : (plan.completedModules || 0) + 1;
@@ -8957,8 +9091,8 @@ function renderTodaysTarget() {
         </div>
         <div class="tt-meta-item">
           <div class="tt-meta-label">Progress</div>
-          <div class="tt-meta-value">${plan.progressPct}%</div>
-          <div class="tt-meta-sub">${plan.completedModules}/${plan.totalModules} done</div>
+          <div class="tt-meta-value">${(typeof epReadProgressFromTable === 'function' ? epReadProgressFromTable().pct : plan.progressPct)}%</div>
+          <div class="tt-meta-sub">${(typeof epReadProgressFromTable === 'function' ? epReadProgressFromTable().totalDone : plan.completedModules)}/${plan.totalModules} done</div>
         </div>
       </div>
 
