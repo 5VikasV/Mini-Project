@@ -5911,14 +5911,15 @@ async function getAdvisorSuggestion() {
   }
 
   const entries = getEntries();
-  if (entries.length < 10) {
+  const entriesWithSubject = entries.filter(e => e.subject && e.subject !== '—');
+  if (entriesWithSubject.length < 1) {
     result.className = 'advisor-result visible';
-    result.innerHTML = '<p class="advisor-no-data">Insufficient data for reliable analysis. Log at least 10 study sessions so the advisor can learn your patterns.</p>';
+    result.innerHTML = '<p class="advisor-no-data">Log at least one study session with a subject to get a session plan.</p>';
     return;
   }
 
   // --- ML Optimizer: pick best of 3 time distributions via /predict --------
-  const subjectStatsForML = getSubjectStats(entries).filter(s => s.count >= 2);
+  const subjectStatsForML = getSubjectStats(entries).filter(s => s.count >= 1);
   const strongForML = subjectStatsForML.length >= 1
     ? subjectStatsForML[0].name : '';
   const weakForML   = subjectStatsForML.length >= 2
@@ -5998,7 +5999,7 @@ async function getAdvisorSuggestion() {
   const subjectStats = getSubjectStats(entries);
 
   // Constants for subject ranking eligibility
-  const ADVISOR_MIN_SESSIONS_PER_SUBJECT = 2;
+  const ADVISOR_MIN_SESSIONS_PER_SUBJECT = 1;
 
   // Only include subjects that have enough sessions to rank reliably
   const eligibleSubjectStats = subjectStats.filter(s => s.count >= ADVISOR_MIN_SESSIONS_PER_SUBJECT);
@@ -6008,15 +6009,18 @@ async function getAdvisorSuggestion() {
     eligibleSubjectStats.every(s => Math.abs(s.avgProd - eligibleSubjectStats[0].avgProd) < 0.01);
 
   // Only assign strong/weak when we have ≥ 2 eligible subjects with a real difference
-  const strongSubject = (!allSubjectsEqual && eligibleSubjectStats.length >= 1) ? eligibleSubjectStats[0] : null;
+  const strongSubject = (!allSubjectsEqual && eligibleSubjectStats.length >= 2) ? eligibleSubjectStats[0] : null;
   const weakSubject   = (!allSubjectsEqual && eligibleSubjectStats.length >= 2) ? eligibleSubjectStats[eligibleSubjectStats.length - 1] : null;
   const otherSubjects = eligibleSubjectStats.length >= 3
     ? eligibleSubjectStats.slice(1, eligibleSubjectStats.length - 1)
     : [];
   const otherSubject = otherSubjects.length > 0 ? otherSubjects[0] : null;
 
+  // Single-subject: the one eligible subject used as the sole queue entry
+  const singleSubject = eligibleSubjectStats.length === 1 ? eligibleSubjectStats[0] : null;
+
   // Flag: subjects exist but none qualify for ranking (all below min-session threshold)
-  const subjectDataInsufficient = subjectStats.length >= 1 && eligibleSubjectStats.length < 2;
+  const subjectDataInsufficient = subjectStats.length >= 1 && eligibleSubjectStats.length < 2 && !singleSubject;
 
   // --- Mood impact check (preserving existing logic) ---
   const highMoodEntries = entries.filter(e => e.mood >= 4);
@@ -6038,6 +6042,7 @@ async function getAdvisorSuggestion() {
     explanation = moodBoostsPerf
       ? 'High mood detected — your data confirms this boosts productivity. Perfect time to tackle weaker areas.'
       : 'High mood detected — good time to focus on weaker areas and challenging content.';
+    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other',  weight: 1 });
     if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 3 });
     otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
     if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 1 });
@@ -6047,6 +6052,7 @@ async function getAdvisorSuggestion() {
     moodStatusLabel = 'Neutral';
     contextTitle = 'Baseline cognitive state — mixing challenging and familiar material keeps momentum without overloading focus.';
     explanation = 'Neutral mood detected — steady, balanced work is best. Mix weak areas with familiar subjects.';
+    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other',  weight: 1 });
     if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 2 });
     otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
     if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 1 });
@@ -6060,6 +6066,7 @@ async function getAdvisorSuggestion() {
     explanation = moodBoostsPerf
       ? 'Low mood detected — your data shows this reduces focus. Stick to familiar, confidence-building material.'
       : 'Low mood detected — easy wins with strong subjects help rebuild motivation. Keep it comfortable.';
+    if (singleSubject) subjectQueue.push({ ...singleSubject, tag: 'focus subject',      cssClass: 'step-other',  weight: 1 });
     if (strongSubject) subjectQueue.push({ ...strongSubject, tag: 'confidence builder', cssClass: 'step-strong', weight: 3 });
     otherSubjects.forEach(s => subjectQueue.push({ ...s,     tag: 'scheduled',          cssClass: 'step-other',  weight: 2 }));
     if (weakSubject)   subjectQueue.push({ ...weakSubject,   tag: 'needs work',         cssClass: 'step-weak',   weight: 1 });
@@ -6178,7 +6185,9 @@ async function getAdvisorSuggestion() {
   const hasBreaks = planSteps.some(s => s.type === 'break');
   const reasonItems = [];
   if (subjectDataInsufficient) {
-    reasonItems.push({ ind: 'ind-neutral', sym: '≈', text: `Insufficient data for reliable analysis — subject rankings require at least 2 sessions per subject. Subjects are ordered by mood preference until more data is logged.` });
+    reasonItems.push({ ind: 'ind-neutral', sym: '≈', text: `Not enough data to rank subjects — log more sessions with different subjects to enable performance-based ordering.` });
+  } else if (singleSubject) {
+    reasonItems.push({ ind: 'ind-neutral', sym: '≈', text: `Only one subject found in your entries (<strong>${singleSubject.name}</strong>). Add more subjects to get a ranked multi-subject plan.` });
   } else if (allSubjectsEqual && eligibleSubjectStats.length >= 2) {
     reasonItems.push({ ind: 'ind-neutral', sym: '\u2248', text: `All subjects currently have similar productivity scores \u2014 subjects are ordered by mood preference rather than performance ranking.` });
   } else {
